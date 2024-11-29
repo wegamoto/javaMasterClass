@@ -1,19 +1,8 @@
-package org.example;
-
 public class Worker {
 
     private String name;
     private String birthDate;
-    private String endDate;
-    private String address;
-    private String phone;
-    private String email;
-    private String password;
-    private String role;
-    private String salary;
-    private String hireDate;
-    private String department;
-    private String jobTitle;
+    protected String endDate;
 
     public Worker() {
 
@@ -25,9 +14,11 @@ public class Worker {
     }
 
     public int getAge() {
-        int currentYear = 2021;
+
+        int currentYear = 2025;
         int birthYear = Integer.parseInt(birthDate.substring(6));
-        return currentYear - birthYear;
+
+        return (currentYear - birthYear);
     }
 
     public double collectPay() {
