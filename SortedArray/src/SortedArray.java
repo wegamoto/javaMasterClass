@@ -1,15 +1,7 @@
 import java.util.Scanner;
 import java.util.Arrays;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        int[] sortedArray = sortIntegers(new int[] { 106, 26, 81, 5, 15 });
-//        int[] sortedArray = sortIntegers(new int[]);
-        System.out.println(getIntegers(10));
-        System.out.println(Arrays.toString(sortedArray));
-    }
+public class SortedArray {
 
     public static int[] getIntegers(int capacity) {
 
