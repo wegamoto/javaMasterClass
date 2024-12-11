@@ -1,53 +1,47 @@
 package dev.lpa;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.List;
 
 public class Album {
 
     private String name;
-    private String arthis;
-    private ArrayList<Song> songs;
+    private String artist;
+    private List<Song> songs;
 
-    public Album(String name, String arthis) {
+    public Album(String name, String artist) {
         this.name = name;
-        this.arthis = arthis;
+        this.artist = artist;
+        this.songs = new ArrayList<>();
     }
 
-    public boolean addSong( String title, double duration) {
-        if (findSong(title) == null) {
-            songs.add(new Song(title, duration));
-            return true;
+    // Add a song to the album
+    public void addSong(Song song) {
+        if (song.getArtist().equalsIgnoreCase(artist)) {
+            songs.add(song);
+            System.out.println(song.getTitle() + " added to the album " + name + ".");
+        } else {
+            System.out.println("The artist of the song does not match the album's artist.");
         }
-        return false;
     }
 
-    private Song findSong(String title) {
-
-        for (Song checkSong : songs) {
-            if (checkSong.getTitle().equals(title)) {
-                return checkSong;
+    // List all songs in the album
+    public void listSongs() {
+        if (songs.isEmpty()) {
+            System.out.println("The album " + name + " is empty.");
+        } else {
+            System.out.println("Songs in the album " + name + ":");
+            for (int i = 0; i < songs.size(); i++) {
+                System.out.println((i + 1) + ". " + songs.get(i));
             }
         }
-        return null;
     }
 
-    public boolean addToPlayList(int trackNumber, LinkedList<Song> playList) {
-        int index = trackNumber - 1;
-        if ((index >= 0) && (index <= songs.size())) {
-            playList.add(songs.get(index));
-            return true;
-        }
-        return false;
+    public String getName() {
+        return name;
     }
 
-    public boolean addToPlayList(String title, LinkedList<Song> playList) {
-
-        Song checkedSong = findSong(title);
-        if (checkedSong != null) {
-            playList.add(checkedSong);
-            return true;
-        }
-        return false;
+    public String getArtist() {
+        return artist;
     }
 }
