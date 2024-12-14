@@ -1,12 +1,10 @@
 package dev.lpa;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
+
     public static void main(String[] args) {
 
         Bird bird = new Bird();
@@ -22,13 +20,14 @@ public class Main {
 //        flier.fly();
 //        tracked.track();
 //        flier.land();
+
         inFlight(flier);
         inFlight(new Jet());
         Trackable truck = new Truck();
         truck.track();
 
         double kmsTraveled = 100;
-        double milesTraveled =  kmsTraveled * FlightEnabled.KM_TO_MILES;
+        double milesTraveled = kmsTraveled * FlightEnabled.KM_TO_MILES;
         System.out.printf("The truck traveled %.2f km or %.2f miles%n",
                 kmsTraveled, milesTraveled);
 
@@ -47,7 +46,7 @@ public class Main {
         landFliers(betterFliers);
     }
 
-    private static  void inFlight(FlightEnabled flier) {
+    private static void inFlight(FlightEnabled flier) {
 
         flier.takeOff();
         flier.fly();
@@ -77,6 +76,4 @@ public class Main {
             flier.land();
         }
     }
-
-
 }
