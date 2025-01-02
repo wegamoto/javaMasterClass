@@ -6,16 +6,17 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ContactData {
+
     private static final String phoneData = """
             Charlie Brown, 3334445555
             Maid Marion, 1234567890
             Mickey Mouse, 9998887777
-            Mickey Mouse, 124748958
-            Minnie Mouse, 4567778889
-            Robin Hood, 3334444555
-            Robin Hood, 7890282222
+            Mickey Mouse, 1247489758
+            Minnie Mouse, 4567805666
+            Robin Hood, 5647893000
+            Robin Hood, 7899028222
             Lucy Van Pelt, 5642086852
-            Mickey Mouse, 999888777
+            Mickey Mouse, 9998887777
             """;
 
     private static final String emailData = """
