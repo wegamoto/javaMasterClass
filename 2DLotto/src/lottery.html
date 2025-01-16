@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random 2-Digit Number Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+            padding: 20px;
+        }
+        #numberDisplay {
+            font-size: 2em;
+            color: #333;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>Random 2-Digit Number Generator (สุ่มตัวเลข 2 หลัก)</h1>
+<p>Click the button below to generate a random 2-digit number:</p>
+<p>คลิกปุ่มด้านล่างเพื่อสร้างตัวเลข 2 หลักแบบสุ่ม</p>
+<button onclick="generateRandomNumber()">Generate Number</button>
+<div id="numberDisplay">--</div>
+
+<script>
+    function generateRandomNumber() {
+        const randomNumber = Math.floor(Math.random() * 90) + 10;
+        document.getElementById('numberDisplay').innerText = randomNumber;
+    }
+</script>
+</body>
+</html>
