@@ -1,5 +1,8 @@
 package dev.lpa;
 
+import java.util.Arrays;
+import java.util.Scanner;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -38,6 +41,33 @@ public class Main {
                 For a charm of powerful trouble,
                 Like a hell-broth boil and bubble.
                 """;
+
+        String[] lines = paragraph.split("\\R");
+        System.out.println("This paragraph has " + lines.length + " lines");
+        String[] words = paragraph.split("\\s");
+        System.out.println("This paragraph has " + words.length + " words");
+        System.out.println(paragraph.replaceAll("[a-zA-Z]+ble",
+                "[GRUB]"));
+
+        Scanner scanner = new Scanner(paragraph);
+        System.out.println(scanner.delimiter());
+        scanner.useDelimiter("\\R");
+
+//        while (scanner.hasNext()) {
+//            String element = scanner.next();
+//            System.out.println(element);
+//        }
+
+//        scanner.tokens()
+//                .map(s -> s.replaceAll("\\p{Punct}",""))
+//                .flatMap(s -> Arrays.stream(s.split("\\s+")))
+//                .filter(s -> s.matches("[a-zA-Z]+ble"))
+//                .forEach(System.out::println);
+
+        System.out.println(scanner.findInLine("[a-zA-Z]+ble"));
+        System.out.println(scanner.findInLine("[a-zA-Z]+ble"));
+        scanner.close();
+
     }
 
     private static String format(String regexp, String... args) {
