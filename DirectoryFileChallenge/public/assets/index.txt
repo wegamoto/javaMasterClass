@@ -1,0 +1,8 @@
+Directory Contents: 
+C:\javaMasterclass\DirectoryFileChallenge\public\assets
+C:\javaMasterclass\DirectoryFileChallenge\public\assets\icons
+C:\javaMasterclass\DirectoryFileChallenge\public\assets\icons\index.txt
+C:\javaMasterclass\DirectoryFileChallenge\public\assets\icons\indexCopy.txt
+C:\javaMasterclass\DirectoryFileChallenge\public\assets\index.txt
+C:\javaMasterclass\DirectoryFileChallenge\public\assets\indexCopy.txt
+Generated: 2025-01-23T11:24:26.349024500
