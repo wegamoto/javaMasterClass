@@ -28,14 +28,23 @@ public class Main {
         dataSource.setServerName(props.getProperty("serverName"));
         dataSource.setPort(Integer.parseInt(props.getProperty("port")));
         dataSource.setDatabaseName(props.getProperty("databaseName"));
-
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.println("Enter an Artist Id: ");
-//        String artistId = scanner.nextLine();
-//        int artistid = Integer.parseInt(artistId);
-
+        try {
+            dataSource.setMaxRows(10);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         String query = "SELECT * FROM music.artists limit 10";
-        
+
+//        String query = """
+//                WITH RankedRows AS (
+//                                    SELECT *,
+//                                    ROW_NUMBER() OVER (ORDER BY artist_id) AS row_num
+//                                    FROM music.artists
+//                             )
+//                             SELECT *
+//                                  FROM RankedRows
+//                                  WHERE row_num <= 10""";
+
         try (var connection = dataSource.getConnection(
                 props.getProperty("user"),
                 System.getenv("MYSQL_PASS"));
@@ -45,6 +54,9 @@ public class Main {
             ResultSet resultSet = statement.executeQuery(query);
 
             var meta = resultSet.getMetaData();
+
+            System.out.println("=========================");
+
             for (int i = 1; i <= meta.getColumnCount(); i++) {
                 System.out.printf("%d %s %s%n",
                         i,
