@@ -5,6 +5,9 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.*;
 
 record OrderDetail(int orderDetailId, String itemDescription, int qty) {
@@ -33,7 +36,9 @@ record Order(int orderId, String dateString, List<OrderDetail> details) {
     }
 
     public String getDetailsJson() {
-        
+        StringJoiner jsonString = new StringJoiner(",","[","]");
+        details.forEach((d) -> jsonString.add(d.toJSON()));
+        return jsonString.toString();
     }
 }
 
@@ -55,8 +60,34 @@ public class Challenge2 {
 //            Statement statement = conn.createStatement();
 //            statement.execute(alterString);
 
-            addOrders(conn, orders);
+//            addOrders(conn, orders);
+            CallableStatement cs = conn.prepareCall(
+                    "{ CALL storefront.addOrder(?, ?, ?, ?) }");
 
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("G yyyy-MM-dd HH:mm:ss")
+                                    .withResolverStyle(ResolverStyle.STRICT);
+
+
+            orders.forEach((o) -> {
+                try {
+                    LocalDateTime localDateTime =
+                            LocalDateTime.parse("AD " + o.dateString(), formatter);
+                    Timestamp timestamp = Timestamp.valueOf(localDateTime);
+                    cs.setTimestamp(1,timestamp);
+                    cs.setString(2,o.getDetailsJson());
+                    cs.registerOutParameter(3,Types.INTEGER);
+                    cs.registerOutParameter(4,Types.INTEGER);
+                    cs.execute();
+                    System.out.printf("%d records inserted for %d (%s)%n",
+                            cs.getInt(4),
+                            cs.getInt(3),
+                            o.dateString());
+                } catch (Exception e) {
+                    System.out.printf("Problem with %s : %s%n", o.dateString(),
+                            e.getMessage());
+                }
+            });
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
