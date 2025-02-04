@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2930af8f-d1ff-48c0-b61d-cc6bb0d0deb4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/icegreen_greenmail_junit4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Banking.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/wewe/BankAccount.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/wewe/BankAccountTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/wewe/BankAccountTestParameterized.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/wewe/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DebuggerDemo/DebuggerDemo.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DebuggerDemo/src/com/wewe/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../DebuggerDemo/src/com/wewe/StringUtilities.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../WebSocket/WebSocket.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../WebSocket/src/dev/lpa/WebSocketClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../WebSocket/src/dev/lpa/server/SimpleWebSocketServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/lpa/Bank.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/lpa/Branch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/lpa/Customer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/lpa/Main.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;wegamoto&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/wegamoto/javaMasterClass.git&quot;,
+    &quot;accountId&quot;: &quot;0c3ca08e-39e3-4b15-b56c-ee9f72afb139&quot;
+  }
+}</component>
+  <component name="JavaAutoRunManager">
+    <enabled-run-configurations>
+      <run-configuration type="JUnit" name="BankAccountTest" />
+    </enabled-run-configurations>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2sQEvthfxj1NJ7vPKmQyQ2ojZyn" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "true",
+    "JUnit.BankAccountTest.executor": "Run",
+    "JUnit.BankAccountTestParameterized.deposit (1).executor": "Run",
+    "JUnit.BankAccountTestParameterized.deposit.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "C:/javaMasterClass/Banking/src/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.368"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.wewe" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.BankAccountTestParameterized.deposit (1)">
+    <configuration name="BankAccountTest" type="JUnit" factoryName="JUnit" singleton="false">
+      <module name="Banking" />
+      <option name="PACKAGE_NAME" value="com.wewe" />
+      <option name="MAIN_CLASS_NAME" value="com.wewe.BankAccountTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BankAccountTestParameterized.deposit (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Banking" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.timbuchalka.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.timbuchalka" />
+      <option name="MAIN_CLASS_NAME" value="com.timbuchalka.BankAccountTestParameterized" />
+      <option name="METHOD_NAME" value="deposit" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BankAccountTestParameterized.deposit" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Banking" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.wewe.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.wewe" />
+      <option name="MAIN_CLASS_NAME" value="com.wewe.BankAccountTestParameterized" />
+      <option name="METHOD_NAME" value="deposit" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.BankAccountTestParameterized.deposit (1)" />
+        <item itemvalue="JUnit.BankAccountTestParameterized.deposit" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2930af8f-d1ff-48c0-b61d-cc6bb0d0deb4" name="Changes" comment="" />
+      <created>1738379632798</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1738379632798</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/wewe/BankAccountTest.java</url>
+          <line>10</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
