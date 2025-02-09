@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sqlite-jdbc-3.21.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/sqlite-jdbc-3.21.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../jlfgr-1_0.jar!/META-INF" />
+      <root url="jar://$PROJECT_DIR$/../jlfgr-1_0.jar!/toolbarButtonGraphics" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
