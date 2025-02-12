@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MinimumElementChallenge.iml" filepath="$PROJECT_DIR$/MinimumElementChallenge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ArraysChallenge.iml" filepath="$PROJECT_DIR$/ArraysChallenge.iml" />
     </modules>
   </component>
 </project>
