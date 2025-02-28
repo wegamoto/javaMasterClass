@@ -1,4 +1,4 @@
-package dev.lpa;
+package main.java.dev.lpa;
 
 import java.util.LinkedList;
 import java.util.Scanner;

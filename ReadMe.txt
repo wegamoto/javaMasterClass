@@ -5,7 +5,7 @@ git init
 git add README.md
 git commit -m "first commit"
 git branch -M main
-git remote add origin https://github.com/wegamoto/okta-angular-dpop-example.git
+git remote add origin https://github.com/wegamoto/okta-angular-dpop-example.git    https://github.com/wegamoto/javaMasterClass.git
 git push -u origin main
 
 
