@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="PackageDemo">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../temp/PackageDemo/out/artifacts/PackageDemo_jar/PackageDemo.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../temp/PackageDemo/out/artifacts/PackageDemo_jar/PackageDemo.jar!/com" />
+      <root url="jar://$PROJECT_DIR$/../temp/PackageDemo/out/artifacts/PackageDemo_jar/PackageDemo.jar!/com/example" />
+      <root url="jar://$PROJECT_DIR$/../temp/PackageDemo/out/artifacts/PackageDemo_jar/PackageDemo.jar!/com/example/game" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
