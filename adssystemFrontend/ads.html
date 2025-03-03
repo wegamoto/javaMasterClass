@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads Display</title>
+</head>
+<body>
+    <div id="ads-container"></div>
+
+    <script>
+        fetch('http://localhost:8080/api/ads')
+            .then(response => response.json())
+            .then(data => {
+                const adsContainer = document.getElementById('ads-container');
+                data.forEach(ad => {
+                    const adElement = `
+                        <div>
+                            <h3>${ad.title}</h3>
+                            <p>${ad.description}</p>
+                            <a href="${ad.targetUrl}" target="_blank">
+                                <img src="${ad.imageUrl}" width="300">
+                            </a>
+                        </div>
+                    `;
+                    adsContainer.innerHTML += adElement;
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>
