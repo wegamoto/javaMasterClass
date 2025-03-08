@@ -11,6 +11,9 @@ const Home = () => {
       .get(API_URL)
       .then((response) => {
         setAds(response.data);
+        if (response.data.length === 0) {
+          console.warn("No ads found.");
+        }
       })
       .catch((error) => {
         console.error("Error fetching ads:", error);
@@ -19,7 +22,8 @@ const Home = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">โฆษณาแนะนำ</h1>
+      <h1 className="text-2xl font-bold mb-4">โฆษณาแนะนำ</h1>      <p className="text-gray-600 mb-4">โฆษณาที่กำลังแสดง</p>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {ads.map((ad) => (
           <div key={ad.id} className="border rounded-lg p-4 shadow-lg">
