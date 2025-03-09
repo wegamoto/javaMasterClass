@@ -20,8 +20,9 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)  // ปิด CORS (หรือใช้ CorsConfiguration)
                 .csrf(AbstractHttpConfigurer::disable)  // ปิด CSRF เพื่อให้ API ใช้ POST ได้
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/*").permitAll() // อนุญาตให้ frontend ใช้ API ได้
-                        .anyRequest().authenticated()
+                                .anyRequest().permitAll() // อนุญาตให้ทุก request
+//                        .requestMatchers("/api/*").permitAll() // อนุญาตให้ frontend ใช้ API ได้
+//                        .anyRequest().authenticated()
                 );
         return http.build();
     }
