@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>คำนวณค่าไฟ</title>
+</head>
+<body>
+<h1>โปรแกรมคำนวณค่าไฟฟ้า</h1>
+<form action="/calculate" method="post">
+    <label>ป้อนจำนวนหน่วย (kWh):</label>
+    <input type="number" name="units" required>
+    <button type="submit">คำนวณ</button>
+</form>
+
+<h2>ผลลัพธ์: <span th:text="${result} ?: 'โปรดป้อนหน่วยไฟฟ้า'"></span> บาท</h2>
+</body>
+</html>

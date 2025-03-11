@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Quiz Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Math Quiz Game</h1>
+    <div class="text-lg font-semibold text-gray-700" id="question"></div>
+    <input type="number" id="answer" class="mt-4 p-2 border rounded w-full text-center" placeholder="Your answer">
+    <button id="submitBtn" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">Submit</button>
+    <div class="mt-4 text-lg font-semibold" id="result"></div>
+    <div class="mt-2 text-gray-600" id="score">Score: 0</div>
+  </div>
+
+  <script>
+    let score = 0;
+    let correctAnswer = 0;
+
+    function generateQuestion() {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      const operator = ['+', '-', '*', '/'][Math.floor(Math.random() * 4)];
+      
+      let questionText = `${num1} ${operator} ${num2}`;
+      
+      switch(operator) {
+        case '+':
+          correctAnswer = num1 + num2;
+          break;
+        case '-':
+          correctAnswer = num1 - num2;
+          break;
+        case '*':
+          correctAnswer = num1 * num2;
+          break;
+        case '/':
+          correctAnswer = Math.floor(num1 / num2);
+          break;
+      }
+
+      document.getElementById("question").textContent = questionText;
+      document.getElementById("result").textContent = "";
+    }
+
+    document.getElementById("submitBtn").onclick = function() {
+      const userAnswer = parseInt(document.getElementById("answer").value);
+      
+      if (!isNaN(userAnswer)) {
+        if (userAnswer === correctAnswer) {
+          score++;
+          document.getElementById("result").textContent = "✅ Correct!";
+          document.getElementById("result").className = "mt-4 text-lg font-semibold text-green-600";
+        } else {
+          document.getElementById("result").textContent = `❌ Incorrect! Correct answer: ${correctAnswer}`;
+          document.getElementById("result").className = "mt-4 text-lg font-semibold text-red-600";
+        }
+        document.getElementById("score").textContent = `Score: ${score}`;
+      } else {
+        document.getElementById("result").textContent = "⚠️ Please enter a valid number!";
+        document.getElementById("result").className = "mt-4 text-lg font-semibold text-yellow-600";
+      }
+
+      document.getElementById("answer").value = '';
+      generateQuestion();
+    };
+
+    generateQuestion();
+  </script>
+</body>
+</html>
