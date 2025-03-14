@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Notifications</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+</head>
+<body>
+<h1>Order Notification System</h1>
+<div id="notifications"></div>
+
+<script>
+    const socket = io("http://localhost:3000");
+
+    socket.on("newOrder", (order) => {
+        const notification = document.createElement("p");
+        notification.textContent = `📢 New Order: ${order.item} (Qty: ${order.quantity})`;
+        document.getElementById("notifications").appendChild(notification);
+    });
+
+    console.log("Connected to WebSocket server");
+</script>
+</body>
+</html>
