@@ -1,4 +1,4 @@
 package com.wewe.restaurant.model;
 
-public class OrderRequest {
+public class MenuItemRequest {
 }
