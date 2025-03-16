@@ -3,8 +3,6 @@ package com.wewe.restaurant.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,22 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false) // ต้องมี user_id เสมอ
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "menu_item_id", nullable = false)
+    private MenuItem menuItem;
+
+    @Column(name = "order_date", nullable = false)  // ✅ ใช้ @Column ได้
+    private LocalDateTime orderDate;
+
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    @Column(name = "quantity", nullable = false)  // ✅ ใช้ @Column แทน
+    private int quantity;
+
+    @Column(name = "totalPrice", nullable = false)  // ✅ ใช้ @Column แทน
+    private double totalPrice;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
 
@@ -33,36 +47,13 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer; // ฟิลด์ Customer ที่เชื่อมโยงกับ Order ลูกค้าที่ทำการสั่งซื้อ
 
-    @ManyToOne
-    @JoinColumn(name = "menu_item_id")
-    private MenuItem menuItem;
+    // ✅ เพิ่ม Getter และ Setter
 
-    private String customerName;
 
-    private String orderDate; // วันที่ทำการสั่งซื้อ
-
-    private int quantity;
-
-    private double totalPrice;
-
-    public Order() {}
-
-//    private String status;
-
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status = OrderStatus.PENDING;
-
-    private LocalDateTime orderTime = LocalDateTime.now();
-
-    public Order(String orderDate, double totalPrice, Customer customer, List<MenuItem> menuItems) {
-        this.orderDate = orderDate;
-        this.totalPrice = totalPrice;
-        this.customer = customer;
-        this.menuItems = menuItems;
+    public Order() {
+        this.orderDate = LocalDateTime.parse(String.valueOf(LocalDateTime.now())); // ค่าเริ่มต้นเป็นเวลาปัจจุบัน
+        this.status = String.valueOf(OrderStatus.PENDING);
     }
-
-    // Getters & Setters
-
 
 }
 

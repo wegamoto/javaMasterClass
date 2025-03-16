@@ -1,7 +1,10 @@
 package com.wewe.restaurant.service;
 
+import com.wewe.restaurant.model.Menu;
 import com.wewe.restaurant.model.MenuItem;
 import com.wewe.restaurant.repository.MenuItemRepository;
+import com.wewe.restaurant.repository.MenuRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +13,15 @@ import java.util.Optional;
 @Service
 public class MenuItemService {
 
+    @Autowired
     private final MenuItemRepository menuItemRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
+
+    public List<MenuItem> getMenuItemsByRestaurant(Long restaurantId) {
+        return menuItemRepository.findByRestaurantId(restaurantId);
+    }
 
     public MenuItemService(MenuItemRepository menuItemRepository) {
         this.menuItemRepository = menuItemRepository;
@@ -28,6 +39,12 @@ public class MenuItemService {
 
     // เพิ่มเมนูใหม่
     public MenuItem createMenuItem(MenuItem menuItem) {
+        // ตรวจสอบว่า Menu มีอยู่จริง
+        Long menuId = menuItem.getMenu().getId();
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new RuntimeException("Menu not found with id: " + menuId));
+
+        menuItem.setMenu(menu);
         return menuItemRepository.save(menuItem);
     }
 

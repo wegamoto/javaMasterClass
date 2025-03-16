@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -21,7 +22,8 @@ public class CategoryService {
     }
 
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream().distinct().collect(Collectors.toList());
     }
 
     public Optional<Category> getCategoryById(Long id) {

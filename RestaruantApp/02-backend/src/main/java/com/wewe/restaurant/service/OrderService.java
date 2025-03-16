@@ -1,29 +1,42 @@
 package com.wewe.restaurant.service;
 
-import com.wewe.restaurant.model.MenuItem;
-import com.wewe.restaurant.model.Order;
-import com.wewe.restaurant.model.OrderStatus;
-import com.wewe.restaurant.model.User;
+import com.wewe.restaurant.model.*;
 import com.wewe.restaurant.repository.MenuItemRepository;
 import com.wewe.restaurant.repository.OrderRepository;
+import com.wewe.restaurant.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
     private MenuItemRepository menuItemRepository;
 
     // เพิ่ม MenuItemRepository ใน constructor
-    public OrderService(OrderRepository orderRepository, MenuItemRepository menuItemRepository) {
+    public OrderService(OrderRepository orderRepository, UserRepository userRepository,
+                        MenuItemRepository menuItemRepository) {
         this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
         this.menuItemRepository = menuItemRepository;
     }
 
-    // ✅ สร้างออเดอร์ใหม่
-    public Order createOrder(Order order) {
+    // ✅ สร้าง Order ใหม่
+    public Order createOrder(Long userId, List<Long> menuItemIds) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<MenuItem> menuItems = menuItemRepository.findAllById(menuItemIds);
+        if (menuItems.isEmpty()) {
+            throw new RuntimeException("Menu items not found");
+        }
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setMenuItems(menuItems);
+        order.setStatus(String.valueOf(OrderStatus.PENDING));
+
         return orderRepository.save(order);
     }
 
@@ -38,39 +51,23 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 
-    // ✅ อัปเดตออเดอร์
-    public Order updateOrder(Long id, Order updatedOrder) {
-        return orderRepository.findById(id).map(order -> {
-            order.setCustomerName(updatedOrder.getCustomerName());
-            order.setOrderDate(updatedOrder.getOrderDate());
-            order.setStatus(updatedOrder.getStatus());
-            return orderRepository.save(order);
-        }).orElseThrow(() -> new RuntimeException("Order not found"));
+    // ✅ อัปเดต Order
+    public Order updateOrder(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(String.valueOf(OrderStatus.PENDING));
+        return orderRepository.save(order);
     }
 
     // ✅ ลบออเดอร์
-    public void deleteOrder(Long id) {
+    public boolean cancelOrder(Long id) {
         if (!orderRepository.existsById(id)) {
             throw new RuntimeException("Order not found");
         }
         orderRepository.deleteById(id);
+        return false;
     }
-
-    public Order createOrder(User user, List<MenuItem> menuItems, String status) {
-        Order order = new Order();
-        order.setUser(user);
-        order.setStatus(OrderStatus.PENDING);
-
-        // ใช้ menuItemRepository เพื่อดึงข้อมูล MenuItem จากฐานข้อมูล
-        List<MenuItem> items = menuItems.stream()
-                .map(itemRequest -> menuItemRepository.findById(itemRequest.getId())
-                        .orElseThrow(() -> new RuntimeException("Menu item not found: " + itemRequest.getId())))
-                .collect(Collectors.toList());
-
-        order.setMenuItems(items);
-        return orderRepository.save(order);
-    }
-
 }
 
 

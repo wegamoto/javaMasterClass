@@ -1,14 +1,18 @@
 package com.wewe.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "category")
 public class Category {
 
     @Id
@@ -20,8 +24,9 @@ public class Category {
 
     private String description;
 
-    @OneToMany(mappedBy = "category") // หมวดหมู่สามารถมีเมนูหลายรายการ
-    private List<MenuItem> menuItems; // เมนูทั้งหมดในหมวดหมู่
+    @JsonIgnore
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // หมวดหมู่สามารถมีเมนูหลายรายการ
+    private Set<MenuItem> menuItems = new HashSet<>(); // เมนูทั้งหมดในหมวดหมู่
 
     public Category() {}
 

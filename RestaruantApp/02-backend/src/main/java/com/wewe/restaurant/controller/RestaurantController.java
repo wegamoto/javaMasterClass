@@ -2,6 +2,7 @@ package com.wewe.restaurant.controller;
 
 import com.wewe.restaurant.model.Restaurant;
 import com.wewe.restaurant.service.RestaurantService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class RestaurantController {
 
+    @Autowired
     private final RestaurantService restaurantService;
 
     public RestaurantController(RestaurantService restaurantService) {
@@ -33,7 +35,8 @@ public class RestaurantController {
     // 📌 เพิ่มร้านอาหารใหม่
     @PostMapping("/restaurants")
     public ResponseEntity<Restaurant> createRestaurant(@RequestBody Restaurant restaurant) {
-        return ResponseEntity.ok(restaurantService.createRestaurant(restaurant));
+        Restaurant createdRestaurant = restaurantService.createRestaurant(restaurant);
+        return ResponseEntity.ok(createdRestaurant);
     }
 
     // 📌 แก้ไขข้อมูลร้านอาหาร

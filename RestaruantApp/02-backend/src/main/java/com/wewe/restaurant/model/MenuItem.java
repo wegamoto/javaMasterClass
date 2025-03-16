@@ -1,13 +1,18 @@
 package com.wewe.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "menu_items")  // กำหนดชื่อของตารางในฐานข้อมูล
 @Getter
 @Setter
-@Table(name = "menu_items")  // กำหนดชื่อของตารางในฐานข้อมูล
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuItem {
 
     @Id
@@ -24,7 +29,8 @@ public class MenuItem {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "menu_id", nullable = false)
+    @JoinColumn(name = "menu_id")
+    @JsonBackReference
     private Menu menu;
 
     @ManyToOne
@@ -34,10 +40,6 @@ public class MenuItem {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false) // เชื่อมโยงกับประเภทของเมนู
     private Category category; // หมวดหมู่ของเมนู
-
-    public MenuItem() {
-        // Default constructor
-    }
 
     public MenuItem(String name, String description, Double price, Category category, Restaurant restaurant) {
         this.name = name;

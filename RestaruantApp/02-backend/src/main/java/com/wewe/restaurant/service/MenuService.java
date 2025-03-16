@@ -27,7 +27,7 @@ public class MenuService {
 
     // 📌 ดึงรายการเมนูทั้งหมด
     public List<Menu> getAllMenus() {
-        return menuRepository.findAll();
+        return menuRepository.findDistinctMenus();
     }
 
     // 📌 ดึงเมนูตาม ID
