@@ -12,7 +12,6 @@ import java.util.List;
 @Table(name = "menus")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
 
@@ -23,6 +22,10 @@ public class Menu {
     @Column(nullable = false)
     private String name; // ชื่อเมนู เช่น "เมนูอาหารไทย", "เมนูพิเศษ"
 
+    private String description;
+
+    private Long categoryId;
+
     // ความสัมพันธ์กับ Restaurant
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -32,5 +35,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<MenuItem> menuItems; // รายการอาหารในเมนู
+
+    public Menu() {}
 }
 

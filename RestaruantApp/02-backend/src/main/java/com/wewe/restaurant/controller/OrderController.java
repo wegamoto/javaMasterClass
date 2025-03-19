@@ -1,9 +1,9 @@
 package com.wewe.restaurant.controller;
 
 import com.wewe.restaurant.model.Order;
-import com.wewe.restaurant.model.OrderRequest;
+import com.wewe.restaurant.dto.OrderRequest;
 import com.wewe.restaurant.service.OrderService;
-import com.wewe.restaurant.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +16,16 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService, UserService userService) {
+    @Autowired
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     // ✅ สร้างออเดอร์ใหม่
     @PostMapping("/orders/create")
-    public ResponseEntity<Order> createOrder(@RequestParam Long userId, @RequestBody List<Long> menuItemIds) {
-        Order createOrder = orderService.createOrder(userId, menuItemIds);
-        return ResponseEntity.ok(createOrder);
+    public ResponseEntity<Order> createOrder(@RequestBody OrderRequest orderRequest) {
+        Order createOrder = orderService.createOrder(orderRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createOrder);
     }
 
     // ✅ ดึงรายการออเดอร์ทั้งหมด
@@ -36,7 +37,8 @@ public class OrderController {
     // ✅ ดึงข้อมูลออเดอร์ตาม ID
     @GetMapping("/orders/{id}")
     public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.getOrderById(id));
+        Order order = orderService.getOrderById(id);
+        return ResponseEntity.ok(order);
     }
 
     // ✅ Update Order status

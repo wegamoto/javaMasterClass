@@ -4,14 +4,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "menu_items")  // กำหนดชื่อของตารางในฐานข้อมูล
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class MenuItem {
 
@@ -25,12 +23,17 @@ public class MenuItem {
     @Column(nullable = false)
     private double price; // ราคาเมนู
 
+    // ✅ Constructor ป้องกันปัญหา price เป็น null
+    public MenuItem() {
+        this.price = 0.0; // กำหนดค่าเริ่มต้น
+    }
+
     @Column(length = 500)  // กำหนดความยาวสูงสุด 500 ตัวอักษร
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "menu_id")
-    @JsonBackReference
+    @JoinColumn(name = "menu_id", nullable = false)
+//    @JsonBackReference
     private Menu menu;
 
     @ManyToOne

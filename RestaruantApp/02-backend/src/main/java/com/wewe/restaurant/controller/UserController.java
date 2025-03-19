@@ -2,6 +2,7 @@ package com.wewe.restaurant.controller;
 
 import com.wewe.restaurant.model.User;
 import com.wewe.restaurant.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -19,7 +20,11 @@ public class UserController {
     // ✅ สร้างผู้ใช้ใหม่
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(user));
+        if (user.getName() == null || user.getName().isEmpty()) {
+            return ResponseEntity.badRequest().body(null); // ส่งข้อความผิดพลาดถ้าชื่อเป็น null หรือค่าว่าง
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
     // ✅ ดึงรายชื่อผู้ใช้ทั้งหมด

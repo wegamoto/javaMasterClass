@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "orders")
 @Getter
 @Setter
-@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,15 +21,14 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false) // ต้องมี user_id เสมอ
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_item_id", nullable = false)
-    private MenuItem menuItem;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<OrderItem> orderItems = new HashSet<>(); // เปลี่ยนจาก List เป็น Set
 
-    @Column(name = "order_date", nullable = false)  // ✅ ใช้ @Column ได้
+    @Column(name = "order_date", nullable = false, updatable = false)  // ✅ ใช้ @Column ได้
     private LocalDateTime orderDate;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name = "quantity", nullable = false)  // ✅ ใช้ @Column แทน
     private int quantity;
@@ -36,8 +36,12 @@ public class Order {
     @Column(name = "totalPrice", nullable = false)  // ✅ ใช้ @Column แทน
     private double totalPrice;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> items = new ArrayList<>();
+    // ✅ คำนวณราคาเมื่อสร้างออเดอร์
+    public void calculateTotalPrice() {
+        this.totalPrice = orderItems.stream()
+                .mapToDouble(orderItem -> orderItem.getMenuItem().getPrice() * orderItem.getQuantity())
+                .sum();
+    }
 
     @OneToMany
     @JoinColumn(name = "order_id") // เชื่อมโยงกับรายการเมนูในคำสั่งซื้อ
@@ -47,12 +51,20 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer; // ฟิลด์ Customer ที่เชื่อมโยงกับ Order ลูกค้าที่ทำการสั่งซื้อ
 
+    @PrePersist
+    protected void onCreate() {
+        this.orderDate = LocalDateTime.now();
+    }
+
+    public Order() {}
+
     // ✅ เพิ่ม Getter และ Setter
 
-
-    public Order() {
-        this.orderDate = LocalDateTime.parse(String.valueOf(LocalDateTime.now())); // ค่าเริ่มต้นเป็นเวลาปัจจุบัน
-        this.status = String.valueOf(OrderStatus.PENDING);
+    public Order(User user, String status, Set<OrderItem> orderItems) {
+        this.orderDate = LocalDateTime.now(); // ตั้งค่าเป็นเวลาปัจจุบันโดยตรง
+        this.user = user;
+        this.status = OrderStatus.valueOf(status.toUpperCase()); // แปลง String เป็น Enum
+        this.orderItems = orderItems;
     }
 
 }
