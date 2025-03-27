@@ -41,4 +41,3 @@ public class Location implements Serializable{
         exits.put(direction, location);
     }
 }
-
