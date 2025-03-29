@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>แผ่นดินไหวล่าสุด</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 p-6">
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">แผ่นดินไหวล่าสุด</h2>
+    <ul>
+        <li th:each="quake : ${earthquakes}" class="mb-4 border-b pb-2">
+            <h3 class="text-lg font-semibold" th:text="${quake.title}"></h3>
+            <p class="text-gray-600" th:text="${quake.description}"></p>
+            <p class="text-sm text-gray-400" th:text="${#dates.format(quake.date, 'dd/MM/yyyy HH:mm')}"></p>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
