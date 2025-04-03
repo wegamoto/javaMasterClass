@@ -1,6 +1,8 @@
 package com.wewe.model;
 
-
+/**
+ *
+ */
 public class Artist {
 
     private int id;

@@ -1,5 +1,8 @@
 package com.wewe.model;
 
+/**
+ *
+ */
 public class Album {
 
     private int id;
