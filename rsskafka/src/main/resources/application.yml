@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: rss-kafka-service
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: rss-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual_immediate
+
+rss:
+  feed-url: "https://earthquake.tmd.go.th/feed/rss_inside.xml"  # เปลี่ยนเป็น RSS Feed ที่ต้องการดึงข้อมูล
+  # https://earthquake.tmd.go.th/feed/rss_inside.xml
+  fetch-interval: 60000  # ดึงข้อมูลทุก 60 วินาที (1 นาที)
