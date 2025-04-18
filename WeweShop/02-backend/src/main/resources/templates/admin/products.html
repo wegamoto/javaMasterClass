@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>จัดการสินค้า</title>
 </head>
 <body>
-$END$
-</body>
-</html>
+<h1>จัดการสินค้า</h1>
+
+<div style="text-align: right;">
+    <a href="?lang=th">ไทย</a> | <a href="?lang=en">EN</a>
+</div>
+
+<h2>รายการสินค้า</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>ชื่อสินค้า</th>
+        <th>ราคา</th>
+        <th>จำนวน</th>
+        <th>แก้ไข</th>
+        <th>ลบ</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.id}">1</td>
+        <td th:text="${product.name}">สินค้า A</td>
+        <td th:text="${product.price
+

@@ -1,10 +1,31 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title th:text="#{product.list}">รายการสินค้า</title>
 </head>
 <body>
-$END$
+<div style="text-align: right;">
+    <a href="?lang=th">ไทย</a> | <a href="?lang=en">EN</a>
+</div>
+
+<h1 th:text="#{product.list}">รายการสินค้า</h1>
+
+<div th:each="product : ${products}">
+    <h2 th:text="${product.name}">ชื่อสินค้า</h2>
+    <p th:text="${product.description}">รายละเอียดสินค้า</p>
+    <p><span th:text="#{product.price}">ราคา</span>: <span th:text="${product.price} + ' บาท'">0 บาท</span></p>
+
+    <form method="post" th:action="@{/cart/add}">
+        <input type="hidden" name="productId" th:value="${product.id}" />
+        <label th:text="#{product.quantity}">จำนวน</label>
+        <input type="number" name="quantity" value="1" min="1" />
+        <button type="submit" th:text="#{button.addToCart}">เพิ่มใส่ตะกร้า</button>
+    </form>
+    <hr/>
+</div>
+
+<a th:href="@{/cart}" th:text="#{cart.title}">ดูตะกร้าสินค้า</a>
 </body>
 </html>

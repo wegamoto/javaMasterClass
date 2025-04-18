@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title th:text="#{cart.title}">ตะกร้าสินค้า</title>
 </head>
 <body>
-$END$
+<div style="text-align: right;">
+    <a href="?lang=th">ไทย</a> | <a href="?lang=en">EN</a>
+</div>
+
+<h1 th:text="#{cart.title}">ตะกร้าสินค้า</h1>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+    <tr>
+        <th th:text="#{product.name}">สินค้า</th>
+        <th th:text="#{product.price}">ราคา</th>
+        <th th:text="#{product.quantity}">จำนวน</th>
+        <th th:text="#{product.total}">รวม</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${cartItems}">
+        <td th:text="${item.product.name}">ชื่อสินค้า</td>
+        <td th:text="${item.product.price}">0</td>
+        <td th:text="${item.quantity}">1</td>
+        <td th:text="${item.quantity * item.product.price}">0</td>
+    </tr>
+    </tbody>
+</table>
+
+<p><strong th:text="#{cart.total} + ': ' + ${total} + ' บาท'">รวมทั้งหมด</strong></p>
+
+<a th:href="@{/checkout}" th:text="#{button.checkout}">ดำเนินการสั่งซื้อ</a>
 </body>
 </html>
+

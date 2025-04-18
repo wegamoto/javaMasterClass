@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายการสั่งซื้อ</title>
 </head>
 <body>
-$END$
+<h2>รายการสั่งซื้อ</h2>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>รหัสการสั่งซื้อ</th>
+    <th>วันที่</th>
+    <th>ยอดรวม</th>
+    <th>สถานะ</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Loop รายการ orders ที่ส่งจาก controller -->
+  <tr th:each="order : ${orders}">
+    <td th:text="${order.id}">รหัสการสั่งซื้อ</td>
+    <td th:text="${order.orderDate}">วันที่</td>
+    <td th:text="${order.totalAmount}">ยอดรวม</td>
+    <td th:text="${order.status}">สถานะ</td>
+  </tr>
+  </tbody>
+</table>
 </body>
 </html>

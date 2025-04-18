@@ -1,4 +1,4 @@
-package com.wewe.weweShop.security;
+package com.wewe.weweShop.service;
 
 import com.wewe.weweShop.model.User;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,14 +12,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class JwtService {
 
-    // คีย์ลับในการเซ็น JWT
-    private String secretKey = "your_secret_key_here";
-
     @Value("${jwt.secret}")
-    private String secret;
-
-    @Value("${jwt.expiration}")
-    private long expiration;
+    private String SECRET_KEY;
+//    private static final String SECRET_KEY = "your-very-secret-key-1234567890";  // ใช้อักขระพอสมควร
+    private static final long EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 7 วัน
 
     // สร้าง JWT Token
     public String generateToken(User user) {
@@ -31,15 +27,15 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration)) // expiration time
-                .signWith(SignatureAlgorithm.HS256, secret) // ใช้ HS256 algorithm
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // expiration time
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes())
                 .compact();
     }
 
     // ดึง username จาก Token
     public String extractUsername(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(SECRET_KEY.getBytes())
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -59,7 +55,7 @@ public class JwtService {
     // ดึง expiration จาก token
     private Date extractExpiration(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
                 .getExpiration();

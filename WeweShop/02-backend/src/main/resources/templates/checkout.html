@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title th:text="#{checkout.title}">สั่งซื้อสินค้า</title>
 </head>
 <body>
-$END$
+<div style="text-align: right;">
+    <a href="?lang=th">ไทย</a> | <a href="?lang=en">EN</a>
+</div>
+
+<h1 th:text="#{checkout.title}">สั่งซื้อสินค้า</h1>
+
+<form method="post" th:action="@{/checkout}">
+    <label for="name" th:text="#{checkout.name}">ชื่อ</label><br/>
+    <input type="text" id="name" name="name" required/><br/><br/>
+
+    <label for="address" th:text="#{checkout.address}">ที่อยู่</label><br/>
+    <textarea id="address" name="address" required></textarea><br/><br/>
+
+    <button type="submit" th:text="#{button.submitOrder}">ยืนยันการสั่งซื้อ</button>
+</form>
 </body>
 </html>
