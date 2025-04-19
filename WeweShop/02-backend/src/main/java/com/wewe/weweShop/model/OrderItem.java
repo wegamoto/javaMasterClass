@@ -14,6 +14,11 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id") // ✅ ใส่ที่ฝั่งนี้แทน
+    private Order order;
+
+    private String productName;
     private int quantity;
     private double price;
 }

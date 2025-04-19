@@ -24,11 +24,28 @@ public class CustomUserDetailsService implements org.springframework.security.co
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        // ตรวจสอบ role และเพิ่ม "ROLE_" ถ้าไม่มี
+        String role = user.getRole();
+        if(!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        }
+
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))
+                user.getEmail(),
+                user.getPassword(),
+                user.isEnabled(), // account status
+                true, // account is not expired
+                true, // credentials are not expired
+                true, // account is not locked
+                Collections.singletonList(new SimpleGrantedAuthority(role)) // Add authorities
         );
+//        return org.springframework.security.core.userdetails.User.builder()
+//                .username(user.getEmail())
+//                .password(user.getPassword())  // ตรวจสอบว่ารหัสผ่านใน DB ถูกเข้ารหัสด้วย BCrypt
+//                .roles(user.getRole().replace("ROLE_", ""))
+//                .build();
     }
 
 //    @Override

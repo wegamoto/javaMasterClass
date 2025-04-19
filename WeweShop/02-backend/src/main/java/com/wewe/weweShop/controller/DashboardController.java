@@ -10,10 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DashboardController {
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName(); // ใช้ email หรือ username ขึ้นอยู่กับระบบ login
-        model.addAttribute("username", currentUsername);
-        return "dashboard";
+    public String showDashboard() {
+        return "dashboard";  // ชื่อไฟล์ dashboard.html ที่ควรจะมีอยู่ใน templates
     }
+
+//    @GetMapping("/dashboard")
+//    public String dashboard(Model model) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUsername = authentication.getName(); // ใช้ email หรือ username ขึ้นอยู่กับระบบ login
+//        model.addAttribute("username", currentUsername);
+//        return "dashboard";
+//    }
 }

@@ -2,27 +2,57 @@ package com.wewe.weweShop.controller;
 
 import com.wewe.weweShop.model.Product;
 import com.wewe.weweShop.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/products")
+@RestController
+@RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductService productService;
+    @Autowired
+    private ProductService productService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
+    // ✅ แสดงสินค้าทั้งหมด
     @GetMapping
-    public String showProductList(Model model) {
-        model.addAttribute("products", productService.findAll());
-        return "products"; // → templates/products.html
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
+
+    // ✅ ดูรายละเอียดสินค้า
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    // ✅ เพิ่มสินค้า (เฉพาะ ADMIN)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        return ResponseEntity.ok(productService.createProduct(product));
+    }
+
+    // ✅ แก้ไขสินค้า (เฉพาะ ADMIN)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(
+            @PathVariable Long id,
+            @RequestBody Product product
+    ) {
+        return ResponseEntity.ok(productService.updateProduct(id, product));
+    }
+
+    // ✅ ลบสินค้า (เฉพาะ ADMIN)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok("Product deleted successfully.");
+    }
+
+
 }
 
