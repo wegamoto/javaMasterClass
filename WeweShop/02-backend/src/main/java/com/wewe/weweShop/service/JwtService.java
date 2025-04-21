@@ -1,65 +1,80 @@
 package com.wewe.weweShop.service;
 
 import com.wewe.weweShop.model.User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.Base64;
 
 @Service
 public class JwtService {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
-//    private static final String SECRET_KEY = "your-very-secret-key-1234567890";  // ใช้อักขระพอสมควร
+
     private static final long EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 7 วัน
 
-    // สร้าง JWT Token
-    public String generateToken(User user) {
+    // ✅ ใช้ Keys.hmacShaKeyFor เพื่อให้แน่ใจว่า key ยาวพอ
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
+    }
+
+    // ✅ เข้ารหัส Secret Key ด้วย Base64
+    private String getEncodedSecret() {
+        return Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
+    }
+
+    // ✅ สร้าง Token พร้อม roles
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username", user.getUsername());
-        claims.put("email", user.getEmail());
+        claims.put("authorities", userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList())); // ✅ FIXED!
+
+        System.out.println("🎯 Token is generated with authorities: " + claims.get("authorities"));
+
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(user.getEmail())
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // expiration time
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    // ดึง username จาก Token
+
+    // ✅ ดึง Username จาก Token
     public String extractUsername(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY.getBytes())
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return extractAllClaims(token).getSubject();
     }
 
-    // ตรวจสอบว่า token valid หรือไม่
-    public boolean isTokenValid(String token, User user) {
-        String username = extractUsername(token);
-        return (username.equals(user.getEmail()) && !isTokenExpired(token));
+    // ✅ ตรวจสอบความถูกต้องของ Token
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    // ตรวจสอบว่า token หมดอายุหรือไม่
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    // ดึง expiration จาก token
-    private Date extractExpiration(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+    // ✅ ใช้ใน JwtFilter เพื่ออ่านข้อมูล roles
+    public Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+                .getBody();
     }
 }
-
-

@@ -29,14 +29,14 @@ public class ProductController {
     }
 
     // ✅ เพิ่มสินค้า (เฉพาะ ADMIN)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         return ResponseEntity.ok(productService.createProduct(product));
     }
 
-    // ✅ แก้ไขสินค้า (เฉพาะ ADMIN)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // ✅ แก้ไขสินค้า (เฉพาะ ADMIN)  ✅ ใช้ hasAuthority ถ้า JWT เก็บเป็น "ROLE_ADMIN"
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(
             @PathVariable Long id,
@@ -46,13 +46,11 @@ public class ProductController {
     }
 
     // ✅ ลบสินค้า (เฉพาะ ADMIN)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully.");
     }
-
-
 }
 

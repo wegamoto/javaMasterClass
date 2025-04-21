@@ -1,6 +1,8 @@
 package com.wewe.weweShop.security;
 
 import com.wewe.weweShop.service.JwtService;
+import com.wewe.weweShop.service.CustomUserDetailsService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,62 +10,63 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.wewe.weweShop.service.CustomUserDetailsService;
-
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtService jwtService;  // ใช้ JwtService สำหรับตรวจสอบ token
+    private JwtService jwtService;
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;  // ใช้ในการโหลดข้อมูลผู้ใช้จากฐานข้อมูล
+    private CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("roles");
         final String jwt;
         final String username;
 
-        // ตรวจสอบว่า header Authorization มีค่า และขึ้นต้นด้วย "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);  // ข้ามไปยังฟิลเตอร์ถัดไป
+            filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);  // ตัดคำว่า "Bearer " ออก
-        username = jwtService.extractUsername(jwt);  // ดึง username จาก JWT
+        jwt = authHeader.substring(7);
+        username = jwtService.extractUsername(jwt);
 
-        // ตรวจสอบว่า user ยังไม่ได้รับการ authenticate
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);  // โหลดข้อมูลผู้ใช้จากฐานข้อมูล
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            // ตรวจสอบว่า token ยัง valid อยู่หรือไม่
-            if (jwtService.isTokenValid(jwt, (com.wewe.weweShop.model.User) userDetails)) {
-                // สร้าง authentication token
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                // ดึง claims และ roles จาก JWT
+                Claims claims = jwtService.extractAllClaims(jwt);
+                List<String> roles = (List<String>) claims.get("authorities"); // roles หรือ "authorities"
+
+                List<SimpleGrantedAuthority> authorities = roles != null
+                        ? roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+                        : List.of();
+
                 UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                        new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // ตั้งค่า authentication ใน SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-        filterChain.doFilter(request, response);  // ส่งคำขอไปยังฟิลเตอร์ถัดไป
+        filterChain.doFilter(request, response);
     }
 }

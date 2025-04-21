@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -43,7 +44,7 @@ public class AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role("ROLE_USER")
+                .roles(List.of("ROLE_ADMIN"))  // ✅ FIXED: ใช้ List แทน String
                 .build();
 
         // ✅ บันทึกผู้ใช้ใหม่ลงฐานข้อมูล
