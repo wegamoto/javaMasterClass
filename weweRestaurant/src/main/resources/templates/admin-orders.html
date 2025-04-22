@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - รายการออเดอร์ทั้งหมด</title>
+</head>
+<body>
+<h1>รายการออเดอร์ทั้งหมด</h1>
+
+<!-- ฟอร์มกรองวันที่ -->
+<form method="get" th:action="@{/admin/orders}">
+    <label>จากวันที่: <input type="date" name="startDate" th:value="${startDate}" /></label>
+    <label>ถึงวันที่: <input type="date" name="endDate" th:value="${endDate}" /></label>
+
+    <label>สถานะ:
+        <select name="status">
+            <option value="">-- ทั้งหมด --</option>
+            <option value="PENDING" th:selected="${status == 'PENDING'}">PENDING</option>
+            <option value="READY" th:selected="${status == 'READY'}">READY</option>
+            <option value="SERVED" th:selected="${status == 'SERVED'}">SERVED</option>
+        </select>
+    </label>
+
+    <button type="submit">กรอง</button>
+    <a th:href="@{/admin/orders}">ล้าง</a>
+    <p>
+        <a th:href="@{/admin/orders/export/excel}" target="_blank">
+            <button>📊 ส่งออก Excel</button>
+        </a>
+        <a th:href="@{/admin/orders/export/pdf}" target="_blank">
+            <button>📄 ส่งออก PDF</button>
+        </a>
+    </p>
+
+</form>
+
+<br/>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>วันที่</th>
+        <th>โต๊ะ</th>
+        <th>รายการ</th>
+        <th>สถานะ</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${order.tableNumber}"></td>
+        <td>
+            <ul>
+                <li th:each="item : ${order.items}">
+                    <span th:text="${item.menuItem.name}"></span> x
+                    <span th:text="${item.quantity}"></span>
+                </li>
+            </ul>
+        </td>
+        <td th:text="${order.status}"></td>
+        <td>
+            <a th:href="@{'/admin/orders/' + ${order.id} + '/receipt'}" target="_blank">
+                <button>🧾 พิมพ์ใบเสร็จ</button>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,31 +1,22 @@
-
+<!-- templates/products.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{product.list}">รายการสินค้า</title>
+    <title>Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div style="text-align: right;">
-    <a href="?lang=th">ไทย</a> | <a href="?lang=en">EN</a>
+<body class="bg-gray-100">
+<div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">รายการสินค้า</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div th:each="product : ${products}" class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold" th:text="${product.name}">ชื่อสินค้า</h2>
+            <p class="text-gray-700 mt-2" th:text="${product.description}">รายละเอียด</p>
+            <p class="text-green-600 font-bold mt-2" th:text="'฿' + ${product.price}">ราคา</p>
+        </div>
+    </div>
 </div>
-
-<h1 th:text="#{product.list}">รายการสินค้า</h1>
-
-<div th:each="product : ${products}">
-    <h2 th:text="${product.name}">ชื่อสินค้า</h2>
-    <p th:text="${product.description}">รายละเอียดสินค้า</p>
-    <p><span th:text="#{product.price}">ราคา</span>: <span th:text="${product.price} + ' บาท'">0 บาท</span></p>
-
-    <form method="post" th:action="@{/cart/add}">
-        <input type="hidden" name="productId" th:value="${product.id}" />
-        <label th:text="#{product.quantity}">จำนวน</label>
-        <input type="number" name="quantity" value="1" min="1" />
-        <button type="submit" th:text="#{button.addToCart}">เพิ่มใส่ตะกร้า</button>
-    </form>
-    <hr/>
-</div>
-
-<a th:href="@{/cart}" th:text="#{cart.title}">ดูตะกร้าสินค้า</a>
 </body>
 </html>

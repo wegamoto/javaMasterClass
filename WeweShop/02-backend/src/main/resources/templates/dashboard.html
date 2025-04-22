@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>User Dashboard</title>
@@ -27,16 +28,18 @@
     <p>Here you can manage your orders, profile, and view product recommendations.</p>
 
     <div class="row mt-4">
+        <!-- My Orders -->
         <div class="col-md-4">
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
                     <h5 class="card-title">My Orders</h5>
                     <p class="card-text">Check your recent purchases and track shipments.</p>
-                    <a href="#" class="btn btn-light">View Orders</a>
+                    <a th:href="@{/orders}" class="btn btn-light">View Orders</a>
                 </div>
             </div>
         </div>
 
+        <!-- My Profile -->
         <div class="col-md-4">
             <div class="card text-white bg-success mb-3">
                 <div class="card-body">
@@ -47,12 +50,24 @@
             </div>
         </div>
 
+        <!-- Recommendations -->
         <div class="col-md-4">
             <div class="card text-white bg-warning mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Recommendations</h5>
                     <p class="card-text">See products tailored to your interests.</p>
                     <a href="#" class="btn btn-light">Explore</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard (เฉพาะ ADMIN) -->
+        <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Admin Dashboard</h5>
+                    <p class="card-text">Manage products and monitor shop performance.</p>
+                    <a th:href="@{/admin/admin-dashboard}" class="btn btn-light">Go to Admin</a>
                 </div>
             </div>
         </div>

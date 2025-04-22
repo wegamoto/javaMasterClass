@@ -1,7 +1,9 @@
 package com.wewe.weweShop.controller;
 
 import com.wewe.weweShop.model.Order;
+import com.wewe.weweShop.repository.OrderRepository;
 import com.wewe.weweShop.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,30 +18,39 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
-    @GetMapping("/orders")
+    // 🧍 สำหรับผู้ใช้ทั่วไป
+    @GetMapping("/user/orders")
     public String viewUserOrders(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName(); // ใช้ email หรือ username
         List<Order> orders = orderService.getOrdersByEmail(email);
         model.addAttribute("orders", orders);
-        return "orders";
+        return "orders"; // กลับไปยัง orders.html
     }
 
-    @GetMapping("/orders/{id}")
+    // 🔎 รายละเอียดของออร์เดอร์สำหรับผู้ใช้
+    @GetMapping("/user/orders/{id}")
     public String viewOrderDetail(@PathVariable Long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
         Order order = orderService.getOrderByIdAndEmail(id, email);
         model.addAttribute("order", order);
-        return "order-detail";
+        return "order-detail"; // กลับไปยัง order-detail.html
     }
 
+    // 👑 สำหรับแอดมินดูรายการทั้งหมด
+    @GetMapping("/admin/orders")
+    public String viewOrders(Model model) {
+        List<Order> orders = orderRepository.findAll();
+        model.addAttribute("orders", orders);
+        return "order-list"; // กลับไปยัง order-list.html
+    }
 }
-
-
-

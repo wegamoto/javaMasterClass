@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>เมนูอาหาร</title>
+</head>
+<body>
+<h1>เมนูอาหาร</h1>
+<div th:each="item : ${menuItems}">
+    <h3 th:text="${item.name}">ชื่อ</h3>
+    <p th:text="${item.description}">คำอธิบาย</p>
+    <strong th:text="${item.price} + ' บาท'"></strong>
+    <hr/>
+</div>
+</body>
+</html>

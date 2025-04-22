@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>รายการคำสั่งซื้อ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+<div class="container mx-auto py-10 px-4">
+  <h1 class="text-3xl font-bold mb-6 text-center">รายการคำสั่งซื้อ</h1>
+
+  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="min-w-full table-auto">
+      <thead class="bg-gray-200 text-gray-700">
+      <tr>
+        <th class="py-3 px-4 text-left">รหัสคำสั่งซื้อ</th>
+        <th class="py-3 px-4 text-left">วันที่สั่งซื้อ</th>
+        <th class="py-3 px-4 text-left">ชื่อลูกค้า</th>
+        <th class="py-3 px-4 text-left">ยอดรวม</th>
+        <th class="py-3 px-4 text-left">สถานะ</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="order : ${orders}" class="border-b hover:bg-gray-50">
+        <td class="py-2 px-4" th:text="${order.id}">ORD001</td>
+        <td class="py-2 px-4" th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}">01/04/2025</td>
+        <td class="py-2 px-4" th:text="${order.customerName}">นายสมชาย</td>
+        <td class="py-2 px-4" th:text="${order.totalAmount + ' ฿'}">150.00 ฿</td>
+        <td class="py-2 px-4">
+          <span th:classappend="${order.status == 'PAID'} ? 'text-green-600' : 'text-yellow-600'" th:text="${order.status}">PAID</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

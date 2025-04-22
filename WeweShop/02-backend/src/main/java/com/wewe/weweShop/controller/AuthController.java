@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")  // Rest API
+@RequestMapping("/api/auth")  // ใช้ URL ที่เหมาะสมสำหรับ API
 public class AuthController {
 
     // login + register API

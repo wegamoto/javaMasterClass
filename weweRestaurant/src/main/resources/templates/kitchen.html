@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ครัว - รายการอาหาร</title>
+</head>
+<body>
+<h1>รายการออเดอร์ที่สั่งเข้ามา</h1>
+<div th:if="${orders.isEmpty()}">
+    <p>ยังไม่มีออเดอร์</p>
+</div>
+<div th:each="order : ${orders}">
+    <h2>โต๊ะ: <span th:text="${order.tableNumber}"></span></h2>
+    <ul>
+        <li th:each="item : ${order.items}">
+            <span th:text="${item.menuItem.name}"></span> -
+            <span th:text="${item.quantity}"></span> ที่
+        </li>
+    </ul>
+    <form th:action="@{'/kitchen/mark-ready/' + ${order.id}}" method="post">
+        <button type="submit">✅ ปรุงเสร็จแล้ว</button>
+    </form>
+    <hr/>
+</div>
+</body>
+</html>
