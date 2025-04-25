@@ -1,20 +1,47 @@
 package com.wewe.weweShop.controller;
 
 import com.wewe.weweShop.model.Product;
+import com.wewe.weweShop.repository.ProductRepository;
 import com.wewe.weweShop.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
+@RequiredArgsConstructor
 public class ProductController {
+
+    private final ProductRepository productRepository;
 
     @Autowired
     private ProductService productService;
+
+    @GetMapping("/AllProduct")
+    public String getAllProducts(Model model) {
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products);
+        return "product-list";
+    }
+
+    @GetMapping("/product/{id}")
+    public String getProductDetail(@PathVariable Long id, Model model) {
+        Product product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        return "product-detail";
+    }
+
+    @GetMapping("/products/sample")
+    public String showProductList(Model model) {
+        List<Product> products = productRepository.findAll();
+        model.addAttribute("products", products);
+        return "products"; // products.html
+    }
 
     // ✅ แสดงสินค้าทั้งหมด
     @GetMapping

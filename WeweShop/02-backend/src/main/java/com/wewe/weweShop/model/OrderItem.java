@@ -3,6 +3,8 @@ package com.wewe.weweShop.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 public class OrderItem {
@@ -20,5 +22,10 @@ public class OrderItem {
 
     private String productName;
     private int quantity;
-    private double price;
+    private BigDecimal price;
+
+
+    public void setProductId(Long productId) {
+
+    }
 }

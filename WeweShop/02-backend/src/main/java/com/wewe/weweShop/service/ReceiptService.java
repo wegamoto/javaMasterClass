@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import javax.imageio.ImageIO;
 
 @Service
@@ -51,32 +52,41 @@ public class ReceiptService {
             table.addCell("Quantity");
             table.addCell("Subtotal");
 
-            double total = 0.0;
+            BigDecimal total = BigDecimal.ZERO; // เริ่มต้นที่ 0
             for (OrderItem item : order.getItems()) {
-                double subtotal = item.getPrice() * item.getQuantity();
-                total += subtotal;
+                BigDecimal price = item.getPrice(); // ราคา
+                BigDecimal quantity = BigDecimal.valueOf(item.getQuantity()); // จำนวน
+                BigDecimal subtotal = price.multiply(quantity); // คำนวณ Subtotal
+                total = total.add(subtotal); // บวกยอดรวม
+
+                // แสดงข้อมูลในตาราง
                 table.addCell(item.getProductName());
-                table.addCell(String.format("%.2f", item.getPrice()));
-                table.addCell(String.valueOf(item.getQuantity()));
-                table.addCell(String.format("%.2f", subtotal));
+                table.addCell(String.format("%.2f", price)); // แสดงราคาในรูปแบบ 2 ทศนิยม
+                table.addCell(String.valueOf(item.getQuantity())); // จำนวนสินค้า
+                table.addCell(String.format("%.2f", subtotal)); // แสดง Subtotal ในรูปแบบ 2 ทศนิยม
             }
 
             document.add(table);
+
+            // แสดงยอดรวม
             document.add(new Paragraph("Total: " + String.format("%.2f", total)));
 
-            // Generate QR Code
+            // สร้าง QR Code สำหรับ PromptPay
             String payload = PromptPayUtil.generatePayload(phoneNumber, total);
             BufferedImage qrImage = PromptPayUtil.generatePromptPayQRCode(payload, 200, 200);
             ByteArrayOutputStream imageBaos = new ByteArrayOutputStream();
             ImageIO.write(qrImage, "PNG", imageBaos);
             Image qr = new Image(ImageDataFactory.create(imageBaos.toByteArray()));
+
+            // แสดง QR Code ใน PDF
             document.add(new Paragraph("PromptPay QR Code:"));
             document.add(qr);
 
             document.close();
-            return baos.toByteArray();
+            return baos.toByteArray(); // ส่งคืนเป็น byte array ของ PDF
         } catch (IOException e) {
             throw new RuntimeException("Failed to generate PDF", e);
         }
     }
+
 }

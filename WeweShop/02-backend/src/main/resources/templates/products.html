@@ -12,28 +12,26 @@
         <a class="navbar-brand" th:href="@{/}">Wewe Shop</a>
         <ul class="navbar-nav ms-auto">
             <li class="nav-item"><a class="nav-link" th:href="@{/cart}">🛒 Cart</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container mt-5">
-    <h2>🛍️ Products</h2>
+    <h2>🛍️ Product List</h2>
     <div class="row mt-3">
         <div class="col-md-4 mb-4" th:each="product : ${products}">
             <div class="card h-100">
-                <img th:src="${product.image != null} ? @{/images/} + ${product.image} : @{/images/default.png}" class="card-img-top" alt="Product Image">
+                <img class="card-img-top" th:src="@{'/images/' + ${product.image}}" alt="Product Image">
                 <div class="card-body">
-                    <h5 th:text="${product.name}">Product Name</h5>
-                    <p th:text="${product.description}">Description</p>
-                    <p><strong>Price:</strong> <span th:text="${product.price}">0.00</span> ฿</p>
+                    <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                    <p class="card-text" th:text="${product.description}">Description</p>
+                    <p class="card-text"><strong>฿ </strong><span th:text="${product.price}">0.00</span></p>
+
                     <form th:action="@{/cart/add}" method="post">
                         <input type="hidden" name="productId" th:value="${product.id}" />
-                        <input type="hidden" name="name" th:value="${product.name}" />
-                        <input type="hidden" name="price" th:value="${product.price}" />
                         <input type="number" name="quantity" value="1" min="1" class="form-control mb-2" />
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="bi bi-cart-plus"></i> Add to Cart
-                        </button>
+                        <button type="submit" class="btn btn-primary w-100">🛒 Add to Cart</button>
                     </form>
                 </div>
             </div>

@@ -1,23 +1,29 @@
 package com.wewe.weweShop.service;
 
+import com.wewe.weweShop.model.CartItem;
 import com.wewe.weweShop.model.Order;
+import com.wewe.weweShop.model.OrderItem;
 import com.wewe.weweShop.model.User;
 import com.wewe.weweShop.repository.OrderRepository;
 import com.wewe.weweShop.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
-    private UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final CartService cartService;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -39,14 +45,8 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    // Inject Repository ผ่าน Constructor
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
     public boolean hasNewOrders() {
-        // สมมติว่าเรามีสถานะ "NEW" หรือ "PENDING" สำหรับคำสั่งซื้อใหม่
-        return orderRepository.countByStatus("NEW") > 0;  // ตรวจสอบว่า "NEW" มีคำสั่งซื้อที่ยังไม่ได้รับการดำเนินการ
+        return orderRepository.countByStatus("NEW") > 0;
     }
 
     public List<Order> getOrdersByEmail(String email) {
@@ -63,5 +63,40 @@ public class OrderService {
                 .orElseThrow(() -> new NoSuchElementException("Order not found or access denied"));
     }
 
-}
+    public Order createOrderFromCart(String userEmail) {
+        // ดึงข้อมูลรายการสินค้าจากตะกร้า
+        List<CartItem> cartItems = cartService.getCartItems(userEmail);
+        if (cartItems == null || cartItems.isEmpty()) return null;
 
+        // สร้างคำสั่งซื้อใหม่
+        Order order = new Order();
+        order.setCustomerEmail(userEmail);
+        order.setOrderDate(LocalDateTime.now());
+
+        // แปลง CartItem เป็น OrderItem
+        List<OrderItem> items = cartItems.stream().map(item -> {
+            OrderItem oi = new OrderItem();
+            oi.setProductId(item.getProduct().getId());
+            oi.setProductName(item.getProductName());
+            oi.setPrice(item.getPrice());
+            oi.setQuantity(item.getQuantity());
+            oi.setOrder(order);
+            return oi;
+        }).collect(Collectors.toList());
+
+//        double total = items.stream().mapToDouble(i -> i.getPrice() * i.getQuantity()).sum();
+        // คำนวณยอดรวม (totalAmount) โดยใช้ BigDecimal
+        BigDecimal total = items.stream()
+                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // ตั้งค่าราคาสินค้ารวมในคำสั่งซื้อ
+        order.setTotalAmount(total);
+        order.setItems(items);
+
+        // เคลียร์ตะกร้าหลังการสั่งซื้อ
+        cartService.clearCart(userEmail); // clear cart after checkout
+
+        // บันทึกคำสั่งซื้อใหม่
+        return orderRepository.save(order);
+    }
+}

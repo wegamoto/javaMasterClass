@@ -7,12 +7,13 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
 public class PromptPayUtil {
 
-    public static String generatePayload(String phoneNumber, double amount) {
+    public static String generatePayload(String phoneNumber, BigDecimal amount) {
         String formattedPhone = formatPhoneNumber(phoneNumber);
         String formattedAmount = formatAmount(amount);
         return buildPayload(formattedPhone, formattedAmount);
@@ -53,7 +54,7 @@ public class PromptPayUtil {
         return phoneNumber;
     }
 
-    private static String formatAmount(double amount) {
+    private static String formatAmount(BigDecimal amount) {
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(amount);
     }
