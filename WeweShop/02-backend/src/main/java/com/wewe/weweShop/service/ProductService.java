@@ -26,6 +26,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public void saveProduct(Product product) {
+        productRepository.save(product);  // ต้องไม่มี exception เช่น field null
+    }
+
     // ✅ แสดงสินค้ารายตัว
     public Product getProductById(Long id) {
         return productRepository.findById(id)
@@ -43,7 +47,7 @@ public class ProductService {
         product.setName(updatedProduct.getName());
         product.setDescription(updatedProduct.getDescription());
         product.setPrice(updatedProduct.getPrice());
-        product.setImageUrl(updatedProduct.getImageUrl());
+        product.setImage(updatedProduct.getImage());
         return productRepository.save(product);
     }
 
@@ -51,4 +55,5 @@ public class ProductService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
 }

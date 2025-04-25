@@ -16,9 +16,15 @@ public class Order {
 
     private LocalDateTime orderDate;
 
+    private String customerName;
+
+    private String customerPhone;
+
+    private String customerEmail;
+
     private String status;
 
-    private double total;
+    private double totalAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
