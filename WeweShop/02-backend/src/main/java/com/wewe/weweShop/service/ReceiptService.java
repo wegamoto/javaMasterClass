@@ -53,7 +53,7 @@ public class ReceiptService {
             table.addCell("Subtotal");
 
             BigDecimal total = BigDecimal.ZERO; // เริ่มต้นที่ 0
-            for (OrderItem item : order.getItems()) {
+            for (OrderItem item : order.getOrderItems()) {
                 BigDecimal price = item.getPrice(); // ราคา
                 BigDecimal quantity = BigDecimal.valueOf(item.getQuantity()); // จำนวน
                 BigDecimal subtotal = price.multiply(quantity); // คำนวณ Subtotal

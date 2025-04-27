@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -35,7 +36,7 @@ public class ProductViewController {
     public String viewProducts(Model model) {
         List<Product> products = productService.getAllProducts(); // ดึงสินค้าทั้งหมด
         model.addAttribute("products", products); // ส่งสินค้าทั้งหมดไปยัง View
-        return "product-list"; // ชื่อไฟล์ที่ใช้แสดงผล
+        return "product-list"; // ชื่อไฟล์ที่ใช้แสดงผล (product-list)
     }
 
     // การเพิ่มสินค้าไปที่ตะกร้า

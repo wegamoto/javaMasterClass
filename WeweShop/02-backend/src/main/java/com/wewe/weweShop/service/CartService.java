@@ -1,15 +1,26 @@
 package com.wewe.weweShop.service;
 
 import com.wewe.weweShop.model.CartItem;
+import com.wewe.weweShop.model.Order;
+import com.wewe.weweShop.model.OrderItem;
 import com.wewe.weweShop.model.Product;
 import com.wewe.weweShop.repository.CartItemRepository;
+import com.wewe.weweShop.repository.OrderItemRepository;
+import com.wewe.weweShop.repository.OrderRepository;
 import com.wewe.weweShop.repository.ProductRepository;
+import com.wewe.weweShop.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,69 +28,143 @@ public class CartService {
 
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    public String getCurrentUserEmail() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+
+    public String getCurrentUserEmail(Principal principal) {
+        return principal != null ? principal.getName() : SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     public List<CartItem> getCartItems(String userEmail) {
-        String email = getCurrentUserEmail();
-        return cartItemRepository.findByUserEmail(email);
+        return cartItemRepository.findByUserEmail(userEmail);
     }
 
+    // เพิ่มสินค้าลงตะกร้าง
+    @Transactional
     public void addToCart(String userEmail, Long productId, int quantity) {
-        // ค้นหาสินค้าในฐานข้อมูล
+
+        // ตรวจสอบว่า userEmail ไม่เป็น null
+        if (userEmail == null || userEmail.isEmpty()) {
+            throw new IllegalArgumentException("User email cannot be null or empty.");
+        }
+
+        // หา Product จาก productId
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // ค้นหาสินค้าที่มีในตะกร้าของผู้ใช้
-        CartItem existingItem = cartItemRepository.findByUserEmailAndProductId(userEmail, productId);
+        // หา cartItem เดิม ว่ามีอยู่หรือยัง
+        CartItem existingCartItem = cartItemRepository.findByUserEmailAndProductId(userEmail, productId);
 
-        if (existingItem != null) {
-            // เพิ่มจำนวนสินค้าที่มีในตะกร้า
-            existingItem.setQuantity(existingItem.getQuantity() + quantity);
-
-            // คำนวณ total ใหม่
-            BigDecimal total = existingItem.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity()));
-            existingItem.setTotal(total);  // อัปเดต total ใหม่
-
-            // บันทึกข้อมูลสินค้าที่อัปเดตในตะกร้า
-            cartItemRepository.save(existingItem);
+        if (existingCartItem != null) {
+            // ถ้ามีสินค้าเดิมในตะกร้า => เพิ่ม quantity
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            cartItemRepository.save(existingCartItem);
         } else {
-            // ถ้ายังไม่มีสินค้าในตะกร้าให้สร้างสินค้าใหม่
-            CartItem newItem = new CartItem();
-            newItem.setUserEmail(userEmail);
-            newItem.setProductId(productId);
-            newItem.setProductName(product.getName());
-            newItem.setPrice(BigDecimal.valueOf(product.getPrice()));
-            newItem.setQuantity(quantity);
-
-            // คำนวณ total สำหรับสินค้ารายการใหม่
-            BigDecimal total = newItem.getPrice().multiply(BigDecimal.valueOf(newItem.getQuantity()));
-            newItem.setTotal(total);  // อัปเดต total ใหม่
-
-            // บันทึกสินค้าใหม่ในตะกร้า
-            cartItemRepository.save(newItem);
+            // ถ้ายังไม่มี => สร้างใหม่
+            CartItem cartItem = new CartItem();
+            cartItem.setUserEmail(userEmail);
+            cartItem.setProductId(productId);
+            cartItem.setProductName(product.getName());
+            cartItem.setPrice(BigDecimal.valueOf(product.getPrice()));
+            cartItem.setQuantity(quantity);
+            cartItemRepository.save(cartItem);
         }
     }
 
-    public void updateCartItem(Long productId, int quantity) {
-        String email = getCurrentUserEmail();
-        CartItem item = cartItemRepository.findByUserEmailAndProductId(email, productId);
-        if (item != null) {
-            item.setQuantity(quantity);
-            cartItemRepository.save(item);
+    public void addOrUpdateCartItem(String userEmail, Long productId, int quantity) {
+        // เขียนโค้ด หรือปล่อยว่างไว้ก็ได้ถ้ายังไม่ทำ
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    // อัปเดตจำนวนสินค้าในตะกร้า
+    @Transactional
+    public void updateCartItemQuantity(Long cartItemId, int newQuantity) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new IllegalArgumentException("CartItem not found"));
+
+        if (newQuantity <= 0) {
+            cartItemRepository.deleteById(cartItemId); // ลบถ้าจำนวนเหลือ 0
+        } else {
+            cartItem.setQuantity(newQuantity);
+            cartItemRepository.save(cartItem);
         }
     }
 
-    public void removeCartItem(Long productId) {
-        String email = getCurrentUserEmail();
-        cartItemRepository.deleteByUserEmailAndProductId(email, productId);
+    @Transactional
+    public void removeCartItem(String userEmail, Long productId) {
+        CartItem cartItem = cartItemRepository.findByUserEmailAndProductId(userEmail, productId);
+        if (cartItem != null) {
+            cartItemRepository.delete(cartItem);
+        }
     }
 
+    // ลบสินค้าทั้งหมดในตะกร้าของ user
+    @Transactional
     public void clearCart(String userEmail) {
-        String email = getCurrentUserEmail();
-        List<CartItem> items = cartItemRepository.findByUserEmail(email);
-        cartItemRepository.deleteAll(items);
+        cartItemRepository.deleteByUserEmail(userEmail);
+    }
+
+    @Transactional
+    public Long checkout(Principal principal) {
+        String userEmail = principal.getName();
+
+        // 1. ดึงสินค้าทั้งหมดในตะกร้า
+        List<CartItem> cartItems = cartItemRepository.findByUserEmail(userEmail);
+
+        if (cartItems.isEmpty()) {
+            throw new IllegalStateException("Cannot checkout an empty cart.");
+        }
+
+        // 3. เพิ่ม OrderItem สำหรับแต่ละสินค้า
+        Order order = new Order();
+        order.setUser(userEmail);
+        order.setCreatedAt(LocalDateTime.now());
+        order.setStatus("NEW");
+
+        order = orderRepository.save(order); // save ก่อน เพื่อให้ได้ orderId
+
+        // คำนวณ total
+        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        List<OrderItem> orderItems = new ArrayList<>();
+
+
+        // 4. เพิ่ม OrderItem สำหรับแต่ละสินค้า
+
+        for (CartItem cartItem : cartItems) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProductId(cartItem.getProductId());
+            orderItem.setProductName(cartItem.getProductName());
+            orderItem.setPrice(BigDecimal.valueOf(cartItem.getProduct().getPrice()));
+            orderItem.setQuantity(cartItem.getQuantity());
+
+            // คำนวณ total สำหรับ OrderItem และตั้งค่า total
+            BigDecimal itemTotal = orderItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+            orderItem.setTotal(itemTotal); // ตั้งค่า total ให้กับ OrderItem
+
+            // คำนวน totalAmount ของ Order
+            totalAmount = totalAmount.add(itemTotal);
+            orderItems.add(orderItem);
+
+        }
+        // ตั้งค่า totalAmount ของ Order
+        order.setTotalAmount(totalAmount); //ตั้งค่า totalAmount สำหรับ Order ก่อนบันทึก
+        order.setTotal(totalAmount);
+
+        // บันทึก Order และ OrderItems
+        order = orderRepository.save(order); // save ก่อน เพื่อให้ได้ orderId
+        orderItemRepository.saveAll(orderItems);
+
+        // 5. ล้างตะกร้า
+        cartItemRepository.deleteByUserEmail(String.valueOf(principal));
+
+        // Return Order ID
+        return order.getId();
+    }
+
+    public void updateCartItem(Long productId, @Min(1) int quantity) {
     }
 }

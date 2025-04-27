@@ -2,21 +2,19 @@ package com.wewe.weweShop.service;
 
 import com.wewe.weweShop.model.Product;
 import com.wewe.weweShop.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
     @Autowired
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
     // ✅ แสดงสินค้าทั้งหมด
     public List<Product> findAll() {
         return productRepository.findAll();

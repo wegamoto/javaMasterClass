@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -21,8 +22,8 @@ public class CheckoutController {
     private final OrderService orderService;
 
     @GetMapping
-    public String showCheckoutPage(Model model) {
-        String userEmail = cartService.getCurrentUserEmail();
+    public String showCheckoutPage(Model model, String userEmail) {
+//        String userEmail = cartService.getCurrentUserEmail(principal);
         List<CartItem> cartItems = cartService.getCartItems(userEmail);
 
         BigDecimal total = cartItems.stream()
@@ -35,10 +36,10 @@ public class CheckoutController {
     }
 
     @PostMapping
-    public String processCheckout() {
-        String userEmail = cartService.getCurrentUserEmail();
-        String email = cartService.getCurrentUserEmail();
-        Order order = orderService.createOrderFromCart(email);
+    public String processCheckout(Principal principal) {
+        String userEmail = cartService.getCurrentUserEmail(principal);
+        String email = cartService.getCurrentUserEmail(principal);
+        Order order = orderService.createOrderFromCart(userEmail);
 
         cartService.clearCart(userEmail); // clear cart after checkout
         return "redirect:/checkout/success";

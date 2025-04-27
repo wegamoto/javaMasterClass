@@ -1,20 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Product List</title>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
-<h1>Product List</h1>
-<div th:each="product : ${products}">
-  <h3 th:text="${product.name}"></h3>
-  <p th:text="'Price: ' + ${product.price}"></p>
-  <!-- ฟอร์มสำหรับเพิ่มสินค้าไปที่ตะกร้า -->
-  <form action="/products/add" method="post">
-    <input type="hidden" name="productId" th:value="${product.id}">
-    <input type="number" name="quantity" min="1" value="1">
-    <input type="hidden" name="userEmail" value="user@example.com"> <!-- หรือผู้ใช้ที่ล็อกอิน -->
-    <button type="submit">Add to Cart</button>
-  </form>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/dashboard}">Wewe Shop</a>
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/cart/view}">🛒 Cart</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2>🛍️ Product List</h2>
+    <div class="row mt-3">
+        <div class="col-md-4 mb-4" th:each="product : ${products}">
+            <div class="card h-100">
+                <img class="card-img-top" th:src="@{'/images/' + ${product.image}}" alt="Product Image">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                    <p class="card-text" th:text="${product.description}">Description</p>
+                    <p class="card-text"><strong>฿ </strong><span th:text="${product.price}">0.00</span></p>
+
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="productId" th:value="${product.id}" />
+                        <input type="number" name="quantity" value="1" min="1" class="form-control mb-2" />
+                        <button type="submit" class="btn btn-primary w-100">🛒 Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

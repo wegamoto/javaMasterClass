@@ -27,7 +27,7 @@
       <td th:text="${order.status}">Pending</td>
       <td th:if="${isAdmin}" th:text="${order.email}">customer@example.com</td>
       <td>
-        <a th:href="@{'/orders/' + ${order.id}}" class="btn btn-sm btn-info">Details</a>
+        <a th:href="@{'/orders' + ${order.id}}" class="btn btn-sm btn-info">Details</a>
       </td>
     </tr>
     </tbody>

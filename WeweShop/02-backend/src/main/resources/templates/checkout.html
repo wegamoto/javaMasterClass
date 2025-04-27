@@ -9,45 +9,61 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">Wewe Shop</a>
+        <a class="navbar-brand" th:href="@{/dashboard}">Wewe Shop</a>
         <ul class="navbar-nav ms-auto">
             <li class="nav-item"><a class="nav-link" th:href="@{/cart}">🛒 Cart</a></li>
         </ul>
     </div>
 </nav>
 
-<div class="container mt-5">
-    <h2>📦 Checkout</h2>
-
-    <table class="table mt-3">
+<!-- สรุปรายการสินค้า -->
+<div>
+    <h2>Your Cart</h2>
+    <table border="1">
         <thead>
         <tr>
             <th>Product</th>
             <th>Price (฿)</th>
-            <th>Qty</th>
-            <th>Subtotal</th>
+            <th>Quantity</th>
+            <th>Subtotal (฿)</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="item : ${cartItems}">
-            <td th:text="${item.productName}"></td>
-            <td th:text="${item.price}"></td>
-            <td th:text="${item.quantity}"></td>
-            <td th:text="${item.price * item.quantity}"></td>
+            <td th:text="${item.productName}">Product Name</td>
+            <td th:text="${#numbers.formatDecimal(item.price, 2, 'POINT', ',', 'POINT')}">0.00</td>
+            <td th:text="${item.quantity}">0</td>
+            <td th:text="${#numbers.formatDecimal(item.price.multiply(T(item.quantity).doubleValue()), 2, 'POINT', ',', 'POINT')}">0.00</td>
         </tr>
         </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="3"><strong>Total:</strong></td>
-            <td><strong th:text="${total}">0.00</strong> ฿</td>
-        </tr>
-        </tfoot>
     </table>
 
-    <form th:action="@{/checkout}" method="post">
-        <button type="submit" class="btn btn-success">✅ Confirm & Pay</button>
-    </form>
+    <h3>Total: ฿<span th:text="${total}">0.00</span></h3>
 </div>
+
+<hr>
+
+<!-- ฟอร์มทำการ Checkout -->
+<form th:action="@{/checkout}" method="post">
+    <div>
+        <label for="paymentMethod">เลือกวิธีชำระเงิน:</label>
+        <select id="paymentMethod" name="paymentMethod" required>
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="PromptPay">PromptPay</option>
+            <option value="Cash On Delivery">Cash On Delivery</option>
+        </select>
+    </div>
+
+    <br>
+
+    <button type="submit">ยืนยันการสั่งซื้อ</button>
+</form>
+
+<br>
+
+<!-- ปุ่มกลับไปหน้าตะกร้า -->
+<a th:href="@{/cart/view}">← กลับไปแก้ไขตะกร้า</a>
 
 </body>
 </html>

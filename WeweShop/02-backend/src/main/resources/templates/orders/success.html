@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout Success</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-success text-white">
+      <h2 class="mb-0">🎉 ชำระเงินสำเร็จแล้ว!</h2>
+    </div>
+    <div class="card-body">
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>รหัสคำสั่งซื้อ (Order ID):</strong>
+          <span th:text="${order.id}">Order ID</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>วิธีชำระเงิน (Payment Method):</strong>
+          <span th:text="${order.paymentMethod}">Payment Method</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>ยอดชำระทั้งหมด (Total Amount):</strong>
+          <span th:text="${formattedAmount}">1,234.50</span> ฿
+        </li>
+
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>จำนวนเงินเป็นคำ (Amount in Words):</strong>
+          <span th:text="${totalAmountInWords}">หนึ่งพันสองร้อยสามสิบสี่บาทห้าสิบสตางค์</span>
+        </li>
+
+      </ul>
+
+      <div class="mt-4 text-center">
+        <a href="/dashboard" class="btn btn-primary">กลับไปยังหน้าหลัก</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

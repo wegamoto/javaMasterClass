@@ -7,33 +7,36 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cart_item")
+@Table(name = "cart_items")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_email", nullable = false)
+    private String userEmail; // เก็บ email ของผู้ใช้งานตะกร้านี้ (ไม่ต้อง join user ตรงๆ ก็ได้)
+
     private Long userId;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @Column(name = "product_id", nullable = false)
+    private Long productId; // ID ของสินค้าที่หยิบใส่ตะกร้า
 
-    private String productName;
+    @Column(name = "product_name", nullable = false)
+    private String productName; // ชื่อสินค้า (เผื่อสินค้าเปลี่ยนชื่อภายหลัง)
 
-    private BigDecimal price;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price; // ราคาต่อหน่วยของสินค้า ณ ตอนหยิบใส่ตะกร้า
 
-    private int quantity;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity; // จำนวนสินค้าที่หยิบใส่ตะกร้า
 
-    private String userEmail; // เชื่อมกับผู้ใช้
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // โหลดเฉพาะตอนที่จำเป็น ไม่หน่วงระบบ
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private Product product;
+    private Product product;  // สำหรับดึงข้อมูลสินค้าเพิ่มเติมเวลาแสดงตะกร้า
 
     /**
      * คำนวณราคารวมต่อรายการในตะกร้า (price * quantity)
@@ -63,4 +66,5 @@ public class CartItem {
 
     public void setTotal(BigDecimal total) {
     }
+
 }

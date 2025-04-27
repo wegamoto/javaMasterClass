@@ -1,5 +1,6 @@
 package com.wewe.weweShop.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import com.wewe.weweShop.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/api/admin/orders")
 @PreAuthorize("hasRole('ADMIN')")
+@RequiredArgsConstructor
 public class AdminOrderController {
 
     @Autowired

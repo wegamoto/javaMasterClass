@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,6 +34,10 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public List<Order> getOrdersByUser(String userEmail) {
+        return null;
+    }
+
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
     }
@@ -49,22 +54,9 @@ public class OrderService {
         return orderRepository.countByStatus("NEW") > 0;
     }
 
-    public List<Order> getOrdersByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return orderRepository.findByUser(user);
-    }
-
-    public Order getOrderByIdAndEmail(Long id, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return orderRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new NoSuchElementException("Order not found or access denied"));
-    }
-
     public Order createOrderFromCart(String userEmail) {
-        // ดึงข้อมูลรายการสินค้าจากตะกร้า
+
+        // ดึงข้อมูลรายการสินค้าจากตะกร้า ไม่ได้ระบุ userEmail
         List<CartItem> cartItems = cartService.getCartItems(userEmail);
         if (cartItems == null || cartItems.isEmpty()) return null;
 
@@ -76,27 +68,34 @@ public class OrderService {
         // แปลง CartItem เป็น OrderItem
         List<OrderItem> items = cartItems.stream().map(item -> {
             OrderItem oi = new OrderItem();
+            oi.setProduct(item.getProduct()); // ให้ OrderItem รู้จัก product ด้วย
             oi.setProductId(item.getProduct().getId());
             oi.setProductName(item.getProductName());
             oi.setPrice(item.getPrice());
             oi.setQuantity(item.getQuantity());
             oi.setOrder(order);
+            // คำนวณ total ของ OrderItem ก่อน save
+            oi.setTotal(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+
             return oi;
         }).collect(Collectors.toList());
 
-//        double total = items.stream().mapToDouble(i -> i.getPrice() * i.getQuantity()).sum();
-        // คำนวณยอดรวม (totalAmount) โดยใช้ BigDecimal
         BigDecimal total = items.stream()
                 .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         // ตั้งค่าราคาสินค้ารวมในคำสั่งซื้อ
         order.setTotalAmount(total);
-        order.setItems(items);
+        order.setOrderItems(items);
 
         // เคลียร์ตะกร้าหลังการสั่งซื้อ
         cartService.clearCart(userEmail); // clear cart after checkout
 
         // บันทึกคำสั่งซื้อใหม่
         return orderRepository.save(order);
+    }
+
+    public List<Order> getOrdersByEmail(String email) {
+        return null;
     }
 }

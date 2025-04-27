@@ -12,7 +12,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Wewe Shop</a>
+        <a class="navbar-brand" th:href="@{/dashboard}">Wewe Shop</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
@@ -37,7 +37,7 @@
                 <div class="card-body">
                     <h5 class="card-title">My Orders</h5>
                     <p class="card-text">Check your recent purchases and track shipments.</p>
-                    <a th:href="@{/orders}" class="btn btn-light">View Orders</a>
+                    <a th:href="@{/orders/list}" class="btn btn-light">View Orders</a>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <h5 class="card-title">ตะกร้าสินค้า</h5>
                     <p class="card-text">ดูรายการสินค้าที่คุณเลือกไว้เพื่อสั่งซื้อ.</p>
-                    <a th:href="@{/cart}" class="btn btn-light">ไปที่ตะกร้า</a>
+                    <a th:href="@{/cart/view}" class="btn btn-light">ไปที่ตะกร้า</a>
                 </div>
             </div>
         </div>
