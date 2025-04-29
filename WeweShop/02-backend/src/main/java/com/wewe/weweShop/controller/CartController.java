@@ -113,14 +113,15 @@ public class CartController {
     // ✅ ลบสินค้า
     @PostMapping("/remove")
     public String removeCartItem(@RequestParam("productId") Long productId,
-                                 @RequestParam("userEmail") String userEmail) {
-        cartService.removeCartItem(userEmail, productId);
+                                 Principal principal) {
+        cartService.removeCartItem(principal, productId);
         return "redirect:/cart/view";
     }
 
     // ✅ เคลียร์ตะกร้า
     @PostMapping("/clear")
-    public String clearCart(String userEmail) {
+    public String clearCart(Principal principal) {
+        String userEmail = principal.getName();
         cartService.clearCart(userEmail);
         return "redirect:/cart/view";
     }

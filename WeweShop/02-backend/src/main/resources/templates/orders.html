@@ -7,6 +7,9 @@
 </head>
 <body>
 
+<!-- เรียก navbar fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
 <div class="container mt-5">
   <h2 th:text="${isAdmin} ? 'All Orders (Admin)' : 'My Orders'"></h2>
 
@@ -33,6 +36,9 @@
     </tbody>
   </table>
 </div>
+
+<!-- เรียก footer -->
+<div th:replace="fragments/footer :: footer"></div>
 
 </body>
 </html>

@@ -6,6 +6,7 @@ import com.wewe.weweShop.model.OrderItem;
 import com.wewe.weweShop.model.User;
 import com.wewe.weweShop.repository.OrderRepository;
 import com.wewe.weweShop.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,13 @@ public class OrderService {
         return orderRepository.countByStatus("NEW") > 0;
     }
 
-    public Order createOrderFromCart(String userEmail) {
+    @Transactional
+    public Order createOrderFromCart(Principal principal) {
+
+        String userEmail = principal.getName();
+
+        //
+        System.out.println(" user Email : " + userEmail);
 
         // ดึงข้อมูลรายการสินค้าจากตะกร้า ไม่ได้ระบุ userEmail
         List<CartItem> cartItems = cartService.getCartItems(userEmail);
@@ -95,7 +102,10 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<Order> getOrdersByEmail(String email) {
-        return null;
+    public List<Order> getOrdersByEmail(Principal principal) {
+        // ดึงอีเมลของผู้ใช้ที่ล็อกอินจาก Principal
+        String userEmail = principal.getName();
+        // ดึงคำสั่งซื้อจากฐานข้อมูลที่ตรงกับ userEmail
+        return orderRepository.findByCustomerEmail(userEmail);
     }
 }

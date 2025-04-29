@@ -75,17 +75,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // เปิด session แบบจำเป็น
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/dashboard").authenticated()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()  // หน้า login, css, js, และ images สามารถเข้าถึงได้ทุกคน
+                        .requestMatchers("/api/auth/**").permitAll() // // API สำหรับการยืนยันตัวตนสามารถเข้าถึงได้ทุกคน
+                        .requestMatchers("/dashboard").authenticated() // หน้า dashboard ต้องล็อกอินก่อนถึงจะเข้าถึงได้
+                        .requestMatchers("/orders/list").authenticated() // หน้า order/list ต้องล็อกอินก่อนถึงจะเข้าถึงได้
+                        .requestMatchers("/profile").authenticated() // เพิ่มการยืนยันตัวตนสำหรับหน้า /profile
+                        .requestMatchers("/recommendations").authenticated() // ดึงรายการสินค้าแนะนำมาแสดง
+                        .anyRequest().authenticated() // // ทุกคำขออื่น ๆ ต้องล็อกอิน
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
+                        .loginPage("/login") // // หน้า login ของคุณ
+                        .defaultSuccessUrl("/dashboard", true) // หลังจากล็อกอินสำเร็จจะไปที่หน้า dashboard
                         .permitAll()
                 )
-                .logout(logout -> logout
+                .logout(logout -> logout // เมื่อออกจากระบบจะกลับไปที่หน้า login
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )

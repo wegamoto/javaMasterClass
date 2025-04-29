@@ -37,9 +37,10 @@ public class CheckoutController {
 
     @PostMapping
     public String processCheckout(Principal principal) {
-        String userEmail = cartService.getCurrentUserEmail(principal);
-        String email = cartService.getCurrentUserEmail(principal);
-        Order order = orderService.createOrderFromCart(userEmail);
+
+        String userEmail = principal.getName();
+
+        Order order = orderService.createOrderFromCart(principal);
 
         cartService.clearCart(userEmail); // clear cart after checkout
         return "redirect:/checkout/success";

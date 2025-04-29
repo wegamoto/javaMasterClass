@@ -7,6 +7,9 @@
 </head>
 <body>
 
+<!-- เรียก navbar fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
 <div class="container mt-5">
     <h2>Order Detail - <span th:text="${order.id}">#123</span></h2>
     <p><strong>Date:</strong> <span th:text="${#dates.format(order.orderDate, 'dd MMM yyyy')}"></span></p>

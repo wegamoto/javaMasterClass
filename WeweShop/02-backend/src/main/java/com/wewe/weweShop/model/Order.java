@@ -1,5 +1,6 @@
 package com.wewe.weweShop.model;
 
+import com.wewe.weweShop.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,8 @@ public class Order {
 
     private String customerEmail; // Email สำหรับติดต่อ
 
-    private String status;  // NEW, PAID, SHIPPED, CANCELLED เป็นต้น
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;  // PENDING_PAYMENT, PAID, CANCELLED, REFUNDED
 
     private BigDecimal total; // ราคารวมทั้งหมด (รวมภาษี, ค่าส่ง ขึ้นกับระบบ)
 

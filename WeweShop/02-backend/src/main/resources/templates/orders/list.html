@@ -7,26 +7,14 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Wewe Shop</a>
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/dashboard}">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/logout}">Logout</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<!-- เรียก navbar fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
 
 <div class="container mt-4">
-  <h1>My Orders</h1>
-  <table class="table table-striped">
-    <thead>
+  <h1 class="mb-4">My Orders</h1>
+
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
     <tr>
       <th>#</th>
       <th>Order ID</th>
@@ -36,17 +24,17 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Loop through orders -->
-    <tr th:each="order : ${orders}">
-      <td th:text="${order.id}"></td>
-      <td th:text="${order.orderId}"></td>
-      <td th:text="${order.createdAt}"></td>
-      <td th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'THOUSANDS', 2)}"></td>
-      <td th:text="${order.status}"></td>
+    <tr th:each="order, iterStat : ${orders}">
+      <td th:text="${iterStat.index + 1}"></td> <!-- แสดงลำดับที่ -->
+      <td th:text="${order.id}"></td> <!-- รหัสออเดอร์ -->
+      <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td> <!-- วันที่ -->
+      <td th:text="${order.totalAmount}"></td> <!-- ยอดรวมแบบ format -->
+      <td th:text="${order.status}"></td> <!-- สถานะออเดอร์ -->
     </tr>
     </tbody>
   </table>
-  <a th:href="@{/dashboard}" class="btn btn-primary">Back to Dashboard</a>
+
+  <a th:href="@{/dashboard}" class="btn btn-primary mt-3">Back to Dashboard</a>
 </div>
 
 </body>

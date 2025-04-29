@@ -10,21 +10,8 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/dashboard}">Wewe Shop</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/products}">Products</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/logout}">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<!-- เรียก navbar fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
 
 <div class="container mt-4">
     <h1 class="mb-4">Welcome to your dashboard <span th:text="${username}">User</span></h1>
@@ -48,7 +35,7 @@
                 <div class="card-body">
                     <h5 class="card-title">My Profile</h5>
                     <p class="card-text">Edit your profile information and preferences.</p>
-                    <a href="#" class="btn btn-light">Edit Profile</a>
+                    <a th:href="@{/profile}" class="btn btn-light">Edit Profile</a>
                 </div>
             </div>
         </div>
@@ -59,7 +46,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Recommendations</h5>
                     <p class="card-text">See products tailored to your interests.</p>
-                    <a href="#" class="btn btn-light">Explore</a>
+                    <a th:href="@{/recommendations}" class="btn btn-light">Explore</a>
                 </div>
             </div>
         </div>
@@ -87,5 +74,9 @@
         </div>
     </div>
 </div>
+
+<!-- เรียก footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
 </body>
 </html>

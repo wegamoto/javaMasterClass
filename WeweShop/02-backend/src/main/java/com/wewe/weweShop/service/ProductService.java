@@ -4,6 +4,8 @@ import com.wewe.weweShop.model.Product;
 import com.wewe.weweShop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,6 +54,16 @@ public class ProductService {
     // ✅ ลบสินค้า
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    public List<Product> getRecommendations(int page) {
+        Pageable pageable = PageRequest.of(page, 6); // โหลดทีละ 6 ชิ้น
+        return productRepository.findRecommendedProducts(pageable);
+    }
+
+    // ดึงสินค้าตามหมวดหมู่
+    public List<Product> getProductsByCategory(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId);
     }
 
 }

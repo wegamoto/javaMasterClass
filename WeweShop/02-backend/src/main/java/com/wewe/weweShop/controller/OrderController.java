@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.thymeleaf.util.NumberUtils.formatCurrency;
 
@@ -52,7 +55,7 @@ public class OrderController {
         if (isAdmin) {
             orders = orderService.getAllOrders(); // แสดงทุกคำสั่งซื้อถ้าเป็นแอดมิน
         } else {
-            orders = orderService.getOrdersByEmail(email); // เฉพาะของตัวเองถ้าเป็น user
+            orders = orderService.getOrdersByEmail(authentication); // เฉพาะของตัวเองถ้าเป็น user
         }
 
         model.addAttribute("orders", orders);
@@ -99,10 +102,10 @@ public class OrderController {
 
         // 🧍 สำหรับผู้ใช้ทั่วไป
     @GetMapping("/user/orders")
-    public String viewUserOrders(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName(); // ใช้ email หรือ username
-        List<Order> orders = orderService.getOrdersByEmail(email);
+    public String viewUserOrders(Model model, Principal principal) {
+        // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = principal.getName(); // ใช้ email หรือ username
+        List<Order> orders = orderService.getOrdersByEmail(principal);
         model.addAttribute("orders", orders);
         return "orders"; // กลับไปยัง orders.html
     }
@@ -124,5 +127,37 @@ public class OrderController {
         List<Order> orders = orderRepository.findAll();
         model.addAttribute("orders", orders);
         return "order-list"; // กลับไปยัง order-list.html
+    }
+
+    @GetMapping("/list")
+    public String viewOrderList(Model model, Principal principal) {
+        // ตรวจสอบการล็อกอินของผู้ใช้
+        if (principal == null) {
+            return "redirect:/login"; // ถ้าผู้ใช้ไม่ได้ล็อกอิน ให้รีไดเรกต์ไปหน้า login
+        }
+
+        // ดึงรายการคำสั่งซื้อของผู้ใช้จาก service
+        List<Order> orders = orderService.getOrdersByEmail(principal);
+
+        // ✅ เพิ่มเติม: จัดรูปแบบราคา
+        List<Map<String, Object>> orderList = new ArrayList<>();
+        for (Order order : orders) {
+            Map<String, Object> orderMap = new HashMap<>();
+            orderMap.put("id", order.getId());
+            orderMap.put("customerEmail", order.getCustomerEmail());
+            orderMap.put("orderDate", order.getOrderDate());
+
+            // ✅ เพิ่ม formatCurrency
+            String formattedAmount = currencyService.formatCurrency(order.getTotalAmount());
+            orderMap.put("formattedAmount", formattedAmount);
+
+            orderList.add(orderMap);
+        }
+
+
+        // ส่งข้อมูลคำสั่งซื้อไปที่หน้า view
+        model.addAttribute("orders", orders);
+
+        return "orders/list"; // ส่งไปยังหน้ารายการคำสั่งซื้อ
     }
 }

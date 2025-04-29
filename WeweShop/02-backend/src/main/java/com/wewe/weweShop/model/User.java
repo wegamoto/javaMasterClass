@@ -34,8 +34,12 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    private String fullName;
+    private String phoneNumber;
+    private String address;
+
     @Column(nullable = false)
-    private String password;
+    private String password; //สำหรับการ login
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))

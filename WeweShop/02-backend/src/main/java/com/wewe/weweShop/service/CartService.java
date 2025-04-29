@@ -4,6 +4,7 @@ import com.wewe.weweShop.model.CartItem;
 import com.wewe.weweShop.model.Order;
 import com.wewe.weweShop.model.OrderItem;
 import com.wewe.weweShop.model.Product;
+import com.wewe.weweShop.model.enums.OrderStatus;
 import com.wewe.weweShop.repository.CartItemRepository;
 import com.wewe.weweShop.repository.OrderItemRepository;
 import com.wewe.weweShop.repository.OrderRepository;
@@ -93,7 +94,8 @@ public class CartService {
     }
 
     @Transactional
-    public void removeCartItem(String userEmail, Long productId) {
+    public void removeCartItem(Principal principal, Long productId) {
+        String userEmail = principal.getName();
         CartItem cartItem = cartItemRepository.findByUserEmailAndProductId(userEmail, productId);
         if (cartItem != null) {
             cartItemRepository.delete(cartItem);
@@ -120,8 +122,10 @@ public class CartService {
         // 3. เพิ่ม OrderItem สำหรับแต่ละสินค้า
         Order order = new Order();
         order.setUser(userEmail);
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerEmail(userEmail);
         order.setCreatedAt(LocalDateTime.now());
-        order.setStatus("NEW");
+        order.setStatus(OrderStatus.PENDING_PAYMENT);
 
         order = orderRepository.save(order); // save ก่อน เพื่อให้ได้ orderId
 
@@ -159,7 +163,7 @@ public class CartService {
         orderItemRepository.saveAll(orderItems);
 
         // 5. ล้างตะกร้า
-        cartItemRepository.deleteByUserEmail(String.valueOf(principal));
+        cartItemRepository.deleteByUserEmail(userEmail);
 
         // Return Order ID
         return order.getId();

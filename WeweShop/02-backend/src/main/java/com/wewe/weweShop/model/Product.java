@@ -19,5 +19,13 @@ public class Product {
     private int quantity;
 
     private String image;
+
+    private boolean onSale;       // << เพิ่ม
+    private boolean bestSeller;   // << เพิ่ม
+
+    // 🔥 ต้องมี @ManyToOne หรือ Join กับ Category ด้วย
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
 

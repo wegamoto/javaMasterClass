@@ -22,6 +22,12 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    // ดึงสินค้าตามหมวดหมู่
+    @GetMapping("/category/{categoryId}")
+    public List<Product> getProductsByCategory(@PathVariable Long categoryId) {
+        return productService.getProductsByCategory(categoryId);
+    }
+
     @GetMapping("/AllProduct")
     public String getAllProducts(Model model) {
         List<Product> products = productService.getAllProducts();

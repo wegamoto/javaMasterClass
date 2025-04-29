@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- เรียก navbar fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container py-5">
+  <h2 class="mb-4 text-center">Your Profile</h2>
+
+  <div class="card shadow p-4">
+    <form id="profileForm" th:action="@{/profile}" method="post" th:object="${user}">
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="fullName" name="fullName" th:field="*{fullName}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label">Phone Number</label>
+        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <textarea class="form-control" id="address" name="address" th:field="*{address}" rows="3" required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email (readonly)</label>
+        <input type="email" class="form-control" id="email" name="email" th:field="*{email}" readonly>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-danger" onclick="deleteProfile()">Delete Account</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function deleteProfile() {
+      if (confirm('Are you sure you want to delete your account?')) {
+          fetch('/api/profile', { method: 'DELETE' })
+              .then(response => {
+                  if (response.ok) {
+                      alert('Account deleted successfully');
+                      window.location.href = '/login'; // redirect to login
+                  } else {
+                      alert('Failed to delete account');
+                  }
+              });
+      }
+  }
+</script>
+
+<!-- เรียก footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
