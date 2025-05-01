@@ -1,33 +1,39 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Java
+*.class
+*.jar
+*.war
+*.ear
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Logs
+*.log
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
 *.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
 .vscode/
+*.sw?
+
+# Build directories
+/target/
+/build/
+
+# Dependency directories
+/node_modules/
+
+# Application properties (อย่า push secrets!)
+src/main/resources/application.properties
+src/main/resources/application.yml
+
+# Environment files
+config.env
+.env
+secret_key.json
+
+# Backup & temp
+*.bak
+*.tmp
+*.swp
