@@ -1,0 +1,66 @@
+<!-- Sidebar Fragment -->
+<div th:fragment="sidebar" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="bg-light shadow rounded-end p-3" id="sidebar-wrapper" style="min-height: 100vh; width: 250px;">
+
+        <!-- Header -->
+        <div class="sidebar-heading text-center mb-4 fw-bold fs-4"
+             style="background-color: #f0f0f0; color: #333; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 1rem;">
+            <i class="bi bi-shop me-2"></i>Wewe Shop
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="list-group list-group-flush">
+            <a class="list-group-item list-group-item-action bg-light" th:href="@{/home}">
+                <i class="bi bi-house-door me-2"></i> Home
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light"
+               th:href="@{/products}"
+               sec:authorize="hasAnyRole('USER','ADMIN')">
+                <i class="bi bi-bag me-2"></i> Products
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light"
+               th:href="@{/cart/view}"
+               sec:authorize="hasAnyRole('USER','ADMIN')">
+                <i class="bi bi-cart3 me-2"></i> Cart
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light"
+               th:href="@{/orders/list}"
+               sec:authorize="hasRole('USER')">
+                <i class="bi bi-box-seam me-2"></i> My Orders
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light"
+               th:href="@{/admin/products}"
+               sec:authorize="hasRole('ADMIN')">
+                <i class="bi bi-gear-wide-connected me-2"></i> Admin: Manage Products
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light"
+               th:href="@{/profile}"
+               sec:authorize="hasAnyRole('USER','ADMIN')">
+                <i class="bi bi-person-circle me-2"></i> Profile
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light text-danger"
+               th:href="@{/logout}"
+               sec:authorize="hasAnyRole('USER','ADMIN')">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light"
+               th:href="@{/register}"
+               sec:authorize="isAnonymous()">
+                <i class="bi bi-pencil-square me-2"></i> Register
+            </a>
+
+            <a class="list-group-item list-group-item-action bg-light"
+               th:href="@{/login}"
+               sec:authorize="isAnonymous()">
+                <i class="bi bi-lock me-2"></i> Login
+            </a>
+        </div>
+    </div>
+</div>

@@ -33,7 +33,42 @@
       </button>
     </div>
   </form>
+
+  <!-- Social login buttons -->
+  <div class="my-6 border-t border-gray-200 pt-4">
+    <p class="text-center text-sm text-gray-500 mb-4">หรือเข้าสู่ระบบด้วย</p>
+
+    <div class="space-y-3">
+      <a href="/oauth2/authorization/google"
+         class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 transition">
+        <img src="/images/google-logo.png" class="w-5 h-5" alt="Google logo">
+        <span class="text-sm font-medium text-gray-700">เข้าสู่ระบบด้วย Google</span>
+      </a>
+
+      <a href="/oauth2/authorization/facebook"
+         class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 transition">
+        <img src="/images/facebook-logo.png" class="w-5 h-5" alt="Facebook logo">
+        <span class="text-sm font-medium text-gray-700">เข้าสู่ระบบด้วย Facebook</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- เพิ่มส่วนสมัครสมาชิก -->
+  <div class="text-center mt-4">
+    <p class="text-sm text-gray-600">
+      ยังไม่มีบัญชี?
+      <a th:href="@{/register}" class="text-blue-600 hover:underline font-medium">
+        สมัครสมาชิกที่นี่
+      </a>
+    </p>
+  </div>
+
+
+
+
 </div>
+
+
 
 </body>
 </html>

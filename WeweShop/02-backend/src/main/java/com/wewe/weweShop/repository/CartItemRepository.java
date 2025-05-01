@@ -1,6 +1,8 @@
 package com.wewe.weweShop.repository;
 
+import com.wewe.weweShop.model.Cart;
 import com.wewe.weweShop.model.CartItem;
+import com.wewe.weweShop.model.Product;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,12 +11,15 @@ import org.springframework.stereotype.Repository;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     // หา CartItem ทั้งหมดของ user คนหนึ่ง
     List<CartItem> findByUserEmail(String userEmail);
+
+    Optional<CartItem> findByCartAndProduct(Cart cart, Product product);
 
     // หา CartItem ชิ้นเดียว จาก user + productId (กัน user ใส่สินค้าซ้ำ)
     CartItem findByUserEmailAndProductId(String userEmail, Long productId);

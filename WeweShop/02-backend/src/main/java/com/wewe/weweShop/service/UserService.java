@@ -2,6 +2,8 @@ package com.wewe.weweShop.service;
 
 import com.wewe.weweShop.model.User;
 import com.wewe.weweShop.repository.UserRepository;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,19 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    // ตรวจสอบว่า username นี้มีอยู่ในระบบหรือไม่
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
+    }
 
     public User getUserByEmail(Principal principal) {
         // ตรวจสอบว่า principal ไม่เป็น null
@@ -54,5 +69,9 @@ public class UserService {
         User user = getUserByEmail(principal);
         userRepository.delete(user);
     }
+
+//    public boolean existsByEmail(String username) {
+//        return userRepository.existsByEmail(email);
+//    }
 }
 

@@ -2,25 +2,39 @@ package com.wewe.weweShop.controller;
 
 import com.wewe.weweShop.model.Product;
 import com.wewe.weweShop.repository.ProductRepository;
+import com.wewe.weweShop.service.CartService;
 import com.wewe.weweShop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/products")
-@RequiredArgsConstructor
+@Controller
+
 public class ProductController {
 
-    private final ProductRepository productRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private ProductService productService;
+
+    private CartService cartService;
+
+    @GetMapping("/products/list")
+    public String productList(Model model) {
+        List<Product> products = productRepository.findAll();
+        model.addAttribute("products", products);
+        return "product-list"; // ส่งไปที่ product-list.html
+    }
 
     // ดึงสินค้าตามหมวดหมู่
     @GetMapping("/category/{categoryId}")
@@ -32,7 +46,7 @@ public class ProductController {
     public String getAllProducts(Model model) {
         List<Product> products = productService.getAllProducts();
         model.addAttribute("products", products);
-        return "product-list";
+        return "products";
     }
 
     @GetMapping("/product/{id}")
@@ -42,11 +56,21 @@ public class ProductController {
         return "product-detail";
     }
 
-    @GetMapping("/products/sample")
-    public String showProductList(Model model) {
-        List<Product> products = productRepository.findAll();
+    @GetMapping("/products")
+    public String showProductList(@RequestParam(value = "search", required = false) String searchQuery, Model model) {
+        List<Product> products;
+
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            // ค้นหาสินค้าตามชื่อ
+            products = productService.searchProducts(searchQuery);
+        } else {
+            // แสดงสินค้าทั้งหมด
+            products = productService.getAllProducts();
+        }
+
         model.addAttribute("products", products);
-        return "products"; // products.html
+        model.addAttribute("searchQuery", searchQuery);  // เก็บค่าคำค้นไว้ในโมเดลเพื่อแสดงใน input field
+        return "product-list";
     }
 
     // ✅ แสดงสินค้าทั้งหมด
@@ -70,12 +94,13 @@ public class ProductController {
 
     // ✅ แก้ไขสินค้า (เฉพาะ ADMIN)  ✅ ใช้ hasAuthority ถ้า JWT เก็บเป็น "ROLE_ADMIN"
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Product> updateProduct(
             @PathVariable Long id,
-            @RequestBody Product product
+            @RequestPart("product") Product product,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile
     ) {
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+        return ResponseEntity.ok(productService.updateProduct(id, product, imageFile));
     }
 
     // ✅ ลบสินค้า (เฉพาะ ADMIN)
@@ -86,5 +111,35 @@ public class ProductController {
         return ResponseEntity.ok("Product deleted successfully.");
     }
 
+    // การเพิ่มสินค้าไปที่ตะกร้า
+    @PostMapping("/add")
+    public String addToCart(@RequestParam("productId") Long productId,
+                            @RequestParam("quantity") int quantity,
+                            @RequestParam("userEmail") String userEmail) {
+        cartService.addToCart(userEmail, productId, quantity); // เพิ่มสินค้าไปที่ตะกร้า
+        return "redirect:/cart"; // ไปที่หน้า Cart
+    }
+
+//    @GetMapping("/products")
+//    public String showProducts(Model model) {
+//        List<Product> products = productRepository.findAll();
+//        model.addAttribute("products", products);
+//        return "products";
+//    }
+
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @GetMapping("/admin/products/add")
+//    public String showAddProductForm(Model model) {
+//        model.addAttribute("product", new Product());
+//        return "admin/add-product";
+//    }
+
+//    @GetMapping("/admin/products/edit/{id}")
+//    public String showEditProductForm(@PathVariable Long id, Model model) {
+//        Product product = productService.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
+//        model.addAttribute("product", product);
+//        return "admin/edit-product";
+//    }
 }
 

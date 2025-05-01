@@ -12,7 +12,10 @@
 <div class="container mt-4">
   <h2 th:text="${product.id != null} ? 'Edit Product' : 'Add New Product'"></h2>
 
-  <form th:action="@{/admin/products/save}" th:object="${product}" method="post">
+  <form th:action="@{/admin/products/save}"
+        th:object="${product}"
+        method="post"
+        enctype="multipart/form-data">
     <input type="hidden" th:field="*{id}" />
 
     <div class="mb-3">
@@ -33,6 +36,20 @@
     <div class="mb-3">
       <label class="form-label">Quantity</label>
       <input type="number" th:field="*{quantity}" class="form-control" required />
+    </div>
+
+    <!-- ✅ แสดงภาพเก่า ถ้ามี -->
+    <p>image = [[${product.image}]]</p>
+
+    <div class="mb-3" th:if="${product.image != null}">
+      <label class="form-label">Current Image:</label><br>
+      <img th:src="@{'/uploads/' + ${product.image}}" alt="Product Image" class="img-thumbnail" style="max-height: 200px;">
+    </div>
+
+    <!-- ✅ ช่องสำหรับอัปโหลดภาพใหม่ -->
+    <div class="mb-3">
+      <label class="form-label">Product Image</label>
+      <input type="file" name="imageFile" class="form-control" />
     </div>
 
     <button type="submit" class="btn btn-success">Save</button>

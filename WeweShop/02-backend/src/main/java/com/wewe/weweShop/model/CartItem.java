@@ -17,6 +17,10 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "cart_id") // FK ไปที่ Cart
+    private Cart cart;
+
     @Column(name = "user_email", nullable = false)
     private String userEmail; // เก็บ email ของผู้ใช้งานตะกร้านี้ (ไม่ต้อง join user ตรงๆ ก็ได้)
 
@@ -67,4 +71,6 @@ public class CartItem {
     public void setTotal(BigDecimal total) {
     }
 
+    public void setCart(Cart cart) {
+    }
 }

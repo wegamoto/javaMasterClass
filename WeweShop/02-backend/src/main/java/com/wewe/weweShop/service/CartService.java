@@ -1,15 +1,8 @@
 package com.wewe.weweShop.service;
 
-import com.wewe.weweShop.model.CartItem;
-import com.wewe.weweShop.model.Order;
-import com.wewe.weweShop.model.OrderItem;
-import com.wewe.weweShop.model.Product;
+import com.wewe.weweShop.model.*;
 import com.wewe.weweShop.model.enums.OrderStatus;
-import com.wewe.weweShop.repository.CartItemRepository;
-import com.wewe.weweShop.repository.OrderItemRepository;
-import com.wewe.weweShop.repository.OrderRepository;
-import com.wewe.weweShop.repository.ProductRepository;
-import com.wewe.weweShop.repository.UserRepository;
+import com.wewe.weweShop.repository.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +25,7 @@ public class CartService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private CartRepository cartRepository;
 
 
     public String getCurrentUserEmail(Principal principal) {
@@ -171,4 +165,50 @@ public class CartService {
 
     public void updateCartItem(Long productId, @Min(1) int quantity) {
     }
+
+    @Transactional
+    public void addProductToCart(Long productId, int quantity) {
+        Cart cart = getCurrentCart(cartRepository);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // เช็คก่อนว่ามีสินค้านี้ในตะกร้าแล้วหรือยัง
+        Optional<CartItem> existingItemOpt = cartItemRepository.findByCartAndProduct(cart, product);
+
+        if (existingItemOpt.isPresent()) {
+            // ถ้ามีอยู่แล้ว → เพิ่มจำนวน
+            CartItem existingItem = existingItemOpt.get();
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            cartItemRepository.save(existingItem);
+        } else {
+            // ถ้ายังไม่มี → สร้างใหม่
+            CartItem newItem = new CartItem();
+            newItem.setCart(cart);
+            newItem.setProduct(product);
+            newItem.setQuantity(quantity);
+            cartItemRepository.save(newItem);
+        }
+    }
+
+    @Transactional
+    public Cart getCurrentCart(CartRepository cartRepository) {
+        Long userId = getCurrentUserId();
+
+        Optional<Cart> cartOpt = cartRepository.findByUserId(userId);
+
+        if (cartOpt.isPresent()) {
+            return cartOpt.get();
+        } else {
+            // ถ้าไม่มี Cart ให้สร้างใหม่
+            Cart newCart = new Cart();
+            newCart.setUserId(userId);
+            return cartRepository.save(newCart);
+        }
+    }
+
+    private Long getCurrentUserId() {
+        // Mock user id = 1L (ทำเป็นค่าคงที่ไว้ใช้งานก่อน)
+        return 1L;
+    }
+
 }

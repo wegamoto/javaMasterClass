@@ -19,8 +19,10 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductViewController {
 
-    private final ProductService productService; // ใช้สำหรับดึงข้อมูลสินค้า
-    private final CartService cartService; // ใช้สำหรับเพิ่มสินค้าไปที่ตะกร้า
+    @Autowired
+    private ProductService productService; // ใช้สำหรับดึงข้อมูลสินค้า
+    @Autowired
+    private CartService cartService; // ใช้สำหรับเพิ่มสินค้าไปที่ตะกร้า
 
     @Autowired
     private ProductRepository productRepository;
@@ -31,28 +33,28 @@ public class ProductViewController {
         this.cartService = cartService;
     }
 
-    // การแสดงรายการสินค้าทั้งหมด
-    @GetMapping
-    public String viewProducts(Model model) {
-        List<Product> products = productService.getAllProducts(); // ดึงสินค้าทั้งหมด
-        model.addAttribute("products", products); // ส่งสินค้าทั้งหมดไปยัง View
-        return "product-list"; // ชื่อไฟล์ที่ใช้แสดงผล (product-list)
-    }
+//    // การแสดงรายการสินค้าทั้งหมด
+//    @GetMapping
+//    public String viewProducts(Model model) {
+//        List<Product> products = productService.getAllProducts(); // ดึงสินค้าทั้งหมด
+//        model.addAttribute("products", products); // ส่งสินค้าทั้งหมดไปยัง View
+//        return "product-list"; // ชื่อไฟล์ที่ใช้แสดงผล (product-list)
+//    }
 
-    // การเพิ่มสินค้าไปที่ตะกร้า
-    @PostMapping("/add")
-    public String addToCart(@RequestParam("productId") Long productId,
-                            @RequestParam("quantity") int quantity,
-                            @RequestParam("userEmail") String userEmail) {
-        cartService.addToCart(userEmail, productId, quantity); // เพิ่มสินค้าไปที่ตะกร้า
-        return "redirect:/cart"; // ไปที่หน้า Cart
-    }
-
-    @GetMapping("/products")
-    public String showProducts(Model model) {
-        List<Product> products = productRepository.findAll();
-        model.addAttribute("products", products);
-        return "products";
-    }
+//    // การเพิ่มสินค้าไปที่ตะกร้า
+//    @PostMapping("/add")
+//    public String addToCart(@RequestParam("productId") Long productId,
+//                            @RequestParam("quantity") int quantity,
+//                            @RequestParam("userEmail") String userEmail) {
+//        cartService.addToCart(userEmail, productId, quantity); // เพิ่มสินค้าไปที่ตะกร้า
+//        return "redirect:/cart"; // ไปที่หน้า Cart
+//    }
+//
+//    @GetMapping("/products")
+//    public String showProducts(Model model) {
+//        List<Product> products = productRepository.findAll();
+//        model.addAttribute("products", products);
+//        return "products";
+//    }
 }
 

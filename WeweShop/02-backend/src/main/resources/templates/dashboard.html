@@ -13,7 +13,7 @@
 <!-- เรียก navbar fragment -->
 <div th:replace="fragments/navbar :: navbar"></div>
 
-<div class="container mt-4">
+<div class="container mt-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
     <h1 class="mb-4">Welcome to your dashboard <span th:text="${username}">User</span></h1>
     <p>Here you can manage your orders, profile, and view product recommendations.</p>
 

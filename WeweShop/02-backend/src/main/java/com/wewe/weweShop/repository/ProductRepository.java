@@ -20,4 +20,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.category.name IN :categories ORDER BY function('RAND')")
     List<Product> findRecommendedProductsByCategories(@Param("categories") List<String> categories, Pageable pageable);
+
+    List<Product> findTop6ByOrderByCreatedAtDesc();
+
+    // ค้นหาสินค้าที่มีชื่อคล้ายกับคำค้น (ไม่คำนึงถึงตัวพิมพ์เล็กพิมพ์ใหญ่)
+    List<Product> findByNameContainingIgnoreCase(String name);
 }
