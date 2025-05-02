@@ -17,7 +17,7 @@ public class AuthPageController {
 
     @GetMapping("/")
     public String defaultHome() {
-        return "index"; // ชี้ไปยัง home.html
+        return "home"; // ชี้ไปยัง home.html
     }
 
     @GetMapping("/home")

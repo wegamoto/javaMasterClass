@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+
 @Controller
 
 public class ProductController {
@@ -49,7 +50,7 @@ public class ProductController {
         return "products";
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/product/{id:\\d+}")
     public String getProductDetail(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
@@ -120,26 +121,9 @@ public class ProductController {
         return "redirect:/cart"; // ไปที่หน้า Cart
     }
 
-//    @GetMapping("/products")
-//    public String showProducts(Model model) {
-//        List<Product> products = productRepository.findAll();
-//        model.addAttribute("products", products);
-//        return "products";
-//    }
-
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @GetMapping("/admin/products/add")
-//    public String showAddProductForm(Model model) {
-//        model.addAttribute("product", new Product());
-//        return "admin/add-product";
-//    }
-
-//    @GetMapping("/admin/products/edit/{id}")
-//    public String showEditProductForm(@PathVariable Long id, Model model) {
-//        Product product = productService.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
-//        model.addAttribute("product", product);
-//        return "admin/edit-product";
-//    }
+    @GetMapping("/favicon.ico")
+    public ResponseEntity<Void> handleFavicon() {
+        return ResponseEntity.notFound().build();
+    }
 }
 

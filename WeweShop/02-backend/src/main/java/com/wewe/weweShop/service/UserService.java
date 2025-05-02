@@ -44,8 +44,8 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
     }
 
-    public User getUserByUsernameOrEmail(Principal principal) {
-        String identifier = principal.getName(); // principal.getName() จะคืนค่าเป็น username หรือ email ขึ้นอยู่กับที่ใช้
+    public User getUserByUsernameOrEmail(String userEmail) {
+        String identifier = userEmail; // principal.getName() จะคืนค่าเป็น username หรือ email ขึ้นอยู่กับที่ใช้
 
         return userRepository.findByUsernameOrEmail(identifier)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + identifier));
