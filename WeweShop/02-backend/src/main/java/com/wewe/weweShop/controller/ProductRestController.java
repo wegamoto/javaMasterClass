@@ -2,10 +2,10 @@ package com.wewe.weweShop.controller;
 
 import com.wewe.weweShop.model.Product;
 import com.wewe.weweShop.repository.ProductRepository;
+import com.wewe.weweShop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,11 +13,29 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductRestController {
 
+    private final ProductService productService;
+    private final ProductRepository productRepository;
+
     @Autowired
-    private ProductRepository productRepository;
+    public ProductRestController(ProductRepository productRepository, ProductService productService) {
+        this.productRepository = productRepository;
+        this.productService = productService;
+    }
 
     @GetMapping
     public List<Product> getAllProducts() {
         return productRepository.findAll(); // ส่งกลับข้อมูล JSON ของสินค้า
+    }
+
+    @PostMapping("/{id}/increase-stock")
+    public ResponseEntity<String> increaseStock(@PathVariable Long id, @RequestParam int quantity) {
+        productService.increaseStock(id, quantity);
+        return ResponseEntity.ok("Stock increased successfully");
+    }
+
+    @PostMapping("/{id}/decrease-stock")
+    public ResponseEntity<String> decreaseStock(@PathVariable Long id, @RequestParam int quantity, String purchase) {
+        productService.decreaseStock(id, quantity, "PURCHASE");
+        return ResponseEntity.ok("Stock decreased successfully");
     }
 }

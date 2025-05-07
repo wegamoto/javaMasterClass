@@ -1,14 +1,20 @@
 package com.wewe.weweShop.controller;
 
+import com.wewe.weweShop.model.Order;
+import com.wewe.weweShop.service.OrderService;
 import com.wewe.weweShop.service.ReceiptService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/receipt")
 public class ReceiptController {
 
     private final ReceiptService receiptService;
+    private OrderService orderService;
 
     public ReceiptController(ReceiptService receiptService) {
         this.receiptService = receiptService;
@@ -22,6 +28,16 @@ public class ReceiptController {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=receipt-" + orderId + ".pdf");
         response.getOutputStream().write(pdf);
+    }
+
+    @GetMapping("/receipt")
+    public String viewReceipt(@RequestParam("orderId") Long orderId, Model model) {
+        Optional<Order> order = orderService.getOrderById(orderId);
+        if (order.isPresent()) {
+            model.addAttribute("order", order.get());
+            return "orders/receipt"; // ไปยัง receipt.html
+        }
+        return "redirect:/orders?error=receipt-not-found";
     }
 }
 

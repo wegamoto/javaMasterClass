@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(unique = true, nullable = false)
@@ -42,7 +42,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password; //สำหรับการ login
-
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))

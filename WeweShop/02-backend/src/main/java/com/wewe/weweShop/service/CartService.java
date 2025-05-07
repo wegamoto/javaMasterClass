@@ -1,12 +1,14 @@
 package com.wewe.weweShop.service;
 
 import com.wewe.weweShop.model.*;
-import com.wewe.weweShop.model.enums.OrderStatus;
 import com.wewe.weweShop.repository.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,8 +27,19 @@ public class CartService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final UserService userService;
+
+    public int countItemsInCart(Long userId) {
+        return 0;
+    }
+
+    @Autowired
     private CartRepository cartRepository;
 
+    public Integer getCartItemCount(String email) {
+        Integer count = cartItemRepository.sumQuantityByUserEmail(email);
+        return count != null ? count : 0;
+    }
 
     public String getCurrentUserEmail(Principal principal) {
         return principal != null ? principal.getName() : SecurityContextHolder.getContext().getAuthentication().getName();
@@ -62,7 +75,7 @@ public class CartService {
             cartItem.setUserEmail(userEmail);
             cartItem.setProductId(productId);
             cartItem.setProductName(product.getName());
-            cartItem.setPrice(BigDecimal.valueOf(product.getPrice()));
+            cartItem.setPrice(product.getPrice());
             cartItem.setQuantity(quantity);
             cartItemRepository.save(cartItem);
         }
@@ -102,14 +115,39 @@ public class CartService {
         cartItemRepository.deleteByUserEmail(userEmail);
     }
 
+    public BigDecimal getTotalAmount(Principal principal) {
+
+        BigDecimal totalAmount = BigDecimal.ZERO;  // เริ่มต้นที่ 0
+        // ดึงข้อมูลตะกร้าของผู้ใช้
+        Cart cart = getOrCreateCartByPrincipal(principal);
+
+        // ลูปผ่านรายการสินค้าที่อยู่ในตะกร้า
+        for (CartItem cartItem : cart.getItems()) {
+            Product product = cartItem.getProduct();
+
+            // คำนวณราคาสินค้า * จำนวน โดยใช้ BigDecimal
+            BigDecimal price = product.getPrice();  // ได้ค่าเป็น BigDecimal
+            BigDecimal quantity = new BigDecimal(cartItem.getQuantity());  // แปลงจำนวนสินค้าที่เป็น int ให้เป็น BigDecimal
+
+            totalAmount = totalAmount.add(price.multiply(quantity));  // คำนวณราคาสินค้า * จำนวน
+        }
+
+        return totalAmount;
+    }
+
     @Transactional
     public Long checkout(Principal principal) {
+
+        if (principal == null) {
+            throw new IllegalArgumentException("User must be authenticated to checkout.");
+        }
+
         String userEmail = principal.getName();
 
         // 1. ดึงสินค้าทั้งหมดในตะกร้า
         List<CartItem> cartItems = cartItemRepository.findByUserEmail(userEmail);
 
-        if (cartItems.isEmpty()) {
+        if (cartItems == null || cartItems.isEmpty()) {
             throw new IllegalStateException("Cannot checkout an empty cart.");
         }
 
@@ -119,27 +157,24 @@ public class CartService {
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerEmail(userEmail);
         order.setCreatedAt(LocalDateTime.now());
-        order.setStatus(OrderStatus.PENDING_PAYMENT);
+        order.setStatus(Order.Status.PENDING_PAYMENT);
 
         order = orderRepository.save(order); // save ก่อน เพื่อให้ได้ orderId
 
-        // คำนวณ total
-        BigDecimal total = BigDecimal.ZERO;
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        List<OrderItem> orderItems = new ArrayList<>();
-
+        // คำนวณ totalAmount
+        BigDecimal totalAmount = BigDecimal.ZERO; // เซ็ตค่าเริ่มต้น 0
 
         // 4. เพิ่ม OrderItem สำหรับแต่ละสินค้า
-
+        List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProductId(cartItem.getProductId());
             orderItem.setProductName(cartItem.getProductName());
-            orderItem.setPrice(BigDecimal.valueOf(cartItem.getProduct().getPrice()));
+            orderItem.setPrice(cartItem.getProduct().getPrice());
             orderItem.setQuantity(cartItem.getQuantity());
 
-            // คำนวณ total สำหรับ OrderItem และตั้งค่า total
+            // คำนวณ total สำหรับแต่ละ OrderItem
             BigDecimal itemTotal = orderItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
             orderItem.setTotal(itemTotal); // ตั้งค่า total ให้กับ OrderItem
 
@@ -167,17 +202,21 @@ public class CartService {
     }
 
     @Transactional
-    public void addProductToCart(Long productId, int quantity) {
-        Cart cart = getCurrentCart(cartRepository);
+    public void addProductToCart(Long productId, int quantity, Principal principal) {
+
+        // ดึงข้อมูลตะกร้าของผู้ใช้จาก Principal
+        Cart cart = getCurrentCart(cartRepository, principal);
+
+        // ดึงข้อมูลสินค้า
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         // เช็คก่อนว่ามีสินค้านี้ในตะกร้าแล้วหรือยัง
-        Optional<CartItem> existingItemOpt = cartItemRepository.findByCartAndProduct(cart, product);
+        CartItem existingItem = cartItemRepository.findByCartAndProduct(cart, product)
+                .orElse(null); // ใช้ .orElse(null) เพื่อไม่ให้ต้องใช้ Optional
 
-        if (existingItemOpt.isPresent()) {
+        if (existingItem != null) {
             // ถ้ามีอยู่แล้ว → เพิ่มจำนวน
-            CartItem existingItem = existingItemOpt.get();
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
             cartItemRepository.save(existingItem);
         } else {
@@ -191,17 +230,22 @@ public class CartService {
     }
 
     @Transactional
-    public Cart getCurrentCart(CartRepository cartRepository) {
-        Long userId = getCurrentUserId();
+    public Cart getCurrentCart(CartRepository cartRepository, Principal principal) {
+        // ดึงข้อมูล userId จาก Principal
+        String username = principal.getName();
 
-        Optional<Cart> cartOpt = cartRepository.findByUserId(userId);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // ดึงข้อมูล Cart ที่เชื่อมโยงกับ user
+        Optional<Cart> cartOpt = cartRepository.findByUser(user);
 
         if (cartOpt.isPresent()) {
             return cartOpt.get();
         } else {
-            // ถ้าไม่มี Cart ให้สร้างใหม่
+            // ถ้ายังไม่มี Cart ให้สร้างใหม่
             Cart newCart = new Cart();
-            newCart.setUserId(userId);
+            newCart.setUser(user);
             return cartRepository.save(newCart);
         }
     }
@@ -210,5 +254,27 @@ public class CartService {
         // Mock user id = 1L (ทำเป็นค่าคงที่ไว้ใช้งานก่อน)
         return 1L;
     }
+
+    public String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName(); // คืนค่า username ปัจจุบัน
+        }
+        throw new RuntimeException("User is not authenticated");
+    }
+
+    public Cart getOrCreateCartByPrincipal(Principal principal) {
+        String email = principal.getName();
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        return cartRepository.findByUser(user)
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    newCart.setUser(user);
+                    return cartRepository.save(newCart);
+                });
+    }
+
 
 }

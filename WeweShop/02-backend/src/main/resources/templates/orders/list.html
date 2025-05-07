@@ -21,6 +21,8 @@
       <th>Date</th>
       <th>Total Amount</th>
       <th>Status</th>
+<!--      <th>Status(สถานะ)</th>-->
+      <th>Action</th> <!-- เพิ่มหัวคอลัมน์สำหรับปุ่ม -->
     </tr>
     </thead>
     <tbody>
@@ -30,15 +32,39 @@
       <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td> <!-- วันที่ -->
       <td th:text="${order.totalAmount}"></td> <!-- ยอดรวมแบบ format -->
       <td th:text="${order.status}"></td> <!-- สถานะออเดอร์ -->
+<!--      <td th:text="${statusMap[order.id] != null ? statusMap[order.id] : order.status}"></td>-->
+
+      <!-- แสดงปุ่มถ้า status เป็น PENDING_PAYMENT -->
+      <td>
+        <a th:if="${order.status.name() == 'PENDING_PAYMENT'}"
+           th:href="@{'/payment/continue?orderId=' + ${order.id}}"
+           class="btn btn-warning btn-sm">
+          ชำระ
+        </a>
+      </td>
     </tr>
     </tbody>
   </table>
+
+  <!-- แสดงข้อความสำเร็จ -->
+  <div th:if="${successMessage}" class="alert alert-success d-flex justify-content-between align-items-center">
+    <span th:text="${successMessage}"></span>
+
+    <!-- ปุ่มดูใบเสร็จ -->
+    <a th:if="${showReceiptButton}" th:href="@{/receipt(orderId=${receiptOrderId})}" class="btn btn-outline-light btn-sm ms-3">
+      ดูใบเสร็จ
+    </a>
+  </div>
+
+  <!-- แสดงข้อความผิดพลาด -->
+  <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+  </div>
 
   <a th:href="@{/dashboard}" class="btn btn-primary mt-3">Back to Dashboard</a>
 </div>
 
 <!-- เรียก footer -->
 <div th:replace="fragments/footer :: footer"></div>
-
 </body>
 </html>

@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/home", "/register", "/recommendations",
                                 "/css/**", "/js/**", "/uploads/**", "/images/**").permitAll()
-                        .requestMatchers("/dashboard", "/orders/list", "/profile").authenticated()
+                        .requestMatchers("/dashboard","/stock","/admin", "/orders/list", "/profile").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -58,7 +59,8 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String showProductList(@RequestParam(value = "search", required = false) String searchQuery, Model model) {
+    public String showProductList(@RequestParam(value = "search", required = false) String searchQuery, Model model, Principal principal) {
+
         List<Product> products;
 
         if (searchQuery != null && !searchQuery.isEmpty()) {
@@ -75,7 +77,7 @@ public class ProductController {
     }
 
     // ✅ แสดงสินค้าทั้งหมด
-    @GetMapping
+    @GetMapping("/Allproducts")
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }

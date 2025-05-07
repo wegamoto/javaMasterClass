@@ -87,8 +87,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/register", "/recommendations", "/css/**", "/js/**", "/uploads/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/home", "/register", "/recommendations", "/payment/**", "/css/**", "/js/**", "/uploads/**", "/images/**").permitAll()
                         .requestMatchers("/dashboard", "/orders/list", "/profile").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // ✅ เฉพาะ ADMIN
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

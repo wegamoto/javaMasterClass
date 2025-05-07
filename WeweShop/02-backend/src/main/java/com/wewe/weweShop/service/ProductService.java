@@ -2,7 +2,9 @@ package com.wewe.weweShop.service;
 
 import com.wewe.weweShop.model.Product;
 import com.wewe.weweShop.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ProductService {
 
@@ -149,4 +152,47 @@ public class ProductService {
     public List<Product> searchProducts(String searchQuery) {
         return productRepository.findByNameContainingIgnoreCase(searchQuery);  // ค้นหาสินค้าที่มีชื่อคล้ายกับคำค้น
     }
+
+    public void increaseStock(Long productId, int quantity) {
+        productRepository.findById(productId).ifPresent(product -> {
+            product.setStock(product.getStock() + quantity);
+            productRepository.save(product);
+        });
+    }
+
+
+    // ลด stock อย่างปลอดภัย
+    @Transactional
+    public void decreaseStock(Long productId, int quantity, String reason) {
+        productRepository.findById(productId).ifPresent(product -> {
+            int remaining = product.getStock() - quantity;
+            if (remaining < 0) {
+                throw new IllegalStateException("สต็อกไม่เพียงพอ");
+            }
+            product.setStock(remaining);
+            productRepository.save(product);
+            // เพิ่ม logging หรือประวัติได้ที่นี่
+            // คุณสามารถเพิ่ม log การลด stock ไว้ในตารางแยกได้ เช่น StockLog
+            log.info("Stock decreased for {} (ID: {}) by {} units. Reason: {}",
+                    product.getName(), product.getId(), quantity, reason);
+        });
+    }
+
+    // ตรวจสอบว่าสินค้าคงเหลือพอหรือไม่
+    public boolean isInStock(Long productId, int quantity) {
+        return productRepository.findById(productId)
+                .map(product -> product.getStock() >= quantity)
+                .orElse(false);
+    }
+
+    public List<Product> getTop5LowStockProducts() {
+        return productRepository.findTop5ByOrderByStockAsc();
+    }
+
+    public List<Product> searchProductsByNameOrCategory(String keyword) {
+        return productRepository.findByNameContainingIgnoreCaseOrCategory_NameContainingIgnoreCase(keyword, keyword);
+    }
+
+
+
 }

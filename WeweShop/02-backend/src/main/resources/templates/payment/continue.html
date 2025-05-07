@@ -1,0 +1,40 @@
+<!-- src/main/resources/templates/payment/continue.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>ชำระเงินเพิ่มเติม</title>
+  <style>
+    body {
+        font-family: sans-serif;
+        text-align: center;
+        margin: 40px;
+    }
+    .qr-code {
+        margin: 20px auto;
+    }
+    .btn-confirm {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h2>กรุณาชำระเงินเพิ่มเติม</h2>
+<p>ยอดเงินที่ต้องชำระ: <strong th:text="${amount} + ' บาท'"></strong></p>
+
+<div class="qr-code">
+  <img th:src="'data:image/png;base64,' + ${qrCodeBase64}" alt="PromptPay QR Code" />
+</div>
+
+<form th:action="@{/payment/confirm}" method="post">
+  <input type="hidden" name="orderId" th:value="${orderId}" />
+  <button type="submit" class="btn-confirm">ฉันได้ชำระเงินแล้ว</button>
+</form>
+</body>
+</html>

@@ -1,7 +1,11 @@
 package com.wewe.weweShop.config;
 
+import com.wewe.weweShop.interceptor.CartItemCountInterceptor;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -13,6 +17,18 @@ import java.util.Locale;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Getter
+    private final CartItemCountInterceptor cartItemCountInterceptor;
+
+    @Autowired
+    private HandlerInterceptor cartInterceptor;
+
+    public WebConfig(CartItemCountInterceptor cartItemCountInterceptor) {
+        this.cartItemCountInterceptor = cartItemCountInterceptor;
+    }
+
+
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
@@ -29,7 +45,14 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor());
+        // Interceptor สำหรับเปลี่ยน locale (เช่น i18n)
+        registry.addInterceptor(localeChangeInterceptor())
+                .addPathPatterns("/**");
+
+        // Interceptor สำหรับนับจำนวนสินค้าใน cart
+        registry.addInterceptor(cartInterceptor)
+                .addPathPatterns("/**")
+                .order(1); // ตั้งลำดับหลัง localeChangeInterceptor (default คือ 0)
     }
 
     @Override
@@ -37,4 +60,5 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:c:/weweshop/uploads/"); // หรือใส่ path เต็ม เช่น "file:/absolute/path/to/uploads/"
     }
+
 }

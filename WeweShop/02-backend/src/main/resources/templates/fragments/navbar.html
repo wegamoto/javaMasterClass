@@ -16,8 +16,16 @@
           <li class="nav-item" sec:authorize="hasAnyRole('USER', 'ADMIN')">
             <a class="nav-link" th:href="@{/products}">Products</a>
           </li>
-          <li class="nav-item" sec:authorize="hasAnyRole('USER', 'ADMIN')">
-            <a class="nav-link" th:href="@{/cart/view}">🛒 Cart</a>
+          <li class="nav-item me-3 position-relative d-flex align-items-center" sec:authorize="hasAnyRole('USER', 'ADMIN')">
+            <a class="nav-link d-flex align-items-center gap-1" th:href="@{/cart/view}">
+              <span class="fs-5">🛒</span>
+              <span>Cart</span>
+              <span th:if="${cartItemCount > 0}"
+                    th:text="${cartItemCount}"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                0
+              </span>
+            </a>
           </li>
           <li class="nav-item" sec:authorize="hasAnyRole('USER', 'ADMIN')">
             <a class="nav-link" th:href="@{/logout}">Logout</a>

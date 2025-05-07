@@ -55,6 +55,8 @@
 
 </div>
 
+<div th:if="${error}" class="alert alert-warning" th:text="${error}"></div>
+
 <!-- เรียก footer -->
 <div th:replace="fragments/footer :: footer"></div>
 

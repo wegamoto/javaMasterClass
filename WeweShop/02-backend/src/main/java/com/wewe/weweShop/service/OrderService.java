@@ -1,24 +1,23 @@
 package com.wewe.weweShop.service;
 
-import com.wewe.weweShop.model.CartItem;
-import com.wewe.weweShop.model.Order;
-import com.wewe.weweShop.model.OrderItem;
-import com.wewe.weweShop.model.User;
+import com.wewe.weweShop.model.*;
 import com.wewe.weweShop.repository.OrderRepository;
 import com.wewe.weweShop.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -26,6 +25,11 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartService cartService;
+
+    @Autowired
+    private MessageSource messageSource;
+    private StockService stockService;
+    private ProductService productService;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -59,13 +63,32 @@ public class OrderService {
     public Order createOrderFromCart(Principal principal) {
 
         String userEmail = principal.getName();
-
-        //
-        System.out.println(" user Email : " + userEmail);
+        log.info("Checkout by userEmail: {}", userEmail);
 
         // ดึงข้อมูลรายการสินค้าจากตะกร้า ไม่ได้ระบุ userEmail
         List<CartItem> cartItems = cartService.getCartItems(userEmail);
-        if (cartItems == null || cartItems.isEmpty()) return null;
+
+        // ✅ ตรวจสอบและโยนข้อผิดพลาดหากตะกร้าว่าง
+        if (cartItems == null || cartItems.isEmpty()) {
+            log.warn("Cart is empty for user: {}", userEmail);
+            throw new IllegalStateException("ไม่สามารถทำรายการได้เนื่องจากตะกร้าสินค้าว่าง");
+        }
+
+        // ✅ ตรวจสอบ stock ก่อนสั่งซื้อทุกรายการ
+        for (CartItem item : cartItems) {
+            Product product = item.getProduct();
+            int quantity = item.getQuantity();
+
+            if (product == null) {
+                log.error("Product is null in cart for user: {}", userEmail);
+                throw new IllegalStateException("ไม่พบข้อมูลสินค้าในตะกร้า");
+            }
+
+            if (!productService.isInStock(product.getId(), quantity)) {
+                log.warn("Insufficient stock for product: {} (ID: {})", product.getName(), product.getId());
+                throw new IllegalStateException("สินค้าคงเหลือไม่เพียงพอ: " + product.getName());
+            }
+        }
 
         // สร้างคำสั่งซื้อใหม่
         Order order = new Order();
@@ -74,9 +97,21 @@ public class OrderService {
 
         // แปลง CartItem เป็น OrderItem
         List<OrderItem> items = cartItems.stream().map(item -> {
+            Product product = item.getProduct();
+            int quantity = item.getQuantity();
+
+            // เช็คสต็อกอีกครั้งก่อนหัก (แม้เช็คแล้วก่อนหน้า) เพื่อความปลอดภัย
+            if (product.getStock() < quantity) {
+                log.warn("Not enough stock for product: {} (ID: {}) during final check", product.getName(), product.getId());
+                throw new IllegalStateException("จำนวนสินค้าไม่พอ: " + product.getName());
+            }
+
+            // ✅ หัก stock + log แบบปลอดภัย
+            productService.decreaseStock(product.getId(), quantity, "PURCHASE");
+
             OrderItem oi = new OrderItem();
-            oi.setProduct(item.getProduct()); // ให้ OrderItem รู้จัก product ด้วย
-            oi.setProductId(item.getProduct().getId());
+            oi.setProduct(product);
+            oi.setProductId(product.getId());
             oi.setProductName(item.getProductName());
             oi.setPrice(item.getPrice());
             oi.setQuantity(item.getQuantity());
@@ -87,6 +122,7 @@ public class OrderService {
             return oi;
         }).collect(Collectors.toList());
 
+        // คำนวณราคาทั้งหมด
         BigDecimal total = items.stream()
                 .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -97,9 +133,13 @@ public class OrderService {
 
         // เคลียร์ตะกร้าหลังการสั่งซื้อ
         cartService.clearCart(userEmail); // clear cart after checkout
+        log.info("Cleared cart for user: {}", userEmail);
 
         // บันทึกคำสั่งซื้อใหม่
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        log.info("Order saved with ID: {}", savedOrder.getId());
+
+        return savedOrder;
     }
 
     public List<Order> getOrdersByEmail(Principal principal) {
@@ -107,5 +147,15 @@ public class OrderService {
         String userEmail = principal.getName();
         // ดึงคำสั่งซื้อจากฐานข้อมูลที่ตรงกับ userEmail
         return orderRepository.findByCustomerEmail(userEmail);
+    }
+
+    public List<Order> findByUser(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.map(u -> orderRepository.findByUser(Optional.of(u))) // ถ้า user ไม่เป็น null
+                .orElseGet(Collections::emptyList); // ถ้า user เป็น null ให้ return empty list
+    }
+
+    public String getLocalizedStatus(Order.Status status, Locale locale) {
+        return messageSource.getMessage("order.status." + status.name(), null, locale);
     }
 }

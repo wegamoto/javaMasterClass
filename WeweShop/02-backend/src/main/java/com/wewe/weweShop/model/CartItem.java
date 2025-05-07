@@ -17,14 +17,18 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String username; // ✅ ต้องมี field นี้ ถ้าใช้ findByUsername()
+
     @ManyToOne
     @JoinColumn(name = "cart_id") // FK ไปที่ Cart
     private Cart cart;
 
     @Column(name = "user_email", nullable = false)
-    private String userEmail; // เก็บ email ของผู้ใช้งานตะกร้านี้ (ไม่ต้อง join user ตรงๆ ก็ได้)
+    private String userEmail; // เก็บ email ของผู้ใช้งานตะกร้านี้ (ไม่ต้อง join user ตรงๆ ก็ได้
 
-    private Long userId;
+    // ไม่จำเป็นต้องใช้ หรือ ใช้ userId สำหรับ query native
+//    @Column(name = "user_id", insertable = false, updatable = false)
+//    private Long userId;
 
     @Column(name = "product_id", nullable = false)
     private Long productId; // ID ของสินค้าที่หยิบใส่ตะกร้า
@@ -37,6 +41,10 @@ public class CartItem {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity; // จำนวนสินค้าที่หยิบใส่ตะกร้า
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;  // ใช้สำหรับการดึงข้อมูลของผู้ใช้
 
     @ManyToOne(fetch = FetchType.LAZY) // โหลดเฉพาะตอนที่จำเป็น ไม่หน่วงระบบ
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
@@ -69,8 +77,5 @@ public class CartItem {
     }
 
     public void setTotal(BigDecimal total) {
-    }
-
-    public void setCart(Cart cart) {
     }
 }

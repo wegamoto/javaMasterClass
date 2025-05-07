@@ -25,4 +25,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // ค้นหาสินค้าที่มีชื่อคล้ายกับคำค้น (ไม่คำนึงถึงตัวพิมพ์เล็กพิมพ์ใหญ่)
     List<Product> findByNameContainingIgnoreCase(String name);
+
+    List<Product> findTop5ByOrderByStockAsc();
+
+    List<Product> findByNameContainingIgnoreCaseOrCategory_NameContainingIgnoreCase(String name, String categoryName);
+
 }

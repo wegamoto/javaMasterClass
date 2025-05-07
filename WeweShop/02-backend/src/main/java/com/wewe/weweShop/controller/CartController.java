@@ -5,10 +5,13 @@ import com.wewe.weweShop.model.CartItem;
 import com.wewe.weweShop.model.Order;
 import com.wewe.weweShop.model.OrderItem;
 import com.wewe.weweShop.repository.CartItemRepository;
+import com.wewe.weweShop.service.CartItemService;
 import com.wewe.weweShop.service.CartService;
+import com.wewe.weweShop.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Slf4j
 @RequestMapping("/cart")
 public class CartController {
 
@@ -33,8 +37,26 @@ public class CartController {
     private final CartItemRepository cartItemRepository = null;
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private CartItemService cartItemService;
+
+    @Autowired
     public CartController(CartService cartService) {
         this.cartService = cartService;
+    }
+
+    // Method สำหรับแสดงตะกร้าสินค้า
+    @GetMapping("/cart/view")
+    public String viewCart(Model model) {
+        // เรียกคำนวณจำนวนสินค้าทั้งหมดในตะกร้า
+        Integer cartItemCount = cartItemService.getTotalQuantityInCart();
+
+        // ส่งจำนวนสินค้าผ่าน model ไปที่หน้าจอ
+        model.addAttribute("cartItemCount", cartItemCount);
+
+        return "cart/view"; // ชื่อ view ที่จะส่งกลับ
     }
 
     // สำหรับแสดงข้อมูลในตะกร้า (GET /cart)
@@ -90,13 +112,28 @@ public class CartController {
         return "redirect:/cart/view";
     }
 
+    @GetMapping("/cart/count")
+    @ResponseBody
+    public Integer getCartItemCount(Principal principal) {
+        String email = principal.getName(); // ถ้า login แล้ว principal คือ email
+        return cartService.getCartItemCount(email);
+    }
+
+
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam("productId") Long productId,
                             @RequestParam("quantity") int quantity,
+                            Principal principal, // ใช้ Principal เพื่อดึงข้อมูลผู้ใช้งาน
                             RedirectAttributes redirectAttributes) {
-        cartService.addProductToCart(productId, quantity);
+
+        // เรียกใช้ service เพื่อเพิ่มสินค้าลงในตะกร้า
+        cartService.addProductToCart(productId, quantity, principal);
+
+        // เพิ่มข้อความแจ้งเตือนเมื่อสำเร็จ
         redirectAttributes.addFlashAttribute("message", "เพิ่มสินค้าสำเร็จ!");
-        return "redirect:/recommendations"; // หรือ redirect:/cart ถ้าอยากพาไปหน้าตะกร้า
+
+        // Redirect ไปที่หน้าที่ต้องการ เช่น หน้ารายการแนะนำ หรือ หน้าตะกร้า
+        return "redirect:/recommendations"; // หรือ redirect:/cart พาไปหน้าตะกร้า
     }
 
     // ✅ เพิ่มสินค้าจาก Form
@@ -135,19 +172,50 @@ public class CartController {
         return "redirect:/cart/view";
     }
 
+//    @PostMapping("/checkout")
+//    public String checkout(Principal principal) {
+//        if (principal == null) {
+//            return "redirect:/login";
+//        }
+//
+//        // เรียก checkout ผ่าน service และรับ orderId,totalAmount กลับมา
+//        Long orderId = cartService.checkout(principal);
+//        Double totalAmount = cartService.getTotalAmount(principal);
+//
+//        // Redirect ไปหน้า success พร้อมส่ง orderId ไปด้วย
+//        return "redirect:/orders/success?orderId=" + orderId + "&totalAmount=" + totalAmount;
+//    }
+
     @PostMapping("/checkout")
-    public String checkout(Principal principal) {
+    public String processCheckout(Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
+            log.warn("Checkout ล้มเหลว: ผู้ใช้ยังไม่ได้เข้าสู่ระบบ");
+            redirectAttributes.addFlashAttribute("error", "กรุณาเข้าสู่ระบบก่อนทำรายการ");
             return "redirect:/login";
         }
 
-        // เรียก checkout ผ่าน service และรับ orderId กลับมา
-        Long orderId = cartService.checkout(principal);
+        String userEmail = principal.getName();
+        log.info("เริ่ม checkout สำหรับผู้ใช้: {}", userEmail);
 
-        // Redirect ไปหน้า success พร้อมส่ง orderId ไปด้วย
-        return "redirect:/orders/success?orderId=" + orderId;
+        try {
+            Order order = orderService.createOrderFromCart(principal);
+            log.info("สร้างคำสั่งซื้อสำเร็จ: Order ID = {}, ผู้ใช้ = {}", order.getId(), userEmail);
+
+            cartService.clearCart(userEmail);
+            log.info("ล้างตะกร้าสินค้าของผู้ใช้ {} สำเร็จ", userEmail);
+
+            return "redirect:/checkout/success";
+
+        } catch (IllegalStateException e) {
+            // 🟡 ถ้าตะกร้าว่าง ให้อยู่ที่หน้าเดิม
+            log.warn("Checkout ไม่สำเร็จ (เช่น ตะกร้าว่าง): {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/cart/view"; // ❗ redirect ไปที่ cart/view พร้อม Flash message
+        } catch (Exception e) {
+            log.error("เกิดข้อผิดพลาดขณะทำรายการ checkout ของผู้ใช้ {}", userEmail, e);
+            redirectAttributes.addFlashAttribute("error", "เกิดข้อผิดพลาดขณะทำรายการ");
+            return "redirect:/cart/view";
+        }
     }
-
-
 
 }

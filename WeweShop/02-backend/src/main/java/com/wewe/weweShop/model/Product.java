@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,7 +17,7 @@ public class Product {
 
     private String name;
     private String description;
-    private double price;
+    private BigDecimal price;
     private int stock;
     private int quantity;
 
@@ -30,7 +31,7 @@ public class Product {
 
 
     // 🔥 ต้องมี @ManyToOne หรือ Join กับ Category ด้วย
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 

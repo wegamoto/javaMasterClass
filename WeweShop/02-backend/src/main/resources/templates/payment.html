@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>ชำระเงิน</title>
+</head>
+<body>
+<h1>สแกนเพื่อชำระเงิน</h1>
+<p>ยอดที่ต้องชำระ: <span th:text="${order.totalAmount}">0.00</span> บาท</p>
+<img th:src="'data:image/png;base64,' + ${promptPayQr}" alt="PromptPay QR" />
+</body>
+</html>

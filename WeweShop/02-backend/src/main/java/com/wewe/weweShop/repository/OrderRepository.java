@@ -12,11 +12,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     long countByStatus(String status); // นับคำสั่งซื้อที่มีสถานะตามที่ระบุ
     Optional<Order> findByIdAndUser(Long id, User user);
 
-    List<Order> findByUser(String userEmail);
+    List<Order> findByUser(Optional<User> user);
 
     List<Order> findByUserOrderByCreatedAtDesc(String userEmail);
 
     List<Order> findAllByOrderByCreatedAtDesc();
 
     List<Order> findByCustomerEmail(String userEmail);
+
+
 }

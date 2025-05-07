@@ -65,8 +65,8 @@
         <h1>Dashboard</h1>
 
         <!-- ปุ่ม View Orders เฉพาะคนที่มี ROLE_ADMIN -->
-        <div sec:authorize="hasRole('ADMIN')">
-            <a class="btn btn-primary" th:href="@{/orders}">View Orders</a>
+        <div sec:authorize="hasAnyRole('USER', 'ADMIN')">
+            <a class="btn btn-primary" th:href="@{/orders/list}">View Orders</a>
         </div>
     </div>
 

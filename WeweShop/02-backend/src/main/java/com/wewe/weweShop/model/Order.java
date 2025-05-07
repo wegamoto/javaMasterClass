@@ -1,6 +1,5 @@
 package com.wewe.weweShop.model;
 
-import com.wewe.weweShop.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,8 +28,18 @@ public class Order {
 
     private String customerEmail; // Email สำหรับติดต่อ
 
+    public enum Status {
+        CREATED,
+        WAITING_FOR_PAYMENT,
+        PENDING_VERIFICATION,
+        PENDING_PAYMENT,
+        PAID,
+        COMPLETED,
+        CANCELLED
+    }
+
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;  // PENDING_PAYMENT, PAID, CANCELLED, REFUNDED
+    private Status status;  //  PENDING_PAYMENT, PAID, COMPLETED, CANCELLED, REFUNDED
 
     private BigDecimal total; // ราคารวมทั้งหมด (รวมภาษี, ค่าส่ง ขึ้นกับระบบ)
 
@@ -49,10 +58,6 @@ public class Order {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private User user;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
