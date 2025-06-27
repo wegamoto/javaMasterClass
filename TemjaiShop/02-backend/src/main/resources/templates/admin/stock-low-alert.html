@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>แจ้งเตือนสินค้าน้อย</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- ✅ Bootstrap Icons CSS (เพิ่มบรรทัดนี้) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- เรียก navbar fragment -->
+<!-- ✅ syntax ใหม่ -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-4">
+  <h2 class="text-danger">แจ้งเตือนสินค้าคงเหลือน้อย</h2>
+
+  <div th:if="${#lists.isEmpty(lowStockProducts)}">
+    <p class="text-success">ไม่มีสินค้าที่ใกล้หมดในขณะนี้</p>
+  </div>
+
+  <table class="table table-bordered mt-3" th:if="${!#lists.isEmpty(lowStockProducts)}">
+    <thead class="table-warning">
+    <tr>
+      <th>#</th>
+      <th>ชื่อสินค้า</th>
+      <th>หมวดหมู่</th>
+      <th>คงเหลือ</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product, iStat : ${lowStockProducts}">
+      <td th:text="${iStat.index + 1}">1</td>
+      <td th:text="${product.name}">สินค้า</td>
+      <td th:text="${product.category != null ? product.category.name : 'ไม่ระบุ'}">หมวดหมู่</td>
+      <td th:text="${product.stockQuantity}" class="text-danger fw-bold">0</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a th:href="@{/admin/dashboard}" class="btn btn-secondary mt-3">ย้อนกลับ</a>
+</div>
+
+<!-- เรียก footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!-- fragments/navbar.html -->
+<nav class="bg-gray-900 text-white dark:bg-gray-800">
+  <div class="container mx-auto flex items-center justify-between p-4">
+    <a href="/" class="flex items-center space-x-3">
+      <img src="/images/logo.png" alt="WegoLogistic Logo" class="w-10 h-10" />
+      <span class="text-xl font-semibold">WegoLogistic</span>
+    </a>
+
+    <!-- เมนูแบบ hamburger สำหรับมือถือ -->
+    <button id="menu-btn" aria-label="Toggle Menu" class="block md:hidden focus:outline-none">
+      <i class="fas fa-bars text-2xl"></i>
+    </button>
+
+    <!-- เมนูหลัก (ซ่อนบนมือถือ) -->
+    <ul id="menu" class="hidden md:flex md:items-center md:space-x-8 transition-all duration-300 ease-in-out">
+      <li><a href="/" class="hover:text-yellow-400">หน้าแรก</a></li>
+      <li><a href="/vehicles" class="hover:text-yellow-400">รถขนส่ง</a></li>
+      <li><a href="/about" class="hover:text-yellow-400">เกี่ยวกับเรา</a></li>
+      <li><a href="/contact" class="hover:text-yellow-400">ติดต่อ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<script>
+  // Toggle เมนู hamburger บนมือถือ
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('menu-btn');
+    const menu = document.getElementById('menu');
+
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+  });
+</script>

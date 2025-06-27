@@ -1,0 +1,29 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${pageTitle} ?: 'Maintenance System'">Maintenance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col h-full bg-gray-100"
+      th:fragment="layout">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex flex-1 pt-16 min-h-[calc(100vh-4rem-3rem)]">
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-64 p-6 bg-gray-50 overflow-auto" th:fragment="content">
+        <!-- ส่วนนี้จะถูกแทนที่จาก child template -->
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

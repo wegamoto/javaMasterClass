@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Work Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar (Fixed Top) -->
+<header th:replace="~{fragments/navbar :: navbar}"
+        class="fixed top-0 left-0 right-0 h-16 z-30 bg-white shadow">
+</header>
+
+<!-- ✅ Main Layout Container -->
+<div class="flex flex-1 pt-16">
+
+    <!-- ✅ Sidebar -->
+    <aside th:replace="~{fragments/sidebar :: sidebar}"
+           class="w-64 fixed top-16 bottom-0 left-0 bg-white border-r border-gray-200 overflow-y-auto z-20">
+    </aside>
+
+    <!-- ✅ Main Content -->
+    <main class="flex-1 ml-64 px-8 py-6 overflow-y-auto">
+        <div class="max-w-7xl mx-auto space-y-6">
+
+            <!-- Header -->
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800">รายการงานซ่อม</h1>
+                <a href="/workorders/new"
+                   class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                    + เพิ่มงานซ่อม
+                </a>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <table class="min-w-full table-auto text-sm text-gray-700">
+                    <thead class="bg-gray-100 text-left">
+                    <tr>
+                        <th class="px-4 py-2">รหัส</th>
+                        <th class="px-4 py-2">ชื่ออุปกรณ์</th>
+                        <th class="px-4 py-2">สถานะ</th>
+                        <th class="px-4 py-2">วันที่แจ้ง</th>
+                        <th class="px-4 py-2 text-right">การจัดการ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="wo : ${workOrders}" class="hover:bg-gray-50">
+                        <td class="px-4 py-2" th:text="${wo.id}">WO-001</td>
+                        <td class="px-4 py-2" th:text="${wo.equipmentName}">เครื่องปรับอากาศ</td>
+                        <td class="px-4 py-2">
+                            <span th:text="${wo.status}"
+                                  th:classappend="
+                                    ${wo.status} == 'COMPLETED' ? 'text-green-600' :
+                                    (${wo.status} == 'IN_PROGRESS' ? 'text-yellow-600' :
+                                    (${wo.status} == 'OPEN' ? 'text-blue-600' : 'text-red-600'))">
+                            </span>
+                        </td>
+                        <td class="px-4 py-2"
+                            th:text="${wo.createdAt != null} ? ${#temporals.format(wo.createdAt, 'dd/MM/yyyy')} : '-'">
+                        </td>
+
+                        <td class="px-4 py-2 text-right">
+                            <a th:href="@{'/workorders/' + ${wo.id}}" class="text-blue-600 hover:underline">ดู</a>
+                            |
+                            <a th:href="@{'/workorders/edit/' + ${wo.id}}"
+                               class="text-yellow-600 hover:underline">แก้ไข</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer -->
+<footer th:replace="~{fragments/footer :: footer}"
+        class="bg-white shadow px-6 py-4 text-center text-sm text-gray-500">
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>รายละเอียดงานซ่อม</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- Navbar (Fixed Top) -->
+<header th:replace="~{fragments/navbar :: navbar}"
+        class="fixed top-0 left-0 right-0 h-16 z-30 bg-white shadow">
+</header>
+
+<!-- Main Layout Container -->
+<div class="flex flex-1 pt-16">
+
+  <!-- Sidebar -->
+  <aside th:replace="~{fragments/sidebar :: sidebar}"
+         class="w-64 fixed top-16 bottom-0 left-0 bg-white border-r border-gray-200 overflow-y-auto z-20">
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 ml-64 px-8 py-6 overflow-y-auto">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+
+      <h1 class="text-3xl font-bold mb-4">รายละเอียดงานซ่อม</h1>
+
+      <div class="mb-4">
+        <label class="font-semibold">รหัสงานซ่อม:</label>
+        <span th:text="${workOrder.id}">1</span>
+      </div>
+
+      <div class="mb-4">
+        <label class="font-semibold">ชื่ออุปกรณ์:</label>
+        <span th:text="${workOrder.equipmentName}">เครื่องปรับอากาศ</span>
+      </div>
+
+      <div class="mb-4">
+        <label class="font-semibold">รายละเอียด:</label>
+        <p th:text="${workOrder.description}">แอร์ไม่เย็น</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="font-semibold">สถานะ:</label>
+        <span th:text="${workOrder.status}">OPEN</span>
+      </div>
+
+      <div class="mb-4">
+        <label class="font-semibold">วันที่สร้าง:</label>
+        <span th:text="${workOrder.createdAt != null} ? ${#temporals.format(workOrder.createdAt, 'dd/MM/yyyy HH:mm')} : '-'">20/06/2025 08:00</span>
+      </div>
+
+      <div class="mb-4" th:if="${workOrder.completedAt != null}">
+        <label class="font-semibold">วันที่เสร็จสิ้น:</label>
+        <span th:text="${#temporals.format(workOrder.completedAt, 'dd/MM/yyyy HH:mm')}">22/06/2025 15:00</span>
+      </div>
+
+      <div class="mt-6">
+        <a href="/work-orders/list" class="text-blue-600 hover:underline">กลับไปหน้ารายการ</a>
+        |
+        <a th:href="@{'/work-orders/edit/' + ${workOrder.id}}" class="text-yellow-600 hover:underline">แก้ไข</a>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"
+        class="bg-white shadow px-6 py-4 text-center text-sm text-gray-500">
+</footer>
+
+</body>
+</html>

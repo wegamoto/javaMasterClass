@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,8 +52,18 @@ public class ProductService {
 
     // ✅ เพิ่มสินค้าใหม่
     public Product createProduct(Product product) {
-        return productRepository.save(product);
+
+        // บันทึกครั้งแรกเพื่อให้ได้ id ที่ถูก generate
+        Product savedProduct = productRepository.save(product);
+
+        // สร้างรหัสสินค้าอิงจาก id (เช่น P001)
+        String generatedCode = String.format("P%03d", savedProduct.getId());
+        savedProduct.setProductCode(generatedCode);
+
+        // บันทึกสินค้าอีกครั้งเพื่อให้มีการอัพเดตรหัสสินค้า
+        return productRepository.save(savedProduct);  // ใช้ productRepository.save(savedProduct)
     }
+
 
     // ✅ แก้ไขสินค้า
     public Product updateProduct(Long id, Product updatedProduct, MultipartFile imageFile) {
@@ -153,35 +162,40 @@ public class ProductService {
         return productRepository.findByNameContainingIgnoreCase(searchQuery);  // ค้นหาสินค้าที่มีชื่อคล้ายกับคำค้น
     }
 
-    public void increaseStock(Long productId, int quantity) {
-        productRepository.findById(productId).ifPresent(product -> {
-            product.setStock(product.getStock() + quantity);
+    public boolean increaseStock(Long productId, int amount) {
+        Optional<Product> productOpt = productRepository.findByIdForUpdate(productId);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            product.setStock(product.getStock() + amount);
             productRepository.save(product);
-        });
+            return true;
+        }
+        return false;
     }
 
-
     // ลด stock อย่างปลอดภัย
-    @Transactional
-    public void decreaseStock(Long productId, int quantity, String reason) {
-        productRepository.findById(productId).ifPresent(product -> {
-            int remaining = product.getStock() - quantity;
-            if (remaining < 0) {
-                throw new IllegalStateException("สต็อกไม่เพียงพอ");
+    public boolean decreaseStock(Long productId, int amount) {
+        Optional<Product> productOpt = productRepository.findById(productId);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            if (product.getStock() >= amount) {
+                product.setStock(product.getStock() - amount);
+                productRepository.save(product);
+                return true;
             }
-            product.setStock(remaining);
-            productRepository.save(product);
-            // เพิ่ม logging หรือประวัติได้ที่นี่
-            // คุณสามารถเพิ่ม log การลด stock ไว้ในตารางแยกได้ เช่น StockLog
-            log.info("Stock decreased for {} (ID: {}) by {} units. Reason: {}",
-                    product.getName(), product.getId(), quantity, reason);
-        });
+        }
+        return false;
     }
 
     // ตรวจสอบว่าสินค้าคงเหลือพอหรือไม่
     public boolean isInStock(Long productId, int quantity) {
         return productRepository.findById(productId)
-                .map(product -> product.getStock() >= quantity)
+                .map(product -> {
+                    System.out.println("Checking stock for product " + product.getName() +
+                            " | Available: " + product.getStock() +
+                            " | Requested: " + quantity);
+                    return product.getStock() >= quantity;
+                })
                 .orElse(false);
     }
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="h-full bg-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Maintenance System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full flex items-center justify-center">
+
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-sm w-full">
+  <h2 class="mb-6 text-center text-2xl font-bold text-blue-600">Login</h2>
+
+  <form th:action="@{/login}" method="post" class="space-y-4">
+    <div>
+      <label for="username" class="block text-gray-700 font-semibold mb-2">Username</label>
+      <input id="username" name="username" type="text" required
+             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div>
+      <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+      <input id="password" name="password" type="password" required
+             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div>
+      <button type="submit"
+              class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Login
+      </button>
+    </div>
+  </form>
+
+  <!-- ✅ ลิงก์ Register -->
+  <div class="mt-4 text-center">
+    <span class="text-gray-600 text-sm">Don't have an account?</span>
+    <a th:href="@{/register}" class="text-blue-600 hover:underline font-medium">Register</a>
+  </div>
+</div>
+
+</body>
+</html>

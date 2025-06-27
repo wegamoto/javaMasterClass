@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>แดชบอร์ด | ERP System</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ฟอนต์ภาษาไทย -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+    <style>
+        body {
+          font-family: 'Noto Sans Thai', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar (ด้านบนสุด) -->
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<!-- ✅ Layout with Sidebar -->
+<div class="flex flex-grow">
+    <!-- ✅ Sidebar (ด้านซ้าย) -->
+    <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('dashboard')}"></aside>
+
+    <!-- ✅ Main content -->
+    <main class="flex-grow p-6">
+        <div class="bg-white shadow-2xl rounded-xl w-full p-10">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-10 text-center">📊 แดชบอร์ดระบบ ERP</h1>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- Card: HR -->
+                <a th:href="@{/hr}" class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-md p-4 text-center transition">
+                    <div class="bg-indigo-100 p-4 rounded-full mx-auto mb-3 w-fit">
+                        <i class="lucide lucide-users text-indigo-600 w-6 h-6"></i>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">ทรัพยากรบุคคล</div>
+                </a>
+
+                <!-- Card: Inventory -->
+                <a th:href="@{/inventory}" class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-md p-4 text-center transition">
+                    <div class="bg-blue-100 p-4 rounded-full mx-auto mb-3 w-fit">
+                        <i class="lucide lucide-package text-blue-600 w-6 h-6"></i>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">คลังสินค้า</div>
+                </a>
+
+                <!-- Card: Accounting -->
+                <a th:href="@{/accounting}" class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-md p-4 text-center transition">
+                    <div class="bg-amber-100 p-4 rounded-full mx-auto mb-3 w-fit">
+                        <i class="lucide lucide-wallet text-amber-600 w-6 h-6"></i>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">บัญชี</div>
+                </a>
+
+                <!-- Card: Procurement -->
+                <a th:href="@{/procurement}" class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-md p-4 text-center transition">
+                    <div class="bg-pink-100 p-4 rounded-full mx-auto mb-3 w-fit">
+                        <i class="lucide lucide-shopping-cart text-pink-600 w-6 h-6"></i>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">จัดซื้อ</div>
+                </a>
+
+                <!-- Card: Reports -->
+                <a th:href="@{/reports}" class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-md p-4 text-center transition">
+                    <div class="bg-green-100 p-4 rounded-full mx-auto mb-3 w-fit">
+                        <i class="lucide lucide-bar-chart-3 text-green-600 w-6 h-6"></i>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">รายงาน</div>
+                </a>
+
+                <!-- Card: Settings -->
+                <a th:href="@{/settings}" class="bg-white border border-gray-200 rounded-xl shadow hover:shadow-md p-4 text-center transition">
+                    <div class="bg-purple-100 p-4 rounded-full mx-auto mb-3 w-fit">
+                        <i class="lucide lucide-settings text-purple-600 w-6 h-6"></i>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">ตั้งค่า</div>
+                </a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>

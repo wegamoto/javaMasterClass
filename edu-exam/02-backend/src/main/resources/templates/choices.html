@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="head('จัดการตัวเลือก')">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+</div>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- ✅ เรียก Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="flex">
+  <!-- ✅ Sidebar Fragment -->
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="max-w-5xl mx-auto bg-white shadow p-6 rounded">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800" th:text="'🎯 ตัวเลือกของคำถาม: ' + ${question.content}">
+          ตัวเลือกของคำถาม
+        </h2>
+        <a th:if="${question != null}"
+           th:href="@{/choices/new(questionId=${question.id})}"
+           class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+          ➕ เพิ่มตัวเลือก
+        </a>
+
+      </div>
+
+      <table class="w-full border text-left">
+        <thead class="bg-gray-100">
+        <tr>
+          <th class="p-3 border-b">#</th>
+          <th class="p-3 border-b">ข้อความตัวเลือก</th>
+          <th class="p-3 border-b">เป็นคำตอบที่ถูก?</th>
+          <th class="p-3 border-b text-center">การจัดการ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c, iterStat : ${choices}" class="hover:bg-gray-50">
+          <td class="p-3 border-b" th:text="${iterStat.count}">1</td>
+          <td class="p-3 border-b" th:text="${c.text}">ข้อความ</td>
+          <td class="p-3 border-b" th:text="${c.isCorrect} ? '✅ ใช่' : '❌ ไม่ใช่'"></td>
+          <td class="p-3 border-b text-center space-x-3">
+            <a th:href="@{'/choices/edit/' + ${c.id}}"
+               class="text-blue-600 hover:underline">✏️ แก้ไข</a>
+            <a th:href="@{'/choices/delete/' + ${c.id}}"
+               onclick="return confirm('ลบตัวเลือกนี้?')"
+               class="text-red-500 hover:underline">🗑️ ลบ</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="mt-6">
+        <a href="/questions" class="text-gray-600 hover:underline">← ย้อนกลับหน้าคำถาม</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

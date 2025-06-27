@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>รายการข้อสอบ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-5xl mx-auto bg-white rounded shadow p-6">
+    <h1 class="text-3xl font-bold mb-6">รายชื่อข้อสอบทั้งหมด</h1>
+
+    <table class="min-w-full table-auto border-collapse border border-gray-300">
+        <thead>
+        <tr class="bg-gray-200">
+            <th class="border border-gray-300 px-4 py-2">ID</th>
+            <th class="border border-gray-300 px-4 py-2">ชื่อข้อสอบ</th>
+            <th class="border border-gray-300 px-4 py-2">คำอธิบาย</th>
+            <th class="border border-gray-300 px-4 py-2">ระยะเวลา (นาที)</th>
+            <th class="border border-gray-300 px-4 py-2">วันที่สร้าง</th>
+            <th class="border border-gray-300 px-4 py-2">จัดการ</th>
+        </tr>
+        </thead>
+        <tbody id="examTableBody" class="text-gray-700">
+        <!-- ข้อมูลข้อสอบจะถูกเพิ่มที่นี่ -->
+        </tbody>
+    </table>
+
+    <p id="message" class="mt-4 text-center"></p>
+</div>
+
+<script>
+    const examTableBody = document.getElementById('examTableBody');
+    const messageEl = document.getElementById('message');
+
+    async function loadExams() {
+      try {
+        const response = await fetch('/api/exams');
+        if (!response.ok) throw new Error('ไม่สามารถโหลดข้อมูลข้อสอบได้');
+
+        const exams = await response.json();
+
+        // เคลียร์ข้อมูลเก่า
+        examTableBody.innerHTML = '';
+
+        if (exams.length === 0) {
+          examTableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center py-4">ไม่มีข้อสอบในระบบ</td>
+            </tr>
+          `;
+          return;
+        }
+
+        exams.forEach(exam => {
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+            <td class="border border-gray-300 px-4 py-2 text-center">${exam.id}</td>
+            <td class="border border-gray-300 px-4 py-2">${exam.title}</td>
+            <td class="border border-gray-300 px-4 py-2">${exam.description}</td>
+            <td class="border border-gray-300 px-4 py-2 text-center">${exam.durationMinutes}</td>
+            <td class="border border-gray-300 px-4 py-2 text-center">${new Date(exam.createdAt).toLocaleString()}</td>
+            <td class="border border-gray-300 px-4 py-2 text-center space-x-2">
+              <a href="/edit-exam.html?id=${exam.id}"
+                 class="text-blue-600 hover:underline">แก้ไข</a>
+              <button onclick="deleteExam(${exam.id})"
+                      class="text-red-600 hover:underline">ลบ</button>
+            </td>
+          `;
+
+          examTableBody.appendChild(tr);
+        });
+
+      } catch (error) {
+        messageEl.textContent = error.message;
+        messageEl.className = 'mt-4 text-center text-red-600';
+      }
+    }
+
+    async function deleteExam(id) {
+      if (!confirm('คุณแน่ใจที่จะลบข้อสอบนี้หรือไม่?')) return;
+
+      try {
+        const response = await fetch(`/api/exams/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error('ลบข้อสอบไม่สำเร็จ');
+
+        messageEl.textContent = `ลบข้อสอบ ID ${id} สำเร็จ`;
+        messageEl.className = 'mt-4 text-center text-green-600';
+
+        // โหลดข้อมูลใหม่หลังลบ
+        loadExams();
+
+      } catch (error) {
+        messageEl.textContent = error.message;
+        messageEl.className = 'mt-4 text-center text-red-600';
+      }
+    }
+
+    // โหลดข้อสอบเมื่อหน้าโหลดเสร็จ
+    window.onload = loadExams;
+</script>
+
+</body>
+</html>

@@ -42,7 +42,7 @@ public class ReceiptService {
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
 
-            document.add(new Paragraph("Receipt for Order #" + order.getId()));
+            document.add(new Paragraph("Receipt for Order " + order.getId().toString()));
             document.add(new Paragraph("Customer: " + order.getCustomerName()));
 
             Table table = new Table(UnitValue.createPercentArray(new float[]{4, 2, 2, 2}))

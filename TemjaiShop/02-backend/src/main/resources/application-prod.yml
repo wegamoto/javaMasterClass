@@ -1,0 +1,124 @@
+spring:
+
+#  profiles:
+#    active: prod  # หรือ prod แล้วแต่ environment ที่คุณต้องการ
+
+  application:
+    name: temjaiShop
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecommerce_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Bangkok
+    username: devuser
+    password: '@!Infosysasia2012'
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      pool-name: HikariCP
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  web:
+    resources:
+      static-locations: >
+        file:C:/temjaishop/uploads/,
+        file:/opt/temjaishop/uploads/,
+        classpath:/static/,
+        classpath:/public/,
+        classpath:/resources/,
+        classpath:/images/,
+        file:images/,
+        file:uploads/
+
+  messages:
+    basename: messages
+    encoding: UTF-8
+
+  mvc:
+    locale: th
+    locale-resolver: accept-header
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    enabled: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+  config:
+    import: optional:dotenv://
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 518738269482-jgd4ql4a004ao8hqatufc2srhpodhvuc.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+
+          facebook:
+            client-id: 710094041527802 #1026077322323487
+            client-secret: 2749c0dc6692e2647ea3b8784fc9cc74  #463cd25e44a1cf30d3d17dd0ce34ac04
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - email
+              - public_profile
+
+        provider:
+          facebook:
+            authorization-uri: https://www.facebook.com/v13.0/dialog/oauth
+            token-uri: https://graph.facebook.com/v13.0/oauth/access_token
+            user-info-uri: https://graph.facebook.com/me?fields=id,name,email
+            user-name-attribute: id
+
+server:
+  port: 8080
+  address: 0.0.0.0
+  error:
+    whitelabel:
+      enabled: false
+    include-message: always
+    include-binding-errors: always
+
+logging:
+  level:
+    com.wewe.temjaiShop: DEBUG
+  file:
+    name: temjaishop.log
+
+jwt:
+  secret: U7SYu1KtKUbdVr7JgHwnuOtDUAq9nqMLaI1MtoXvGLANnFnOHwJ29hWqEdFeH4LDeyqXB1cYcWaEvKm4Pxxl4A==
+  expirationMs: 604800000
+
+app:
+  frontend-base-url: https://shop.temjaiengineering.com
+
+upload:
+  dir: uploads/
+  max-file-size: 10485760 # 10Mb in bytes (ถ้าใช้ตรงนี้แทน spring.servlet)
+  allowed-types:
+    - image/jpeg
+    - image/png
+    - image/webp
+
+debug: true
+

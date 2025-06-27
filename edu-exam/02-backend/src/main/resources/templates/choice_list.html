@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ตัวเลือกคำถาม</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="flex flex-1">
+
+    <!-- ✅ Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- ✅ Main Content -->
+    <main class="flex-1 p-6">
+        <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800 mb-2">🔽 ตัวเลือกของคำถาม:</h1>
+                    <p class="text-gray-700" th:if="${question != null}" th:text="'คำถาม: ' + ${question.content}"></p>
+                </div>
+                <div>
+                    <a th:if="${question != null}"
+                       th:href="@{'/choices/new?questionId=' + ${question.id}}"
+                       class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                        ➕ เพิ่มตัวเลือก
+                    </a>
+                </div>
+            </div>
+
+            <table class="w-full border text-left">
+                <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 border-b">#</th>
+                    <th class="p-3 border-b">ข้อความ</th>
+                    <th class="p-3 border-b">ถูกต้อง?</th>
+                    <th class="p-3 border-b text-center">การจัดการ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c, stat : ${choices}" class="hover:bg-gray-50">
+                    <td class="p-3 border-b" th:text="${stat.count}">1</td>
+                    <td class="p-3 border-b" th:text="${c.content}">content</td>
+                    <td class="p-3 border-b" th:text="${c.isCorrect ? '✅ ใช่' : '❌ ไม่ใช่'}"></td>
+                    <td class="p-3 border-b text-center space-x-3">
+                        <a th:href="@{'/choices/edit/' + ${c.id}}" class="text-blue-600 hover:underline">✏️ แก้ไข</a>
+                        <a th:href="@{'/choices/delete/' + ${c.id}}"
+                           onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบตัวเลือกนี้?')"
+                           class="text-red-500 hover:underline">🗑️ ลบ</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-6 text-right">
+                <a href="/questions" class="text-blue-600 hover:underline">⬅️ กลับไปหน้าคำถาม</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

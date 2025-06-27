@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+    }
+    .sidebar {
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      border-right: 1px solid #dee2e6;
+      padding: 1rem 0.75rem;
+    }
+    .main-content {
+      padding: 2rem 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ✅ Navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- ✅ Main Layout -->
+<div class="container-fluid">
+  <div class="row">
+    <!-- ✅ Sidebar -->
+    <div class="col-auto p-0">
+      <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    </div>
+
+    <!-- ✅ Main Content -->
+    <main class="col ps-md-4 main-content">
+      <h2 class="mb-4 text-center"><i class="bi bi-person-circle me-2"></i>User Profile</h2>
+
+      <div class="card shadow border-0 p-4 mx-auto" style="max-width: 600px;">
+        <form id="profileForm" th:action="@{/profile}" method="post" th:object="${user}">
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" id="address" th:field="*{address}" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email (readonly)</label>
+            <input type="email" class="form-control" id="email" th:field="*{email}" readonly>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save me-1"></i> Save Changes
+            </button>
+            <button type="button" class="btn btn-outline-danger" onclick="deleteProfile()">
+              <i class="bi bi-trash me-1"></i> Delete Account
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ✅ Delete Profile Script -->
+<script>
+  function deleteProfile() {
+    if (confirm('Are you sure you want to delete your account?')) {
+      fetch('/api/profile', { method: 'DELETE' })
+        .then(response => {
+          if (response.ok) {
+            alert('Account deleted successfully');
+            window.location.href = '/login';
+          } else {
+            alert('Failed to delete account');
+          }
+        });
+    }
+  }
+</script>
+
+<!-- ✅ Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

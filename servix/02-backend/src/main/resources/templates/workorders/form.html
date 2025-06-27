@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Work Order Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+
+<!-- ✅ Navbar -->
+<header th:replace="~{fragments/navbar :: navbar}"
+        class="fixed top-0 left-0 right-0 h-16 z-30 bg-white shadow">
+</header>
+
+<!-- ✅ Main Layout -->
+<div class="flex flex-1 pt-16 h-full">
+
+    <!-- ✅ Sidebar -->
+    <aside th:replace="~{fragments/sidebar :: sidebar}"
+           class="w-64 fixed top-16 bottom-0 left-0 bg-white border-r border-gray-200 overflow-y-auto z-20">
+    </aside>
+
+    <!-- ✅ Main Content Area -->
+    <main class="flex-1 ml-64 px-6 py-8 overflow-y-auto">
+        <div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4"
+                th:text="${workOrder.id != null} ? 'แก้ไขงานซ่อม' : 'เพิ่มงานซ่อม'">
+                เพิ่มงานซ่อม
+            </h2>
+
+            <form th:action="@{/workorders/save}" method="post" th:object="${workOrder}" class="space-y-4">
+                <input type="hidden" th:if="${workOrder.id != null}" th:field="*{id}" />
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">ชื่ออุปกรณ์</label>
+                    <input type="text" th:field="*{equipmentName}"
+                           class="w-full mt-1 p-2 border rounded focus:outline-none focus:ring focus:border-blue-300" />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">รายละเอียด</label>
+                    <textarea th:field="*{description}"
+                              class="w-full mt-1 p-2 border rounded focus:outline-none focus:ring focus:border-blue-300"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">สถานะ</label>
+                    <select th:field="*{status}"
+                            class="w-full mt-1 p-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
+                        <option value="OPEN">Open</option>
+                        <option value="IN_PROGRESS">In Progress</option>
+                        <option value="COMPLETED">Completed</option>
+                        <option value="CANCELED">Canceled</option>
+                    </select>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-4">
+                    <a href="/work-orders"
+                       class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition">ยกเลิก</a>
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                        บันทึก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer (Push to bottom always) -->
+<footer th:replace="~{fragments/footer :: footer}"
+        class="bg-white shadow mt-auto px-6 py-4 text-center text-sm text-gray-500 z-10">
+</footer>
+
+</body>
+</html>

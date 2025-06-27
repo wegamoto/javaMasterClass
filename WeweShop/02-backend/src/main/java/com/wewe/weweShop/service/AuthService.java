@@ -5,6 +5,7 @@ import com.wewe.weweShop.dto.RegisterRequest;
 import com.wewe.weweShop.model.User;
 import com.wewe.weweShop.repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,11 +18,12 @@ import java.util.Map;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private JwtService jwtService;
+    private AuthenticationManager authenticationManager;
 
+    @Autowired
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService,
@@ -40,12 +42,12 @@ public class AuthService {
             throw new IllegalArgumentException("Email is already in use.");
         }
 
-        // ✅ สร้าง User ใหม่ พร้อมเข้ารหัสรหัสผ่าน
-        User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .roles(List.of("ROLE_ADMIN"))  // ✅ FIXED: ใช้ List แทน String
+        // ✅ สร้าง User ใหม่ พร้อมเข้ารหัสรหัสผ่าน โดยใช้ Builder ที่เขียนเอง
+        User user = new User.Builder()
+                .setUsername(request.getUsername())
+                .setEmail(request.getEmail())
+                .setPassword(passwordEncoder.encode(request.getPassword()))
+                .setRoles(List.of("ROLE_ADMIN"))
                 .build();
 
         // ✅ บันทึกผู้ใช้ใหม่ลงฐานข้อมูล

@@ -46,38 +46,38 @@ public class ProfileController {
         return "profile"; // ส่งไปที่หน้า profile.html
     }
 
-    @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute User user, Principal principal) {
-
-        // ตรวจสอบว่า principal ไม่เป็น null
-        if (principal == null) {
-            return "redirect:/login"; // หาก principal เป็น null (ไม่ได้ล็อกอิน) ให้รีไดเรกต์ไปที่หน้า login
-        }
-
-        String userEmail = null;
-
-        // รองรับทั้งแบบ login ธรรมดา และ OAuth2 (Facebook, Google, etc.)
-        if (principal instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) principal;
-            OAuth2User userDetails = oauthToken.getPrincipal();
-            userEmail = (String) userDetails.getAttributes().get("email");
-        } else {
-            // ดึง email ของผู้ใช้ที่ล็อกอินอยู่ แบบ local
-            userEmail = principal.getName();
-        }
-
-        if (userEmail == null) {
-            return "redirect:/login"; // fallback เผื่อดึง email ไม่ได้
-        }
-
-        // กำหนด email ของผู้ใช้ให้ตรงกับ email ที่ล็อกอินอยู่ (เพื่อป้องกันการแก้ไข email)
-        user.setEmail(userEmail);
-
-        // อัพเดทข้อมูลโปรไฟล์
-        userService.updateProfile(userEmail, user);
-
-        // Redirect กลับไปที่หน้า profile และแสดงข้อความ success
-        return "redirect:/profile?success";
-    }
+//    @PostMapping("/profile")
+//    public String updateProfile(@ModelAttribute User user, Principal principal) {
+//
+//        // ตรวจสอบว่า principal ไม่เป็น null
+//        if (principal == null) {
+//            return "redirect:/login"; // หาก principal เป็น null (ไม่ได้ล็อกอิน) ให้รีไดเรกต์ไปที่หน้า login
+//        }
+//
+//        String userEmail = null;
+//
+//        // รองรับทั้งแบบ login ธรรมดา และ OAuth2 (Facebook, Google, etc.)
+//        if (principal instanceof OAuth2AuthenticationToken) {
+//            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) principal;
+//            OAuth2User userDetails = oauthToken.getPrincipal();
+//            userEmail = (String) userDetails.getAttributes().get("email");
+//        } else {
+//            // ดึง email ของผู้ใช้ที่ล็อกอินอยู่ แบบ local
+//            userEmail = principal.getName();
+//        }
+//
+//        if (userEmail == null) {
+//            return "redirect:/login"; // fallback เผื่อดึง email ไม่ได้
+//        }
+//
+//        // กำหนด email ของผู้ใช้ให้ตรงกับ email ที่ล็อกอินอยู่ (เพื่อป้องกันการแก้ไข email)
+//        user.setEmail(userEmail);
+//
+//        // อัพเดทข้อมูลโปรไฟล์
+//        userService.updateProfile(userEmail, user);
+//
+//        // Redirect กลับไปที่หน้า profile และแสดงข้อความ success
+//        return "redirect:/profile?success";
+//    }
 }
 

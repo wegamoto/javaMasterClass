@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+
+<!-- ✅ Navbar (Fixed Top) -->
+<header th:replace="~{fragments/navbar :: navbar}"
+        class="fixed top-0 left-0 right-0 h-16 z-30 bg-white shadow">
+</header>
+
+<!-- ✅ Layout -->
+<div class="flex flex-1 pt-16 h-full">
+
+    <!-- ✅ Sidebar (Fixed Left) -->
+    <aside th:replace="~{fragments/sidebar :: sidebar}"
+           class="w-64 fixed top-16 bottom-0 left-0 bg-white border-r border-gray-200 overflow-y-auto z-20">
+    </aside>
+
+    <!-- ✅ Main Content Area -->
+    <main class="flex-1 ml-64 p-6 sm:p-8 overflow-y-auto">
+        <div class="max-w-6xl mx-auto space-y-8">
+
+            <!-- Page Header -->
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Work Orders</h1>
+                <p class="text-gray-600">เลือกการจัดการงานซ่อมที่คุณต้องการ</p>
+            </div>
+
+            <!-- Submenu Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+                <!-- ✅ List Work Orders -->
+                <a href="/work-orders/list"
+                   class="flex flex-col items-center justify-center bg-white rounded-xl shadow p-6 hover:bg-blue-50 hover:shadow-lg transition">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-10 h-10 text-blue-500 mb-3" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <span class="text-base font-medium text-gray-700">รายการงานซ่อม</span>
+                </a>
+
+                <!-- ✅ Create New Work Order -->
+                <a href="/work-orders/new"
+                   class="flex flex-col items-center justify-center bg-white rounded-xl shadow p-6 hover:bg-green-50 hover:shadow-lg transition">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-10 h-10 text-green-500 mb-3" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="text-base font-medium text-gray-700">สร้างงานซ่อมใหม่</span>
+                </a>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer -->
+<footer th:replace="~{fragments/footer :: footer}"
+        class="bg-white shadow px-6 py-4 text-center text-sm text-gray-500 z-10">
+</footer>
+
+</body>
+</html>

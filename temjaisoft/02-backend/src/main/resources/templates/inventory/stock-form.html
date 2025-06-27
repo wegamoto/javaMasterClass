@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เพิ่ม/แก้ไข สต๊อก</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex flex-col">
+
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<div class="flex flex-grow">
+  <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('inventory')}"></aside>
+
+  <main class="flex-grow p-6">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
+      <h1 class="text-2xl font-bold mb-4" th:text="${stock.id == null} ? '➕ เพิ่มสต๊อกใหม่' : '✏️ แก้ไขสต๊อก'"></h1>
+
+      <form th:action="@{/inventory/stocks/save}" th:object="${stock}" method="post" class="space-y-4">
+        <input type="hidden" th:field="*{id}" />
+
+        <div>
+          <label class="block mb-1 font-medium">สินค้า</label>
+          <select th:field="*{product}" class="w-full border px-3 py-2 rounded">
+            <option th:each="p : ${products}" th:value="${p}" th:text="${p.name}"></option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">จำนวน</label>
+          <input type="number" th:field="*{quantity}" class="w-full border px-3 py-2 rounded" required />
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">ที่เก็บ</label>
+          <input type="text" th:field="*{location}" class="w-full border px-3 py-2 rounded" />
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">เลข Lot</label>
+          <input type="text" th:field="*{lotNumber}" class="w-full border px-3 py-2 rounded" />
+        </div>
+
+        <div>
+          <label class="block mb-1 font-medium">หมายเหตุ</label>
+          <textarea th:field="*{remark}" class="w-full border px-3 py-2 rounded"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-4">
+          <a href="/inventory/stocks" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">ยกเลิก</a>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">💾 บันทึก</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script> lucide.createIcons(); </script>
+
+</body>
+</html>

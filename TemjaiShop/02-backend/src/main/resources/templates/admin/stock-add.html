@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>เพิ่มสินค้า</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- ✅ Bootstrap Icons CSS (เพิ่มบรรทัดนี้) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+    .sidebar-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      min-width: 220px;
+      background-color: #f8f9fa;
+      padding: 1rem;
+      border-right: 1px solid #dee2e6;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="sidebar-container">
+  <!-- sidebar -->
+  <div th:replace="~{fragments/sidebar :: sidebar}" class="sidebar"></div>
+
+  <!-- main content -->
+  <div class="content">
+    <h2>เพิ่มสินค้าเข้าสต๊อก</h2>
+    <form th:action="@{/admin/stock-add}" th:object="${product}" method="post" class="mt-4">
+      <div class="mb-3">
+        <label class="form-label">ชื่อสินค้า</label>
+        <input type="text" class="form-control" th:field="*{name}" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">คำอธิบาย</label>
+        <textarea class="form-control" th:field="*{description}"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">ราคา</label>
+        <input type="number" step="0.01" class="form-control" th:field="*{price}" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">จำนวนในสต๊อก</label>
+        <input type="number" class="form-control" th:field="*{quantity}" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">URL รูปภาพ</label>
+        <input type="text" class="form-control" th:field="*{image}" />
+      </div>
+      <button type="submit" class="btn btn-success">เพิ่มสินค้า</button>
+      <a th:href="@{/admin/stock-view}" class="btn btn-secondary">กลับ</a>
+    </form>
+  </div>
+</div>
+
+<!-- footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

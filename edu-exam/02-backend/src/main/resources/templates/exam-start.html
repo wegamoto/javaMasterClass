@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>เริ่มทำข้อสอบ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Header Fragment -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="flex flex-1">
+
+    <!-- ✅ Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- ✅ Main Content -->
+    <main class="flex-1 p-6">
+        <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">📘 ทำข้อสอบ</h2>
+
+            <!-- ✅ พบข้อสอบ -->
+            <div class="mb-4" th:if="${exam != null}">
+                <p class="text-lg font-medium">
+                    ชื่อข้อสอบ: <span th:text="${exam.title}">ชื่อข้อสอบ</span>
+                </p>
+                <p class="text-gray-600">
+                    รายละเอียด: <span th:text="${exam.description}">คำอธิบาย</span>
+                </p>
+                <p class="text-gray-600">
+                    เวลาที่กำหนด: <span th:text="${exam.durationMinutes}">60</span> นาที
+                </p>
+
+                <!-- ✅ ฟอร์มทำข้อสอบ -->
+                <form th:action="@{/student/exam/submit/{id}(id=${exam.id})}" method="post">
+                    <div class="space-y-6 mt-6">
+                        <!-- ✅ แสดงคำถาม -->
+                        <div th:each="question, qStat : ${exam.questions}">
+                            <div class="border rounded p-4 bg-gray-50">
+                                <p class="font-semibold mb-2">
+                                    ข้อที่ <span th:text="${qStat.index + 1}">1</span>:
+                                    <span th:text="${question.content}">คำถามตัวอย่าง</span>
+                                </p>
+
+                                <!-- ✅ แบบปรนัย -->
+                                <div th:if="${question.type != null and question.type.name() == 'MULTIPLE_CHOICE'}" class="space-y-2">
+                                    <div th:each="choice : ${question.choices}">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio"
+                                                   th:name="${'answers[' + question.id + ']'}"
+                                                   th:value="${choice.id}"
+                                                   class="text-blue-600 focus:ring-blue-500" />
+                                            <span th:text="${choice.content}">ตัวเลือก</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- ✅ แบบเขียนตอบ -->
+                                <div th:if="${question.type == 'TEXT'}">
+                    <textarea th:name="${'answers[' + question.id + ']'}"
+                              rows="3"
+                              class="w-full border rounded px-3 py-2 mt-2"
+                              placeholder="เขียนคำตอบที่นี่..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            class="mt-6 w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition">
+                        ส่งคำตอบ
+                    </button>
+                </form>
+            </div>
+
+            <!-- ❌ ไม่พบข้อสอบ -->
+            <div th:if="${exam == null}">
+                <p class="text-red-600 text-lg font-semibold">❌ ไม่พบข้อสอบ</p>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

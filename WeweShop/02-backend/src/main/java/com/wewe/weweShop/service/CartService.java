@@ -22,12 +22,23 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CartService {
 
-    private final CartItemRepository cartItemRepository;
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
-    private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final UserService userService;
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
+    @Autowired
+    private UserService userService;
 
     public int countItemsInCart(Long userId) {
         return 0;
@@ -35,6 +46,8 @@ public class CartService {
 
     @Autowired
     private CartRepository cartRepository;
+
+
 
     public Integer getCartItemCount(String email) {
         Integer count = cartItemRepository.sumQuantityByUserEmail(email);
@@ -58,26 +71,39 @@ public class CartService {
             throw new IllegalArgumentException("User email cannot be null or empty.");
         }
 
+        // ดึง User จาก email
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         // หา Product จาก productId
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // หา cartItem เดิม ว่ามีอยู่หรือยัง
-        CartItem existingCartItem = cartItemRepository.findByUserEmailAndProductId(userEmail, productId);
+        // หา Cart ที่เชื่อมโยงกับ User
+        Cart cart = cartRepository.findByUser(user)
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    newCart.setUser(user);
+                    return cartRepository.save(newCart);
+                });
 
-        if (existingCartItem != null) {
+
+        // หา CartItem เดิม ว่ามีอยู่หรือยัง
+        // ✅ ใช้ findByCartAndProduct ที่เราสร้างไว้
+        Optional<CartItem> existingCartItem = cartItemRepository.findByCartAndProduct(cart, product);
+
+        if (existingCartItem.isPresent()) {
             // ถ้ามีสินค้าเดิมในตะกร้า => เพิ่ม quantity
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
-            cartItemRepository.save(existingCartItem);
+            CartItem item = existingCartItem.get();
+            item.setQuantity(item.getQuantity() + quantity);
+            cartItemRepository.save(item);
         } else {
             // ถ้ายังไม่มี => สร้างใหม่
-            CartItem cartItem = new CartItem();
-            cartItem.setUserEmail(userEmail);
-            cartItem.setProductId(productId);
-            cartItem.setProductName(product.getName());
-            cartItem.setPrice(product.getPrice());
-            cartItem.setQuantity(quantity);
-            cartItemRepository.save(cartItem);
+            CartItem newItem = new CartItem();
+            newItem.setCart(cart);
+            newItem.setProduct(product);
+            newItem.setQuantity(quantity);
+            cartItemRepository.save(newItem);
         }
     }
 
@@ -153,7 +179,7 @@ public class CartService {
 
         // 3. เพิ่ม OrderItem สำหรับแต่ละสินค้า
         Order order = new Order();
-        order.setUser(userEmail);
+        order.setUserEmail(userEmail);
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerEmail(userEmail);
         order.setCreatedAt(LocalDateTime.now());
@@ -171,7 +197,7 @@ public class CartService {
             orderItem.setOrder(order);
             orderItem.setProductId(cartItem.getProductId());
             orderItem.setProductName(cartItem.getProductName());
-            orderItem.setPrice(cartItem.getProduct().getPrice());
+            orderItem.setPrice(cartItem.getPrice());
             orderItem.setQuantity(cartItem.getQuantity());
 
             // คำนวณ total สำหรับแต่ละ OrderItem
@@ -212,13 +238,13 @@ public class CartService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         // เช็คก่อนว่ามีสินค้านี้ในตะกร้าแล้วหรือยัง
-        CartItem existingItem = cartItemRepository.findByCartAndProduct(cart, product)
-                .orElse(null); // ใช้ .orElse(null) เพื่อไม่ให้ต้องใช้ Optional
+        Optional<CartItem> existingItem = cartItemRepository.findByCartAndProduct(cart, product);
 
-        if (existingItem != null) {
+        if (existingItem.isPresent()) {
             // ถ้ามีอยู่แล้ว → เพิ่มจำนวน
-            existingItem.setQuantity(existingItem.getQuantity() + quantity);
-            cartItemRepository.save(existingItem);
+            CartItem item = existingItem.get();
+            item.setQuantity(item.getQuantity() + quantity);
+            cartItemRepository.save(item);
         } else {
             // ถ้ายังไม่มี → สร้างใหม่
             CartItem newItem = new CartItem();

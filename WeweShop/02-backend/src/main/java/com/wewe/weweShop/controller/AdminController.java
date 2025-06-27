@@ -20,7 +20,7 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "/admin/admin-dashboard";
+        return "admin/admin-dashboard";
     }
 
     @GetMapping("/product/view")
@@ -28,6 +28,6 @@ public class AdminController {
     public String viewStock(Model model) {
         List<Product> stockProducts = productService.getAllProducts(); // ดึงสินค้าทั้งหมด
         model.addAttribute("stockProducts", stockProducts);
-        return "/admin/stock-view"; // ชี้ไปที่ไฟล์ HTML ด้านล่าง
+        return "admin/stock-view"; // ชี้ไปที่ไฟล์ HTML ด้านล่าง
     }
 }

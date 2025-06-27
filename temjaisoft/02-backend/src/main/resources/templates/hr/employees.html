@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>พนักงาน | ระบบ HR</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar -->
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<div class="flex flex-grow">
+  <!-- ✅ Sidebar (ด้านซ้าย) -->
+  <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('hr')}"></aside>
+
+  <!-- ✅ Main content -->
+  <main class="flex-grow p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">📋 รายชื่อพนักงาน</h1>
+      <a th:href="@{/hr/employees/new}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        ➕ เพิ่มพนักงาน
+      </a>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-x-auto">
+      <table class="w-full table-auto text-left text-sm">
+        <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="px-4 py-3">ชื่อ-สกุล</th>
+          <th class="px-4 py-3">ตำแหน่ง</th>
+          <th class="px-4 py-3">แผนก</th>
+          <th class="px-4 py-3">อีเมล</th>
+          <th class="px-4 py-3 text-center">การจัดการ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp : ${employees}" class="border-t">
+          <td class="px-4 py-2" th:text="${emp.fullName}">นายสมชาย ใจดี</td>
+          <td class="px-4 py-2" th:text="${emp.position}">นักพัฒนา</td>
+          <td class="px-4 py-2" th:text="${emp.department}">ไอที</td>
+          <td class="px-4 py-2" th:text="${emp.email}">somchai@example.com</td>
+          <td class="px-4 py-2 text-center">
+            <a th:href="@{/hr/employees/{id}(id=${emp.id})}" class="text-blue-600 hover:underline">ดู</a>
+            |
+            <a th:href="@{/hr/employees/{id}/edit(id=${emp.id})}" class="text-yellow-600 hover:underline">แก้ไข</a>
+            |
+            <a th:href="@{/hr/employees/{id}/delete(id=${emp.id})}" class="text-red-600 hover:underline">ลบ</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+</body>
+</html>

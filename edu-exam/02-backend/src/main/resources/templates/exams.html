@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>จัดการข้อสอบ | EduExam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ เรียก Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Main layout with sidebar -->
+<div class="flex flex-1">
+
+    <!-- ✅ Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">📝 จัดการข้อสอบ</h2>
+                <a href="/exams/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    ➕ เพิ่มข้อสอบ
+                </a>
+            </div>
+
+            <!-- Exam Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border border-gray-200 rounded-md">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="p-3 border-b">#</th>
+                        <th class="p-3 border-b">ชื่อข้อสอบ</th>
+                        <th class="p-3 border-b">คำอธิบาย</th>
+                        <th class="p-3 border-b">จำนวนคำถาม</th>
+                        <th class="p-3 border-b text-center">การจัดการ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="exam, iterStat : ${exams}" class="hover:bg-gray-50">
+                        <td class="p-3 border-b" th:text="${iterStat.count}">1</td>
+                        <td class="p-3 border-b" th:text="${exam.title}">Exam Title</td>
+                        <td class="p-3 border-b" th:text="${exam.description}">Description</td>
+                        <td class="p-3 border-b"
+                            th:text="${exam.questions != null} ? ${#lists.size(exam.questions)} : 0">0</td>
+                        <td class="p-3 border-b text-center">
+                            <a th:href="@{'/exams/edit/' + ${exam.id}}"
+                               class="text-blue-600 hover:underline mr-3">แก้ไข</a>
+                            <a th:href="@{'/exams/delete/' + ${exam.id}}"
+                               onclick="return confirm('ยืนยันการลบ?')"
+                               class="text-red-500 hover:underline">ลบ</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

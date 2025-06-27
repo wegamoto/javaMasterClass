@@ -1,0 +1,54 @@
+<!-- navbar.html -->
+<nav th:fragment="navbar"
+     class="bg-gray-900 shadow-md fixed top-0 left-0 right-0 z-10"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+        <!-- Logo / Title -->
+        <div class="flex items-center space-x-2 text-xl font-bold text-white tracking-wide">
+            <a th:href="@{/}" class="flex items-center hover:text-gray-300 transition duration-150">
+                <img th:src="@{/images/servix_logo.png}" alt="Servix Logo" class="h-16 w-auto"/>
+                <span class="ml-2">SERVIX Maintenance System</span>
+            </a>
+        </div>
+
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <a th:href="@{/home}" class="text-gray-300 hover:text-white transition duration-150">Dashboard</a>
+            <a th:href="@{/work-orders}" class="text-gray-300 hover:text-white transition duration-150">Work Orders</a>
+            <a th:href="@{/technicians}" class="text-gray-300 hover:text-white transition duration-150">Technicians</a>
+            <a th:href="@{/spare-parts}" class="text-gray-300 hover:text-white transition duration-150">Spare Parts</a>
+        </div>
+
+        <!-- Login / Logout -->
+        <div class="hidden md:flex items-center space-x-4 text-sm font-medium">
+            <!-- If user is NOT logged in -->
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="text-gray-300 hover:text-white transition duration-150">Login</a>
+            </div>
+
+            <!-- If user IS logged in -->
+            <div sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="text-gray-300 hover:text-white transition duration-150">
+                        Logout (<span sec:authentication="name">User</span>)
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Mobile menu button (optional) -->
+        <div class="md:hidden">
+            <button type="button" class="text-gray-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+                     viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</nav>

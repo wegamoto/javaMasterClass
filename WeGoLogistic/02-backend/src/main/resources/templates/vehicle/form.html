@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th" class="transition-colors duration-500">
+<head>
+    <meta charset="UTF-8" />
+    <title>ฟอร์มรถขนส่ง</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="min-h-screen flex flex-col bg-gray-100 text-gray-900 transition-colors duration-500">
+
+<!-- Navbar -->
+<div class="bg-white dark:bg-gray-900 dark:text-gray-100 shadow">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-2 font-bold text-xl">
+            <i class="fas fa-truck-fast"></i> WegoLogistic
+        </div>
+        <button id="darkModeToggle" aria-label="Toggle Dark Mode"
+                class="px-3 py-1 rounded border border-gray-700 dark:border-gray-300 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+            <i id="toggleIcon" class="fas fa-moon"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Form Container -->
+<div class="flex-grow container mx-auto px-4 py-12">
+    <div class="max-w-lg mx-auto">
+        <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg">
+            <div class="px-6 py-4 border-b border-gray-300 dark:border-gray-700 rounded-t-lg bg-gray-100 dark:bg-gray-700">
+                <h4 class="text-xl font-semibold flex items-center gap-2 dark:text-gray-100">
+                    <i class="fas fa-truck"></i>
+                    <span th:text="${vehicle.id == null} ? 'เพิ่มรถใหม่' : 'แก้ไขข้อมูลรถ'"></span>
+                </h4>
+            </div>
+            <div class="px-6 py-6">
+                <form th:action="@{/vehicles/save}" th:object="${vehicle}" method="post" autocomplete="off" class="space-y-6">
+                    <input type="hidden" th:field="*{id}" />
+
+                    <div>
+                        <label for="licensePlate" class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
+                            <i class="fas fa-id-card mr-1"></i> ทะเบียนรถ
+                        </label>
+                        <input type="text" id="licensePlate" th:field="*{licensePlate}" required autocomplete="off"
+                               class="w-full rounded-md bg-gray-200 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-3 py-2
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+
+                    <div>
+                        <label for="type" class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
+                            <i class="fas fa-truck-moving mr-1"></i> ประเภทรถ
+                        </label>
+                        <input type="text" id="type" th:field="*{type}" required autocomplete="off"
+                               class="w-full rounded-md bg-gray-200 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-3 py-2
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+
+                    <div>
+                        <label for="capacity" class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
+                            <i class="fas fa-weight-hanging mr-1"></i> ความจุ (kg)
+                        </label>
+                        <input type="number" id="capacity" th:field="*{capacity}" required min="1"
+                               class="w-full rounded-md bg-gray-200 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-3 py-2
+                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+
+                    <div class="flex justify-between">
+                        <a th:href="@{/vehicles}"
+                           class="inline-flex items-center gap-2 px-4 py-2 border border-gray-500 rounded-md
+                                  text-gray-700 dark:text-gray-300 hover:bg-blue-600 hover:text-white transition">
+                            <i class="fas fa-arrow-left"></i> ย้อนกลับ
+                        </a>
+                        <button type="submit"
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 rounded-md
+                                       hover:bg-green-700 transition text-white font-semibold">
+                            <i class="fas fa-save"></i> บันทึก
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script>
+    // โหลดสถานะ dark mode จาก localStorage ตอนโหลดหน้า
+    function applyDarkMode(darkMode) {
+      if(darkMode) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('toggleIcon').classList.replace('fa-moon', 'fa-sun');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('toggleIcon').classList.replace('fa-sun', 'fa-moon');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const darkModeStored = localStorage.getItem('darkMode') === 'true';
+      applyDarkMode(darkModeStored);
+
+      const toggleBtn = document.getElementById('darkModeToggle');
+      toggleBtn.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', isDark);
+        applyDarkMode(isDark);
+      });
+    });
+</script>
+
+</body>
+</html>

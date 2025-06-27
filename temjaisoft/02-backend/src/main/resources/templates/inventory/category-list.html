@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ประเภทสินค้า</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ฟอนต์ภาษาไทย -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+    }
+  </style>
+
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar (ด้านบนสุด) -->
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<!-- ✅ Layout with Sidebar -->
+<div class="flex flex-grow">
+  <!-- ✅ Sidebar (ด้านซ้าย) -->
+  <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('inventory')}"></aside>
+
+  <!-- ✅ Main content -->
+  <main class="flex-grow p-6">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">📦 ประเภทสินค้า</h1>
+        <a href="/inventory/categories/new" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">➕ เพิ่มประเภท</a>
+      </div>
+
+      <table class="w-full table-auto">
+        <thead>
+        <tr class="bg-gray-200">
+          <th class="text-left px-4 py-2">ชื่อ</th>
+          <th class="text-left px-4 py-2">รายละเอียด</th>
+          <th class="text-right px-4 py-2">การจัดการ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cat : ${categories}" class="border-b hover:bg-gray-50">
+          <td class="px-4 py-2" th:text="${cat.name}"></td>
+          <td class="px-4 py-2" th:text="${cat.description}"></td>
+          <td class="px-4 py-2 text-right space-x-2">
+            <a th:href="@{'/inventory/categories/edit/' + ${cat.id}}" class="text-blue-600 hover:underline">แก้ไข</a>
+            <a th:href="@{'/inventory/categories/delete/' + ${cat.id}}" onclick="return confirm('ยืนยันลบ?')" class="text-red-600 hover:underline">ลบ</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

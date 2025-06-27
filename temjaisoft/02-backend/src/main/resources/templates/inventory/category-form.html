@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>จัดการประเภทสินค้า</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ฟอนต์ภาษาไทย -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+    }
+  </style>
+
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar (ด้านบนสุด) -->
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<!-- ✅ Layout with Sidebar -->
+<div class="flex flex-grow">
+  <!-- ✅ Sidebar (ด้านซ้าย) -->
+  <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('inventory')}"></aside>
+
+  <!-- ✅ Main content -->
+  <main class="flex-grow p-6">
+    <div class="max-w-xl mx-auto bg-white shadow-md rounded p-6">
+      <h2 class="text-2xl font-bold mb-6" th:text="${category.id == null} ? '➕ เพิ่มประเภทสินค้า' : '✏️ แก้ไขประเภทสินค้า'"></h2>
+
+      <form th:action="@{/inventory/categories/save}" method="post" th:object="${category}" class="space-y-4">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div>
+          <label class="block font-medium">ชื่อ</label>
+          <input type="text" th:field="*{name}" class="w-full border border-gray-300 rounded px-4 py-2"/>
+        </div>
+
+        <div>
+          <label class="block font-medium">รายละเอียด</label>
+          <textarea th:field="*{description}" class="w-full border border-gray-300 rounded px-4 py-2"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-2">
+          <a href="/inventory/categories" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">ย้อนกลับ</a>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

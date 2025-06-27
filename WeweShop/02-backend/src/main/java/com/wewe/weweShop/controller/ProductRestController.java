@@ -35,7 +35,7 @@ public class ProductRestController {
 
     @PostMapping("/{id}/decrease-stock")
     public ResponseEntity<String> decreaseStock(@PathVariable Long id, @RequestParam int quantity, String purchase) {
-        productService.decreaseStock(id, quantity, "PURCHASE");
+        productService.decreaseStock(id, quantity);
         return ResponseEntity.ok("Stock decreased successfully");
     }
 }

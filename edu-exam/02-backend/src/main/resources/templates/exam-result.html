@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/Layout :: content">
+
+<!-- 👇 ส่วนนี้จะถูกแทนที่ใน layout.html -->
+<div th:fragment="content">
+  <h2>ผลการสอบ</h2>
+
+  <div th:if="${result != null}">
+    <p><strong>ชื่อข้อสอบ:</strong> <span th:text="${result.exam.name}"></span></p>
+    <p><strong>คะแนนที่ได้:</strong> <span th:text="${result.score}"></span> / <span th:text="${result.exam.totalScore}"></span></p>
+    <p><strong>สถานะ:</strong> <span th:text="${result.pass ? 'ผ่าน' : 'ไม่ผ่าน'}"></span></p>
+
+    <hr />
+
+    <h3>รายละเอียดคำถาม</h3>
+    <div th:each="answer : ${result.answers}">
+      <p>
+        <strong th:text="'คำถาม: ' + ${answer.question.content}"></strong><br/>
+        คำตอบของคุณ: <span th:text="${answer.answerText}"></span><br/>
+        คะแนนที่ได้: <span th:text="${answer.score}"></span> / <span th:text="${answer.question.fullScore}"></span>
+      </p>
+    </div>
+  </div>
+
+  <div th:if="${result == null}">
+    <p>ไม่พบผลการสอบ</p>
+  </div>
+</div>

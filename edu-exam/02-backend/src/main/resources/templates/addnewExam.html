@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>เพิ่มข้อสอบ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="flex flex-1">
+
+    <!-- ✅ Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- ✅ Main Content -->
+    <main class="flex-1 p-6">
+        <div class="max-w-xl mx-auto bg-white rounded shadow p-6">
+            <h1 class="text-2xl font-bold mb-4">เพิ่มข้อสอบใหม่</h1>
+
+            <form id="examForm" class="space-y-4">
+
+                <div>
+                    <label for="title" class="block font-semibold mb-1">ชื่อข้อสอบ</label>
+                    <input type="text" id="title" name="title" required
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div>
+                    <label for="description" class="block font-semibold mb-1">คำอธิบาย</label>
+                    <textarea id="description" name="description" rows="3" required
+                              class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div>
+                    <label for="durationMinutes" class="block font-semibold mb-1">ระยะเวลาข้อสอบ (นาที)</label>
+                    <input type="number" id="durationMinutes" name="durationMinutes" min="1" required
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div>
+                    <label for="startTime" class="block font-semibold mb-1">วันเวลาที่เริ่ม (Start Time)</label>
+                    <input type="datetime-local" id="startTime" name="startTime" required
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div>
+                    <label for="endTime" class="block font-semibold mb-1">วันเวลาที่สิ้นสุด (End Time)</label>
+                    <input type="datetime-local" id="endTime" name="endTime" required
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div>
+                    <label for="createdBy" class="block font-semibold mb-1">ผู้สร้าง (username หรือ id)</label>
+                    <input type="text" id="createdBy" name="createdBy" required
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <button type="submit"
+                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    บันทึกข้อสอบ
+                </button>
+            </form>
+
+            <p id="message" class="mt-4 text-center"></p>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    const form = document.getElementById('examForm');
+    const messageEl = document.getElementById('message');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const examData = {
+            title: formData.get('title'),
+            description: formData.get('description'),
+            durationMinutes: Number(formData.get('durationMinutes')),
+            startTime: new Date(formData.get('startTime')).toISOString(),
+            endTime: new Date(formData.get('endTime')).toISOString(),
+            createdBy: formData.get('createdBy'),
+            questions: []
+        };
+
+        try {
+            const response = await fetch('/api/exams', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(examData),
+            });
+
+            if (!response.ok) throw new Error('บันทึกข้อสอบไม่สำเร็จ');
+
+            const savedExam = await response.json();
+            messageEl.textContent = `บันทึกข้อสอบสำเร็จ รหัสข้อสอบ: ${savedExam.id}`;
+            messageEl.className = 'mt-4 text-center text-green-600';
+            form.reset();
+
+        } catch (error) {
+            messageEl.textContent = error.message;
+            messageEl.className = 'mt-4 text-center text-red-600';
+        }
+    });
+</script>
+
+</body>
+</html>

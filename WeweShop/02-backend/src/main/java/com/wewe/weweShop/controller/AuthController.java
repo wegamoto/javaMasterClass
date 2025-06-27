@@ -68,7 +68,7 @@ public class AuthController {
 //        newUser.setUsername(request.getUsername());
 //        newUser.setEmail(request.getEmail());
 //        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-//        newUser.setRoles(List.of("ROLE_ADMIN"));  // กำหนด roles เป็น "USER" ให้กับผู้ใช้ใหม่
+//        newUser.setRoles(List.of("ROLE_USER"));  // กำหนด roles เป็น "USER" ให้กับผู้ใช้ใหม่
 //
 //        userRepository.save(newUser);  // บันทึกผู้ใช้ใหม่ลงฐานข้อมูล
 //

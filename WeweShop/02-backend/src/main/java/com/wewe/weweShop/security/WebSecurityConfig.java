@@ -20,14 +20,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final OAuth2SuccessHandler customOAuth2SuccessHandler;
     private final CustomUserDetailsService customUserDetailsService;
 
     public WebSecurityConfig(CustomOAuth2UserService customOAuth2UserService,
-                             CustomOAuth2SuccessHandler customOAuth2SuccessHandler,
+                             OAuth2SuccessHandler OAuth2SuccessHandler,
                              CustomUserDetailsService customUserDetailsService) {
         this.customOAuth2UserService = customOAuth2UserService;
-        this.customOAuth2SuccessHandler = customOAuth2SuccessHandler;
+        this.customOAuth2SuccessHandler = OAuth2SuccessHandler;
         this.customUserDetailsService = customUserDetailsService;
     }
 

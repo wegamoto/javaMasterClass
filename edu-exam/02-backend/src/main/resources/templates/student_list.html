@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ เรียก Header Fragment -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="flex flex-1">
+  <!-- ✅ Sidebar Fragment -->
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="bg-white rounded-xl shadow p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold text-gray-800">Student List</h2>
+        <a href="/students/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          + เพิ่มนักเรียน
+        </a>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200" th:each="student : ${students}">
+          <tr>
+            <td class="px-4 py-2 text-gray-700" th:text="${student.id}"></td>
+            <td class="px-4 py-2 text-gray-700" th:text="${student.name}"></td>
+            <td class="px-4 py-2 text-gray-700" th:text="${student.email}"></td>
+            <td class="px-4 py-2 space-x-2">
+              <a th:href="@{'/students/edit/' + ${student.id}}"
+                 class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">
+                แก้ไข
+              </a>
+              <a th:href="@{'/students/delete/' + ${student.id}}"
+                 onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบ?');"
+                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                ลบ
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

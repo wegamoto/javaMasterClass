@@ -21,8 +21,8 @@ import java.util.List;
 @RequestMapping("/checkout")
 public class CheckoutController {
 
-    private final CartService cartService;
-    private final OrderService orderService;
+    private CartService cartService;
+    private OrderService orderService;
 
     @GetMapping
     public String showCheckoutPage(Model model, Principal principal) {
@@ -51,27 +51,27 @@ public class CheckoutController {
     @PostMapping
     public String processCheckout(Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
-            log.warn("พยายาม checkout โดยไม่เข้าสู่ระบบ");
+//            log.warn("พยายาม checkout โดยไม่เข้าสู่ระบบ");
             redirectAttributes.addFlashAttribute("error", "กรุณาเข้าสู่ระบบก่อนทำรายการ");
             return "redirect:/login";
         }
 
         try {
             String userEmail = principal.getName();
-            log.info("เริ่มกระบวนการ checkout ของผู้ใช้: {}", userEmail);
+//            log.info("เริ่มกระบวนการ checkout ของผู้ใช้: {}", userEmail);
 
             Order order = orderService.createOrderFromCart(principal);
 
-            log.info("สร้างคำสั่งซื้อสำเร็จ: Order ID = {}, Email = {}", order.getId(), userEmail);
+//            log.info("สร้างคำสั่งซื้อสำเร็จ: Order ID = {}, Email = {}", order.getId(), userEmail);
             return "redirect:/checkout/success";
         } catch (IllegalStateException e) {
-            log.warn("Checkout ล้มเหลว (เช่น ตะกร้าว่าง): {}", e.getMessage());
+//            log.warn("Checkout ล้มเหลว (เช่น ตะกร้าว่าง): {}", e.getMessage());
             // เช่น ตะกร้าว่าง
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/cart/view";
         } catch (Exception e) {
             // กรณี Error อื่นๆ
-            log.error("เกิดข้อผิดพลาดขณะทำ checkout", e);
+//            log.error("เกิดข้อผิดพลาดขณะทำ checkout", e);
             redirectAttributes.addFlashAttribute("error", "เกิดข้อผิดพลาดขณะทำรายการ");
             return "redirect:/cart/view";
         }

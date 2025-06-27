@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduExam ระบบทำข้อสอบ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ เรียก Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- ✅ Main Content Area -->
+<div class="flex flex-1">
+
+  <!-- ✅ Sidebar Fragment -->
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+  <!-- ✅ Content -->
+  <!-- student_exams.html -->
+  <main class="p-6">
+    <h2 class="text-xl font-semibold mb-4">📝 ข้อสอบที่สามารถทำได้</h2>
+    <div class="grid gap-4">
+      <div th:each="exam : ${exams}" class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-bold" th:text="${exam.title}"></h3>
+        <p class="text-gray-600" th:text="${exam.description}"></p>
+        <a th:href="@{/student/exam/start/{id}(id=${exam.id})}"
+           class="inline-block mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">เริ่มทำข้อสอบ</a>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

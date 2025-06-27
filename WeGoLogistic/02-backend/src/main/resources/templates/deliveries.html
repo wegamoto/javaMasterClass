@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>รายการจัดส่ง</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+
+<!-- เรียกใช้ Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<main class="flex-grow container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">รายการจัดส่ง</h1>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="py-3 px-6 text-left">ผู้ส่ง</th>
+                <th class="py-3 px-6 text-left">ผู้รับ</th>
+                <th class="py-3 px-6 text-left">สถานะ</th>
+                <th class="py-3 px-6 text-left">รถ</th>
+                <th class="py-3 px-6 text-left">คนขับ</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="delivery : ${deliveries}"
+                class="border-b hover:bg-gray-100 cursor-pointer">
+                <td class="py-4 px-6" th:text="${delivery.senderName}"></td>
+                <td class="py-4 px-6" th:text="${delivery.receiverName}"></td>
+                <td class="py-4 px-6" th:text="${delivery.status}"></td>
+                <td class="py-4 px-6" th:text="${delivery.vehicle.licensePlate}"></td>
+                <td class="py-4 px-6" th:text="${delivery.driver.name}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- เรียกใช้ Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

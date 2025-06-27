@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard | Servix Maintenance System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar (Fixed Top) -->
+<header th:replace="~{fragments/navbar :: navbar}" class="fixed top-0 left-0 right-0 z-30"></header>
+
+<!-- ✅ Layout Container (with top padding for navbar) -->
+<div class="flex flex-1 pt-16 min-h-[calc(100vh-4rem)]">
+
+    <!-- ✅ Sidebar (Fixed Left) -->
+    <aside th:replace="~{fragments/sidebar :: sidebar}"
+           class="w-64 bg-white border-r border-gray-200 fixed top-16 bottom-0 left-0 overflow-y-auto z-20">
+    </aside>
+
+    <!-- ✅ Main Content (with left margin for sidebar) -->
+    <main class="flex-1 ml-64 px-8 py-10 bg-gray-50 overflow-y-auto">
+        <div class="max-w-7xl mx-auto space-y-8">
+
+            <!-- Greeting -->
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h2 class="text-3xl font-semibold text-gray-800">
+                    ยินดีต้อนรับ,
+                    <span class="text-blue-600" th:text="${user != null} ? ${user.username} : 'User'">User</span>!
+                </h2>
+                <p class="text-gray-600 mt-2">คุณเข้าสู่ระบบ Servix Maintenance System แล้ว</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-sm text-gray-500">งานซ่อมทั้งหมด</h3>
+                    <p class="text-3xl font-bold text-blue-600" th:text="${totalWorkOrders}">128</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-sm text-gray-500">กำลังดำเนินการ</h3>
+                    <p class="text-3xl font-bold text-yellow-500" th:text="${inProgress}">42</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-sm text-gray-500">เสร็จสมบูรณ์</h3>
+                    <p class="text-3xl font-bold text-green-600" th:text="${completed}">76</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h3 class="text-sm text-gray-500">ช่าง</h3>
+                    <p class="text-3xl font-bold text-purple-600" th:text="${totalTechnicians}">10</p>
+                </div>
+            </div>
+
+            <!-- Recent Work Orders -->
+            <div class="bg-white rounded-xl shadow p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">รายการงานซ่อมล่าสุด</h3>
+                <table class="min-w-full table-auto text-sm text-left text-gray-700">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2">รหัส</th>
+                        <th class="px-4 py-2">ชื่ออุปกรณ์</th>
+                        <th class="px-4 py-2">สถานะ</th>
+                        <th class="px-4 py-2">วันที่แจ้ง</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="wo : ${recentWorkOrders}" class="hover:bg-gray-50">
+                        <td class="px-4 py-2" th:text="${wo.id}">WO-001</td>
+                        <td class="px-4 py-2" th:text="${wo.equipmentName}">Air Conditioner</td>
+                        <td class="px-4 py-2">
+                                <span th:text="${wo.status}"
+                                      th:classappend="
+                                        ${wo.status == T(com.servix.maintenance.model.WorkOrderStatus).COMPLETED} ? 'text-green-600' :
+                                        (${wo.status == T(com.servix.maintenance.model.WorkOrderStatus).IN_PROGRESS} ? 'text-yellow-600' : 'text-red-600')
+                                      ">
+                                </span>
+                        </td>
+                        <td class="px-4 py-2" th:text="${#temporals.format(wo.createdAt, 'dd/MM/yyyy')}">01/06/2025</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer (Push to bottom always) -->
+<footer th:replace="~{fragments/footer :: footer}"
+        class="bg-white shadow mt-auto px-6 py-4 text-center text-sm text-gray-500 z-10">
+</footer>
+
+</body>
+</html>

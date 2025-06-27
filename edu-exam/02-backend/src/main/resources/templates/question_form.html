@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head('เพิ่ม/แก้ไขคำถาม')">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เพิ่ม/แก้ไขคำถาม</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+<!-- ✅ Navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="flex min-h-screen">
+  <!-- ✅ Sidebar -->
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+  <!-- ✅ Main Content -->
+  <main class="flex-1 p-6">
+    <div class="max-w-xl mx-auto bg-white shadow p-6 rounded">
+      <h2 class="text-2xl font-bold mb-4 text-blue-800"
+          th:text="${question.id} != null ? '✏️ แก้ไขคำถาม' : '➕ เพิ่มคำถาม'">
+        เพิ่ม/แก้ไขคำถาม
+      </h2>
+
+      <form th:action="@{/questions/save}" th:object="${question}" method="post" class="space-y-4">
+        <input type="hidden" th:field="*{id}" />
+
+        <!-- ✅ เลือกข้อสอบ -->
+        <div>
+          <label for="exam" class="block text-gray-700 mb-1 font-medium">ข้อสอบ</label>
+          <select th:field="*{exam.id}" id="exam" class="w-full border rounded px-3 py-2" required>
+            <option value="" disabled>-- เลือกข้อสอบ --</option>
+            <option th:each="exam : ${exams}" th:value="${exam.id}" th:text="${exam.title}"></option>
+          </select>
+          <p th:if="${#fields.hasErrors('exam.id')}" th:errors="*{exam.id}" class="text-red-600 text-sm mt-1"></p>
+        </div>
+
+        <!-- ✅ ประเภทคำถาม -->
+        <div>
+          <label for="type" class="block font-medium text-gray-700">ประเภทคำถาม</label>
+          <select id="type" th:field="*{type}" required class="mt-1 block w-full border rounded px-3 py-2">
+            <option value="" disabled>-- เลือกประเภท --</option>
+            <option th:value="MULTIPLE_CHOICE" th:selected="${question.type == 'MULTIPLE_CHOICE'}">ปรนัย</option>
+            <option th:value="TEXT" th:selected="${question.type == 'TEXT'}">อัตนัย</option>
+          </select>
+          <p th:if="${#fields.hasErrors('type')}" th:errors="*{type}" class="text-red-600 text-sm mt-1"></p>
+        </div>
+
+        <!-- ✅ เนื้อหาคำถาม -->
+        <div>
+          <label for="content" class="block text-gray-700 mb-1 font-medium">คำถาม</label>
+          <textarea th:field="*{content}" id="content" class="w-full border rounded px-3 py-2"
+                    placeholder="พิมพ์คำถาม..." required></textarea>
+          <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-red-600 text-sm mt-1"></p>
+        </div>
+
+        <!-- ✅ คะแนนเต็ม -->
+        <div>
+          <label for="fullScore" class="block text-gray-700 mb-1 font-medium">คะแนนเต็ม</label>
+          <input type="number"
+                 th:field="*{fullScore}"
+                 id="fullScore"
+                 class="w-full border rounded px-3 py-2"
+                 placeholder="คะแนนเต็ม"
+                 required />
+          <p th:if="${#fields.hasErrors('fullScore')}" th:errors="*{fullScore}" class="text-red-600 text-sm mt-1"></p>
+        </div>
+
+        <!-- ✅ ปุ่ม -->
+        <div class="flex justify-end gap-4">
+          <a href="/questions" class="text-gray-600 px-4 py-2 hover:underline">ยกเลิก</a>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">บันทึก</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

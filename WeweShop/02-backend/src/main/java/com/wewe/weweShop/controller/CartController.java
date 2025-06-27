@@ -34,7 +34,7 @@ public class CartController {
     private final CartService cartService;
 
     @Autowired
-    private final CartItemRepository cartItemRepository = null;
+    private CartItemRepository cartItemRepository;
 
     @Autowired
     private OrderService orderService;
@@ -43,31 +43,32 @@ public class CartController {
     private CartItemService cartItemService;
 
     @Autowired
-    public CartController(CartService cartService) {
+    public CartController(CartService cartService, CartItemRepository cartItemRepository) {
         this.cartService = cartService;
+        this.cartItemRepository = cartItemRepository;
     }
 
-    // Method สำหรับแสดงตะกร้าสินค้า
-    @GetMapping("/cart/view")
-    public String viewCart(Model model) {
-        // เรียกคำนวณจำนวนสินค้าทั้งหมดในตะกร้า
-        Integer cartItemCount = cartItemService.getTotalQuantityInCart();
-
-        // ส่งจำนวนสินค้าผ่าน model ไปที่หน้าจอ
-        model.addAttribute("cartItemCount", cartItemCount);
-
-        return "cart/view"; // ชื่อ view ที่จะส่งกลับ
-    }
+//    // Method สำหรับแสดงตะกร้าสินค้า
+//    @GetMapping("/cart/view")
+//    public String viewCart(Model model) {
+//        // เรียกคำนวณจำนวนสินค้าทั้งหมดในตะกร้า
+//        Integer cartItemCount = cartItemService.getTotalQuantityInCart();
+//
+//        // ส่งจำนวนสินค้าผ่าน model ไปที่หน้าจอ
+//        model.addAttribute("cartItemCount", cartItemCount);
+//
+//        return "cart/view"; // ชื่อ view ที่จะส่งกลับ
+//    }
 
     // สำหรับแสดงข้อมูลในตะกร้า (GET /cart)
-    @GetMapping
-    public String showCart(Model model, @RequestParam("userEmail") String userEmail) {
-        List<CartItem> cartItems = cartService.getCartItems(userEmail);
-        model.addAttribute("cartItems", cartItems);
-        return "cart";  // ชื่อไฟล์ที่ใช้แสดงผล (cart.html)
-    }
+//    @GetMapping
+//    public String showCart(Model model, @RequestParam("userEmail") String userEmail) {
+//        List<CartItem> cartItems = cartService.getCartItems(userEmail);
+//        model.addAttribute("cartItems", cartItems);
+//        return "cart";  // ชื่อไฟล์ที่ใช้แสดงผล (cart.html)
+//    }
 
-    // ✅ หน้าตะกร้าใหม่
+    // ✅ หน้าตะกร้าใหม่  ใช้งาน
     @GetMapping("/view")
     public String viewCart(Model model, Principal principal) {
 
@@ -79,16 +80,17 @@ public class CartController {
         String userEmail = principal.getName(); // ดึง email จาก principal
 
         // เรียกใช้ cartService เพื่อดึงข้อมูลรายการสินค้าในตะกร้า
-        List<CartItem> cartItems = cartService.getCartItems(userEmail);
+        List<CartItem> cartItems = cartItemRepository.findByUserEmail(userEmail); // ตรวจสอบว่าได้ดึง cartItems มาจริง
 
         // คำนวณราคาทั้งหมดในตะกร้า
-        BigDecimal total = cartItems.stream()
-                .map(item -> {
-                    BigDecimal price = item.getPrice() != null ? item.getPrice() : BigDecimal.ZERO;
-                    int quantity = item.getQuantity() != null ? item.getQuantity() : 0;
-                    return price.multiply(BigDecimal.valueOf(quantity));
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal total = BigDecimal.ZERO;
+        if (cartItems != null) {
+            for (CartItem cartItem : cartItems) {
+                BigDecimal price = cartItem.getPrice() != null ? cartItem.getPrice() : BigDecimal.ZERO;
+                int quantity = cartItem.getQuantity() != null ? cartItem.getQuantity() : 0;
+                total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
+            }
+        }
 
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("total", total);
@@ -137,16 +139,16 @@ public class CartController {
     }
 
     // ✅ เพิ่มสินค้าจาก Form
-    @PostMapping("/addForm")
-    public String addToCart(@ModelAttribute @Valid CartItemForm form,
-                            BindingResult result,
-                            String userEmail) {
-        if (result.hasErrors()) {
-            return "redirect:/products?error=invalid";
-        }
-        cartService.addToCart(userEmail, form.getProductId(), form.getQuantity());
-        return "redirect:/cart/view"; // (แก้จาก /view เป็น /cart/view)
-    }
+//    @PostMapping("/addForm")
+//    public String addToCart(@ModelAttribute @Valid CartItemForm form,
+//                            BindingResult result,
+//                            String userEmail) {
+//        if (result.hasErrors()) {
+//            return "redirect:/products?error=invalid";
+//        }
+//        cartService.addToCart(userEmail, form.getProductId(), form.getQuantity());
+//        return "redirect:/cart/view"; // (แก้จาก /view เป็น /cart/view)
+//    }
 
     // ✅ อัปเดตสินค้าในตะกร้า
     @PostMapping("/update")
@@ -189,33 +191,40 @@ public class CartController {
     @PostMapping("/checkout")
     public String processCheckout(Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
-            log.warn("Checkout ล้มเหลว: ผู้ใช้ยังไม่ได้เข้าสู่ระบบ");
+//            log.warn("Checkout ล้มเหลว: ผู้ใช้ยังไม่ได้เข้าสู่ระบบ");
             redirectAttributes.addFlashAttribute("error", "กรุณาเข้าสู่ระบบก่อนทำรายการ");
             return "redirect:/login";
         }
 
         String userEmail = principal.getName();
-        log.info("เริ่ม checkout สำหรับผู้ใช้: {}", userEmail);
+//        log.info("เริ่ม checkout สำหรับผู้ใช้: {}", userEmail);
 
         try {
             Order order = orderService.createOrderFromCart(principal);
-            log.info("สร้างคำสั่งซื้อสำเร็จ: Order ID = {}, ผู้ใช้ = {}", order.getId(), userEmail);
+//            log.info("สร้างคำสั่งซื้อสำเร็จ: Order ID = {}, ผู้ใช้ = {}", order.getId(), userEmail);
 
             cartService.clearCart(userEmail);
-            log.info("ล้างตะกร้าสินค้าของผู้ใช้ {} สำเร็จ", userEmail);
+//            log.info("ล้างตะกร้าสินค้าของผู้ใช้ {} สำเร็จ", userEmail);
 
             return "redirect:/checkout/success";
 
         } catch (IllegalStateException e) {
             // 🟡 ถ้าตะกร้าว่าง ให้อยู่ที่หน้าเดิม
-            log.warn("Checkout ไม่สำเร็จ (เช่น ตะกร้าว่าง): {}", e.getMessage());
+//            log.warn("Checkout ไม่สำเร็จ (เช่น ตะกร้าว่าง): {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/cart/view"; // ❗ redirect ไปที่ cart/view พร้อม Flash message
         } catch (Exception e) {
-            log.error("เกิดข้อผิดพลาดขณะทำรายการ checkout ของผู้ใช้ {}", userEmail, e);
+//            log.error("เกิดข้อผิดพลาดขณะทำรายการ checkout ของผู้ใช้ {}", userEmail, e);
             redirectAttributes.addFlashAttribute("error", "เกิดข้อผิดพลาดขณะทำรายการ");
             return "redirect:/cart/view";
         }
     }
 
+    public CartItemRepository getCartItemRepository() {
+        return cartItemRepository;
+    }
+
+    public void setCartItemRepository(CartItemRepository cartItemRepository) {
+        this.cartItemRepository = cartItemRepository;
+    }
 }

@@ -4,6 +4,7 @@ import com.wewe.weweShop.dto.RegisterRequest;
 import com.wewe.weweShop.model.User;
 import com.wewe.weweShop.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +16,10 @@ import java.util.Collections;
 @Controller
 public class RegisterController {
 
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
+    private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
+    @Autowired
     public RegisterController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -64,9 +66,7 @@ public class RegisterController {
         return "redirect:/login?registerSuccess";
     }
 
-
-
-//    // รับข้อมูลจากแบบฟอร์มและบันทึกผู้ใช้ เข้ารหัสรหัสผ่านก่อนบันทึก
+////    // รับข้อมูลจากแบบฟอร์มและบันทึกผู้ใช้ เข้ารหัสรหัสผ่านก่อนบันทึก
 //    @PostMapping("/register")
 //    public String processRegistration(@ModelAttribute("user") User user, Model model) {
 //        if (userService.existsByUsername(user.getUsername())) {

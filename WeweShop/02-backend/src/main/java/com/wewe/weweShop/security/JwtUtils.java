@@ -2,6 +2,7 @@ package com.wewe.weweShop.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -62,5 +63,24 @@ public class JwtUtils {
                 .getBody()
                 .getExpiration();
         return expiration.before(new Date());
+    }
+
+    @PostConstruct
+    public void validateConfig() {
+        if (jwtSecret == null || jwtSecret.isEmpty()) {
+            throw new IllegalArgumentException("❌ Environment variable JWT_SECRET not configured.");
+        }
+
+        if (jwtExpirationMs <= 0) {
+            throw new IllegalArgumentException("❌ Environment variable JWT_EXPIRATION must be > 0.");
+        }
+
+        try {
+            getSigningKey(); // ลอง decode เพื่อเช็คว่า key base64 ถูกต้อง
+        } catch (Exception e) {
+            throw new IllegalArgumentException("❌ JWT_SECRET must be a valid Base64-encoded string.", e);
+        }
+
+        System.out.println("✅ JWT Config loaded: secret length = " + jwtSecret.length());
     }
 }

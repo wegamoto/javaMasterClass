@@ -29,14 +29,14 @@
     <tr th:each="order, iterStat : ${orders}">
       <td th:text="${iterStat.index + 1}"></td> <!-- แสดงลำดับที่ -->
       <td th:text="${order.id}"></td> <!-- รหัสออเดอร์ -->
-      <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td> <!-- วันที่ -->
+      <td th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm') : '-'}"></td> <!-- วันที่ -->
       <td th:text="${order.totalAmount}"></td> <!-- ยอดรวมแบบ format -->
       <td th:text="${order.status}"></td> <!-- สถานะออเดอร์ -->
 <!--      <td th:text="${statusMap[order.id] != null ? statusMap[order.id] : order.status}"></td>-->
 
       <!-- แสดงปุ่มถ้า status เป็น PENDING_PAYMENT -->
       <td>
-        <a th:if="${order.status.name() == 'PENDING_PAYMENT'}"
+        <a th:if="${order.status != null and order.status.name() == 'PENDING_PAYMENT'}"
            th:href="@{'/payment/continue?orderId=' + ${order.id}}"
            class="btn btn-warning btn-sm">
           ชำระ

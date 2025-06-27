@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th" class="transition-colors duration-500">
+<head>
+    <meta charset="UTF-8" />
+    <title>Vehicles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        html.dark body {
+          background-color: #121212;
+          color: #e0e0e0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-200">
+
+<!-- เรียก navbar fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Main content -->
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-center text-3xl font-bold mb-8">รายการรถขนส่ง</h1>
+
+    <div class="text-right mb-6">
+        <a th:href="@{/vehicles/add}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+            ➕ เพิ่มรถใหม่
+        </a>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
+            <thead class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+            <tr>
+                <th class="px-4 py-2 text-left border-b border-gray-300 dark:border-gray-600">ทะเบียน</th>
+                <th class="px-4 py-2 text-left border-b border-gray-300 dark:border-gray-600">ประเภท</th>
+                <th class="px-4 py-2 text-left border-b border-gray-300 dark:border-gray-600">ความจุ (kg)</th>
+                <th class="px-4 py-2 text-center border-b border-gray-300 dark:border-gray-600">จัดการ</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="v : ${vehicles}" class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <td class="px-4 py-3" th:text="${v.licensePlate}"></td>
+                <td class="px-4 py-3" th:text="${v.type}"></td>
+                <td class="px-4 py-3" th:text="${v.capacity}"></td>
+                <td class="px-4 py-3 text-center space-x-2">
+                    <a th:href="@{'/vehicles/edit/' + ${v.id}}" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-1 px-3 rounded">
+                        ✏️ แก้ไข
+                    </a>
+                    <a th:href="@{'/vehicles/delete/' + ${v.id}}"
+                       onclick="return confirm('ยืนยันลบ?')"
+                       class="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded">
+                        🗑️ ลบ
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${vehicles.isEmpty()}">
+                <td colspan="4" class="px-4 py-4 text-center text-gray-500 dark:text-gray-400">ไม่มีข้อมูลรถขนส่ง</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- เรียก footer fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script>
+    function applyDarkMode(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('toggleIcon').classList.replace('fa-moon', 'fa-sun');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('toggleIcon').classList.replace('fa-sun', 'fa-moon');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const darkModeStored = localStorage.getItem('darkMode') === 'true';
+      applyDarkMode(darkModeStored);
+
+      const toggleBtn = document.getElementById('darkModeToggle');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          const isDark = document.documentElement.classList.toggle('dark');
+          localStorage.setItem('darkMode', isDark);
+          applyDarkMode(isDark);
+        });
+      }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+<!-- templates/fragments/module-card.html -->
+<div th:fragment="moduleCard(title, desc, icon, link)" xmlns:th="http://www.w3.org/1999/xhtml">
+    <a th:href="${link}" class="card bg-white rounded-lg shadow hover:shadow-lg transition p-6 flex items-center space-x-5">
+        <i th:attr="data-lucide=${icon}" class="w-10 h-10 text-indigo-600"></i>
+        <div>
+            <h2 class="text-xl font-semibold text-gray-900" th:text="${title}">Module Title</h2>
+            <p class="text-gray-500 mt-1" th:text="${desc}">คำอธิบาย</p>
+        </div>
+    </a>
+</div>

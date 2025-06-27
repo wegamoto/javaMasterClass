@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock View - Admin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <style>
+    html, body {
+      height: 100%;
+    }
+
+    .sidebar {
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      border-right: 1px solid #dee2e6;
+      padding: 1rem 0.75rem;
+    }
+
+    .main-content {
+      padding: 2rem 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ✅ Navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- ✅ Layout Container -->
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- ✅ Sidebar -->
+    <div class="col-auto p-0">
+      <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    </div>
+
+    <!-- ✅ Main Content -->
+    <main class="col ps-md-4 main-content">
+      <h2 class="mb-4">📦 รายการสินค้าในสต็อก</h2>
+
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>ชื่อสินค้า</th>
+          <th>หมวดหมู่</th>
+          <th>ราคา</th>
+          <th>คงเหลือ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product, iStat : ${stockProducts}">
+          <td th:text="${iStat.index + 1}">1</td>
+          <td th:text="${product.name}">Product Name</td>
+          <td th:text="${product.category != null ? product.category.name : 'ไม่ระบุ'}">Category</td>
+          <td th:text="${product.price != null ? #numbers.formatDecimal(product.price, 2, 'POINT', ',', 'THB') : 'N/A'}">฿0.00</td>
+          <td th:text="${product.stockQuantity}"
+              th:classappend="${product.stockQuantity} &lt; 5 ? 'text-danger fw-bold' : ''">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <a th:href="@{/dashboard}" class="btn btn-secondary mt-3">ย้อนกลับ</a>
+    </main>
+  </div>
+</div>
+
+<!-- ✅ Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

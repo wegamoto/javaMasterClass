@@ -1,58 +1,131 @@
 package com.wewe.weweShop.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table(name = "cart_items")
-@Getter
-@Setter
-@NoArgsConstructor
 public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username; // ✅ ต้องมี field นี้ ถ้าใช้ findByUsername()
+    private String username;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id") // FK ไปที่ Cart
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
     @Column(name = "user_email", nullable = false)
-    private String userEmail; // เก็บ email ของผู้ใช้งานตะกร้านี้ (ไม่ต้อง join user ตรงๆ ก็ได้
-
-    // ไม่จำเป็นต้องใช้ หรือ ใช้ userId สำหรับ query native
-//    @Column(name = "user_id", insertable = false, updatable = false)
-//    private Long userId;
+    private String userEmail;
 
     @Column(name = "product_id", nullable = false)
-    private Long productId; // ID ของสินค้าที่หยิบใส่ตะกร้า
+    private Long productId;
 
     @Column(name = "product_name", nullable = false)
-    private String productName; // ชื่อสินค้า (เผื่อสินค้าเปลี่ยนชื่อภายหลัง)
+    private String productName;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price; // ราคาต่อหน่วยของสินค้า ณ ตอนหยิบใส่ตะกร้า
+    private BigDecimal price;
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity; // จำนวนสินค้าที่หยิบใส่ตะกร้า
+    private Integer quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;  // ใช้สำหรับการดึงข้อมูลของผู้ใช้
+    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY) // โหลดเฉพาะตอนที่จำเป็น ไม่หน่วงระบบ
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private Product product;  // สำหรับดึงข้อมูลสินค้าเพิ่มเติมเวลาแสดงตะกร้า
+    private Product product;
 
-    /**
-     * คำนวณราคารวมต่อรายการในตะกร้า (price * quantity)
-     */
+    // ❌ Lombok ถูกลบออกแล้ว —> เราสร้าง constructor เอง
+    public CartItem() {
+    }
+
+    // ✅ Getter และ Setter ทุกฟิลด์ (สามารถใช้ Generate ของ IDE ช่วยได้)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     @Transient
     public BigDecimal getTotal() {
         if (price != null && quantity > 0) {
@@ -61,21 +134,21 @@ public class CartItem {
         return BigDecimal.ZERO;
     }
 
-    // equals & hashCode สำหรับเช็คว่าเป็นสินค้ารายการเดิมไหม
+    public void setTotal(BigDecimal total) {
+        // ตั้งไว้เผื่อ serialization / ไม่ใช้งานจริง
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CartItem)) return false;
         CartItem cartItem = (CartItem) o;
         return Objects.equals(productId, cartItem.productId) &&
-                Objects.equals(userEmail, cartItem.userEmail); // เพิ่ม userEmail เพื่อแยก user
+                Objects.equals(userEmail, cartItem.userEmail);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(productId, userEmail);
-    }
-
-    public void setTotal(BigDecimal total) {
     }
 }

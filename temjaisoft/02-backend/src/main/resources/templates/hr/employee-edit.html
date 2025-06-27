@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>แก้ไขข้อมูลพนักงาน</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>body { font-family: 'Noto Sans Thai', sans-serif; }</style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<div class="flex flex-grow">
+  <!-- ✅ Sidebar (ด้านซ้าย) -->
+  <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('hr')}"></aside>
+
+  <!-- ✅ Main content -->
+  <main class="max-w-3xl mx-auto mt-10 bg-white shadow-md rounded-lg p-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">✏️ แก้ไขข้อมูลพนักงาน</h1>
+
+    <form th:action="@{'/hr/update/' + ${employee.id}}" th:object="${employee}" method="post" class="grid grid-cols-1 gap-4">
+      <div>
+        <label class="block font-medium mb-1">ชื่อ</label>
+        <input type="text" th:field="*{firstName}" class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block font-medium mb-1">นามสกุล</label>
+        <input type="text" th:field="*{lastName}" class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block font-medium mb-1">อีเมล</label>
+        <input type="email" th:field="*{email}" class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block font-medium mb-1">เบอร์โทร</label>
+        <input type="text" th:field="*{phone}" class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block font-medium mb-1">แผนก</label>
+        <input type="text" th:field="*{department}" class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block font-medium mb-1">ตำแหน่ง</label>
+        <input type="text" th:field="*{position}" class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block font-medium mb-1">วันเริ่มงาน</label>
+        <input type="date" th:field="*{startDate}" class="w-full border rounded px-3 py-2" />
+      </div>
+
+      <div class="flex justify-end space-x-2 mt-4">
+        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">💾 บันทึก</button>
+        <a th:href="@{/hr}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded">ยกเลิก</a>
+      </div>
+    </form>
+  </main>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+</body>
+</html>

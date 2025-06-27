@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>เพิ่ม Role ใหม่ | Servix Maintenance System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar -->
+<header th:replace="~{fragments/navbar :: navbar}" class="fixed top-0 left-0 right-0 z-30"></header>
+
+<!-- ✅ Layout Container -->
+<div class="flex flex-1 pt-16 min-h-[calc(100vh-4rem)]">
+
+  <!-- ✅ Sidebar -->
+  <aside th:replace="~{fragments/sidebar :: sidebar}"
+         class="w-64 bg-white border-r border-gray-200 fixed top-16 bottom-0 left-0 overflow-y-auto z-20">
+  </aside>
+
+  <!-- ✅ Main Content -->
+  <main class="flex-1 ml-64 px-8 py-10 bg-gray-50 overflow-y-auto">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow space-y-6">
+
+      <h1 class="text-2xl font-bold text-gray-800">เพิ่ม Role ใหม่</h1>
+
+      <form th:action="@{/roles/save}" th:object="${role}" method="post" class="space-y-4">
+        <div>
+          <label for="name" class="block mb-1 font-medium">ชื่อ Role (เช่น ROLE_TECHNICIAN)</label>
+          <input type="text" id="name" name="name" th:field="*{name}"
+                 class="w-full px-3 py-2 border rounded-md" required />
+        </div>
+
+        <div class="pt-2">
+          <button type="submit"
+                  class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+            ✅ บันทึก Role
+          </button>
+          <a th:href="@{/roles/list}" class="ml-4 text-gray-600 hover:underline">ยกเลิก</a>
+        </div>
+      </form>
+
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Footer -->
+<footer th:replace="~{fragments/footer :: footer}"
+        class="bg-white shadow mt-auto px-6 py-4 text-center text-sm text-gray-500 z-10">
+</footer>
+
+</body>
+</html>

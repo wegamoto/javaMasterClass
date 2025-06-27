@@ -1,6 +1,7 @@
 package com.wewe.weweShop.controller;
 
 import com.wewe.weweShop.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,10 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AuthPageController {
 
-    private UserService userService;
+    private final UserService userService;
+
     private final PasswordEncoder passwordEncoder;
 
-    public AuthPageController(PasswordEncoder passwordEncoder) {
+    @Autowired
+    public AuthPageController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 

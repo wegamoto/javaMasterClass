@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="head('เพิ่ม/แก้ไขตัวเลือก')">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+</div>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ เรียก Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="flex flex-1">
+    <!-- ✅ Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <div class="max-w-xl mx-auto bg-white shadow p-6 rounded">
+            <h2 class="text-2xl font-bold mb-4"
+                th:text="${choice.id} != null ? '✏️ แก้ไขตัวเลือก' : '➕ เพิ่มตัวเลือก'">
+                เพิ่ม/แก้ไขตัวเลือก
+            </h2>
+
+            <form th:action="@{/choices/save}" th:object="${choice}" method="post">
+                <input type="hidden" th:field="*{id}" />
+
+                <!-- เลือกคำถาม -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-1" for="question">คำถาม</label>
+                    <select th:field="*{question.id}" id="question" class="w-full border rounded px-3 py-2">
+                        <option value="" disabled>-- เลือกคำถาม --</option>
+                        <option th:each="q : ${questions}" th:value="${q.id}" th:text="${q.content}"
+                                th:selected="${q.id == choice.question.id}">
+                        </option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('question.id')}" th:errors="*{question.id}" class="text-red-600 text-sm mt-1"></p>
+                </div>
+
+                <!-- ข้อความตัวเลือก -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-1" for="content">ข้อความตัวเลือก</label>
+                    <textarea th:field="*{content}" id="content" rows="3"
+                              class="w-full border rounded px-3 py-2" placeholder="พิมพ์ข้อความ..."></textarea>
+                    <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-red-600 text-sm mt-1"></p>
+                </div>
+
+                <!-- ถูกต้องหรือไม่ -->
+                <div class="mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" th:field="*{isCorrect}" class="mr-2">
+                        <span>✅ คำตอบที่ถูกต้อง</span>
+                    </label>
+                </div>
+
+                <!-- ปุ่มบันทึก -->
+                <div class="flex justify-end">
+                    <a href="/questions" class="text-gray-600 px-4 py-2 hover:underline mr-4">ยกเลิก</a>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        บันทึก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

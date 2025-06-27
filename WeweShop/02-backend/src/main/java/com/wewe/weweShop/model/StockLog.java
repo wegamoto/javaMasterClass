@@ -1,11 +1,9 @@
 package com.wewe.weweShop.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
 public class StockLog {
 
     @Id
@@ -13,14 +11,66 @@ public class StockLog {
     private Long id;
 
     private Long productId;
-    private int change; // บวกหรือลบ
-    private String action;  // เช่น "PURCHASE", "MANUAL_ADD", "CANCEL_ORDER"
+    private int change;
+    private String action;
 
     private LocalDateTime timestamp;
 
+    // ===== Lifecycle Callback =====
     @PrePersist
     public void onCreate() {
         timestamp = LocalDateTime.now();
     }
-}
 
+    // ===== Getters and Setters =====
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public int getChange() {
+        return change;
+    }
+
+    public void setChange(int change) {
+        this.change = change;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "StockLog{" +
+                "id=" + id +
+                ", productId=" + productId +
+                ", change=" + change +
+                ", action='" + action + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
+    }
+}

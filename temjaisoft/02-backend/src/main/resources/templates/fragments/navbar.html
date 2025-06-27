@@ -1,0 +1,21 @@
+<!-- /templates/fragments/navbar.html -->
+<div th:fragment="navbar"
+     class="fixed top-0 left-0 right-0 z-50 bg-white shadow px-6 py-4 flex justify-between items-center md:static"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <!-- Mobile Toggle Button -->
+    <button id="sidebarToggle"
+            class="block md:hidden text-gray-600 focus:outline-none">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+
+    <div class="text-xl md:text-2xl font-bold text-indigo-700 select-none">
+        ERP System
+    </div>
+
+    <div class="hidden md:flex items-center space-x-4 text-gray-700 text-sm">
+        <span th:text="'ผู้ใช้: ' + ${username}">admin</span>
+        <a href="/logout" class="text-red-600 hover:underline font-medium">ออกจากระบบ</a>
+    </div>
+</div>
+

@@ -1,0 +1,66 @@
+<!-- sidebar.html -->
+<aside th:fragment="sidebar"
+       class="w-64 bg-white border-r border-gray-200 fixed top-16 bottom-0 left-0 overflow-y-auto shadow-md"
+       xmlns:th="http://www.thymeleaf.org">
+
+    <nav class="flex flex-col p-4 space-y-2 text-gray-700" aria-label="Sidebar Navigation">
+
+        <!-- Sidebar Heading -->
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">Navigation</h2>
+
+        <!-- Dashboard -->
+        <a href="/home"
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-100 hover:text-blue-700 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m0 0h4m-4 0H7"/>
+            </svg>
+            Dashboard
+        </a>
+
+        <!-- Work Orders -->
+        <a href="/work-orders"
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-100 hover:text-blue-700 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 17v-6h13v6M9 5v6h13V5M3 6h.01M3 10h.01M3 14h.01M3 18h.01"/>
+            </svg>
+            Work Orders
+        </a>
+
+        <!-- Technicians -->
+        <a href="/technicians"
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-100 hover:text-blue-700 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-green-500" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M5.121 17.804A3 3 0 006 20h12a3 3 0 00.879-2.196M16 11V7a4 4 0 00-8 0v4m-2 4h12"/>
+            </svg>
+            Technicians
+        </a>
+
+        <!-- Spare Parts -->
+        <a href="/spare-parts"
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-100 hover:text-blue-700 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-purple-500" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9.75 3a.75.75 0 000 1.5h1.25a3.25 3.25 0 010 6.5H9.75a.75.75 0 000 1.5H11a3.25 3.25 0 010 6.5H9.75a.75.75 0 000 1.5"/>
+            </svg>
+            Spare Parts
+        </a>
+
+        <!-- Maintenance Logs -->
+        <a href="/maintenancelogs"
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-100 hover:text-blue-700 transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Maintenance Logs
+        </a>
+    </nav>
+</aside>

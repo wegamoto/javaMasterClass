@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>PromptPay Payment</title>
+</head>
+<body>
+<h2>สแกนเพื่อชำระเงิน</h2>
+
+<p>คำสั่งซื้อ: <span th:text="${order.id}"></span></p>
+<p>ยอดชำระ: <span th:text="${order.totalAmount}"></span> บาท</p>
+
+<img th:src="'data:image/png;base64,' + ${qrCodeBase64}" alt="PromptPay QR Code" />
+
+<p>หากไม่สามารถสแกนได้ ให้คัดลอกโค้ดด้านล่าง</p>
+<textarea rows="4" cols="50" readonly th:text="${payload}"></textarea>
+
+<br/><a th:href="@{/orders/list}">← กลับไปยังรายการคำสั่งซื้อ</a>
+</body>
+</html>

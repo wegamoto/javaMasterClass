@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>เพิ่ม / แก้ไข ข้อสอบ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- ✅ Layout -->
+<div class="flex flex-1">
+
+  <!-- ✅ Sidebar Fragment -->
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+  <!-- ✅ Main Content -->
+  <main class="flex-1 p-6 flex items-center justify-center">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-lg">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">เพิ่ม / แก้ไข ข้อสอบ</h2>
+
+      <form id="examForm" class="space-y-5">
+        <div>
+          <label for="title" class="block text-gray-700 font-medium mb-1">ชื่อข้อสอบ</label>
+          <input type="text" id="title" name="title" required
+                 class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div>
+          <label for="description" class="block text-gray-700 font-medium mb-1">รายละเอียด</label>
+          <textarea id="description" name="description" rows="3"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <div>
+          <label for="duration" class="block text-gray-700 font-medium mb-1">ระยะเวลาทำข้อสอบ (นาที)</label>
+          <input type="number" id="duration" name="duration" min="1" required
+                 class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div>
+          <label for="startTime" class="block text-gray-700 font-medium mb-1">วันเวลาที่เริ่มสอบ</label>
+          <input type="datetime-local" id="startTime" name="startTime" required
+                 class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div>
+          <label for="endTime" class="block text-gray-700 font-medium mb-1">วันเวลาที่สิ้นสุดสอบ</label>
+          <input type="datetime-local" id="endTime" name="endTime" required
+                 class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-600 text-white font-semibold py-3 rounded hover:bg-blue-700 transition">
+          บันทึกข้อสอบ
+        </button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+  const examForm = document.getElementById('examForm');
+  const API_BASE = 'http://localhost:8080/api/exams';
+  const urlParams = new URLSearchParams(window.location.search);
+  const examId = urlParams.get('id');
+
+  if (examId) {
+    fetch(`${API_BASE}/${examId}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('title').value = data.title || '';
+        document.getElementById('description').value = data.description || '';
+        document.getElementById('duration').value = data.durationMinutes || '';
+        if (data.startTime) {
+          document.getElementById('startTime').value = data.startTime.slice(0, 16);
+        }
+        if (data.endTime) {
+          document.getElementById('endTime').value = data.endTime.slice(0, 16);
+        }
+      })
+      .catch(err => {
+        alert('ไม่พบข้อมูลข้อสอบ');
+        console.error(err);
+      });
+  }
+
+  function getFormData() {
+    return {
+      title: document.getElementById('title').value.trim(),
+      description: document.getElementById('description').value.trim(),
+      durationMinutes: parseInt(document.getElementById('duration').value),
+      startTime: document.getElementById('startTime').value,
+      endTime: document.getElementById('endTime').value
+    };
+  }
+
+  examForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const examData = getFormData();
+
+    if (examData.endTime <= examData.startTime) {
+      alert('วันเวลาสิ้นสุดต้องมากกว่าวันเวลาเริ่มต้น');
+      return;
+    }
+
+    const method = examId ? 'PUT' : 'POST';
+    const url = examId ? `${API_BASE}/${examId}` : API_BASE;
+
+    fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(examData)
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('เกิดข้อผิดพลาดในการบันทึกข้อสอบ');
+        return res.json();
+      })
+      .then(() => {
+        alert('บันทึกข้อสอบเรียบร้อยแล้ว');
+        window.location.href = 'exam-list.html';
+      })
+      .catch(err => {
+        alert(err.message);
+        console.error(err);
+      });
+  });
+</script>
+</body>
+</html>

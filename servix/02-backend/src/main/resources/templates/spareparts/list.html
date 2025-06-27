@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Spare Parts List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+
+<header th:replace="~{fragments/navbar :: navbar}"
+        class="fixed top-0 left-0 right-0 h-16 z-30 bg-white shadow"></header>
+
+<div class="flex flex-1 pt-16 h-full">
+  <aside th:replace="~{fragments/sidebar :: sidebar}"
+         class="w-64 fixed top-16 bottom-0 left-0 bg-white border-r border-gray-200 overflow-y-auto z-20">
+  </aside>
+
+  <main class="flex-1 ml-64 p-6 sm:p-8 overflow-y-auto">
+    <div class="max-w-6xl mx-auto space-y-6">
+
+      <!-- Header + Actions -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h1 class="text-2xl font-bold text-gray-800">รายการอะไหล่</h1>
+        <div class="flex gap-2">
+          <a href="/spare-parts/export"
+             class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
+            Export CSV
+          </a>
+          <a href="/spare-parts/new"
+             class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+            + เพิ่มอะไหล่
+          </a>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <form method="get" action="/spare-parts" class="flex w-full max-w-md">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="ค้นหาชื่อหรือ Part Number..."
+               class="flex-1 border border-gray-300 rounded-l px-4 py-2 focus:outline-none">
+        <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700">
+          ค้นหา
+        </button>
+      </form>
+
+      <!-- Table -->
+      <div class="overflow-x-auto bg-white shadow rounded-lg">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="px-6 py-3">ชื่อ</th>
+            <th class="px-6 py-3">Part Number</th>
+            <th class="px-6 py-3">ในสต็อก</th>
+            <th class="px-6 py-3">ระดับเตือน</th>
+            <th class="px-6 py-3 text-center">จัดการ</th>
+          </tr>
+          </thead>
+          <tbody class="text-gray-800" th:each="part : ${spareParts}">
+          <tr class="border-b hover:bg-gray-50"
+              th:classappend="${part.quantityInStock} <= ${part.reorderLevel} ? 'bg-red-50' : ''">
+            <td class="px-6 py-4" th:text="${part.name}"></td>
+            <td class="px-6 py-4" th:text="${part.partNumber}"></td>
+            <td class="px-6 py-4">
+              <span th:text="${part.quantityInStock}"
+                    th:classappend="${part.quantityInStock} <= ${part.reorderLevel} ? 'text-red-600 font-bold' : ''"></span>
+              <span th:if="${part.quantityInStock} <= ${part.reorderLevel}" class="ml-1 text-red-500">⚠️</span>
+            </td>
+            <td class="px-6 py-4" th:text="${part.reorderLevel}"></td>
+            <td class="px-6 py-4 text-center space-x-2">
+              <a th:href="@{'/spare-parts/' + ${part.id} + '/edit'}"
+                 class="text-blue-600 hover:underline">แก้ไข</a>
+              <a th:href="@{'/spare-parts/' + ${part.id} + '/delete'}"
+                 class="text-red-600 hover:underline"
+                 onclick="return confirm('ต้องการลบใช่หรือไม่?')">ลบ</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"
+        class="bg-white shadow px-6 py-4 text-center text-sm text-gray-500 z-10">
+</footer>
+</body>
+</html>
