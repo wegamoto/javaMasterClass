@@ -5,17 +5,36 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .csrf(csrf -> csrf.disable());
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // ✅ ให้ทุก path เข้าถึงได้โดยไม่ต้อง login
+                )
+                .csrf(csrf -> csrf.disable())  // ปิด CSRF (ถ้าใช้ REST หรือไม่ใช่ form)
+                .formLogin(login -> login.disable()) // ปิด form login
+                .httpBasic(httpBasic -> httpBasic.disable()); // ปิด Basic Auth ด้วย
 
         return http.build();
     }
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/songs/**").permitAll()  // 👈 หรือ "/api/**"
+//                        .anyRequest().authenticated()
+//                )
+//                .csrf(csrf -> csrf.disable()) // ถ้าเป็น REST API
+//                .httpBasic(withDefaults());
+//
+//        return http.build();
+//    }
 
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

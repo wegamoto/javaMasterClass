@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>บัญชีแยกประเภท | ระบบบัญชี</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans Thai', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<div class="flex">
+    <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('accounting')}"></aside>
+
+    <main class="flex-grow p-8">
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h1 class="text-2xl font-bold mb-6">📘 บัญชีแยกประเภท</h1>
+
+            <table class="min-w-full table-auto border border-gray-300">
+                <thead class="bg-gray-100">
+                <tr>
+                    <th class="text-left p-3 border-b">วันที่</th>
+                    <th class="text-left p-3 border-b">รายละเอียด</th>
+                    <th class="text-right p-3 border-b">เดบิต</th>
+                    <th class="text-right p-3 border-b">เครดิต</th>
+                    <th class="text-right p-3 border-b">ยอดคงเหลือ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- ตัวอย่างรายการ -->
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3 border-b">01/07/2025</td>
+                    <td class="p-3 border-b">รับเงินสด</td>
+                    <td class="p-3 text-right border-b">10,000</td>
+                    <td class="p-3 text-right border-b">-</td>
+                    <td class="p-3 text-right border-b">10,000</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="p-3 border-b">02/07/2025</td>
+                    <td class="p-3 border-b">ชำระค่าสินค้า</td>
+                    <td class="p-3 text-right border-b">-</td>
+                    <td class="p-3 text-right border-b">3,000</td>
+                    <td class="p-3 text-right border-b">7,000</td>
+                </tr>
+                <!-- ... -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

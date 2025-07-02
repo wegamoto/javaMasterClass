@@ -25,19 +25,16 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService(UserRepository userRepository) {
-//        return new CustomUserDetailsService(userRepository);
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/login","/error", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/hr/**").hasAnyRole("USER", "ADMIN")  // แก้ตรงนี้
+                        .requestMatchers("/accounting/**").hasAnyRole("USER", "ADMIN")  // แก้ตรงนี้
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

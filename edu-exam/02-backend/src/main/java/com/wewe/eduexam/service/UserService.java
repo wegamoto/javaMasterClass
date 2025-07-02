@@ -94,7 +94,7 @@ public class UserService {
     private Student createStudentFromRequest(RegisterRequest request, User user) {
         return Student.builder()
                 .studentCode(request.getStudentId())
-                .name(request.getStudentName())
+                .username(request.getStudentName())
                 .email(request.getEmail())
                 .user(user) // <-- สำคัญ
                 .build();

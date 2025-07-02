@@ -44,11 +44,11 @@
         <tbody>
         <tr th:each="emp : ${employees}" class="border-t">
           <td class="px-4 py-2" th:text="${emp.fullName}">นายสมชาย ใจดี</td>
-          <td class="px-4 py-2" th:text="${emp.position}">นักพัฒนา</td>
-          <td class="px-4 py-2" th:text="${emp.department}">ไอที</td>
+          <td class="px-4 py-2" th:text="${emp.position?.name}">นักพัฒนา</td>
+          <td class="px-4 py-2" th:text="${emp.department?.name}">ไอที</td>
           <td class="px-4 py-2" th:text="${emp.email}">somchai@example.com</td>
           <td class="px-4 py-2 text-center">
-            <a th:href="@{/hr/employees/{id}(id=${emp.id})}" class="text-blue-600 hover:underline">ดู</a>
+            <a th:if="${emp.id != null}" th:href="@{/hr/employees/{id}(id=${emp.id})}" class="text-blue-600 hover:underline">ดู</a>
             |
             <a th:href="@{/hr/employees/{id}/edit(id=${emp.id})}" class="text-yellow-600 hover:underline">แก้ไข</a>
             |

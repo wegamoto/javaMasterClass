@@ -40,54 +40,39 @@ public class StudentResultController {
     }
 
     @GetMapping("/results")
-    public String showResults(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public String showResults(Model model, Authentication authentication) {
         String username = authentication.getName();
 
-        User studentUser = userService.findByUsername(username);
-        if (studentUser == null) {
-            throw new UsernameNotFoundException("ไม่พบผู้ใช้: " + username);
+        Optional<Student> studentOpt = studentRepository.findByUserUsername(username);
+
+        if (studentOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "ไม่พบ Student ของผู้ใช้: " + username);
+            return "error"; // หรือ redirect ไปหน้าอื่น เช่น return "redirect:/";
         }
 
-        // ดึง Student จาก username ของ User
-        Student student = studentRepository.findByUser_Username(username)
-                .orElseThrow(() -> new RuntimeException("ไม่พบ Student ของผู้ใช้: " + username));
+        Student student = studentOpt.get();
+        Long studentId = student.getId();
 
-        // ดึง StudentAnswer โดยใช้ Student (ถูกต้อง)
-        List<StudentAnswer> studentAnswers = studentAnswerRepository.findByStudent(student);
+        List<StudentAnswer> answers = studentAnswerRepository.findByStudentId(studentId);
 
-        // จัดกลุ่มตาม Exam
-        Map<Exam, List<StudentAnswer>> groupedByExam = studentAnswers.stream()
-                .collect(Collectors.groupingBy(StudentAnswer::getExam));
+        int totalScore = 0;
+        int maxScore = 0;
 
-        List<StudentResultDTO> results = new ArrayList<>();
+        for (StudentAnswer sa : answers) {
+            Question question = sa.getQuestion();
+            String correct = question.getCorrectAnswer();
+            String studentAnswer = sa.getTextAnswer();
 
-        for (Map.Entry<Exam, List<StudentAnswer>> entry : groupedByExam.entrySet()) {
-            Exam exam = entry.getKey();
-            List<StudentAnswer> answers = entry.getValue();
-
-            double totalScore = 0.0;
-            double maxScore = 0.0;
-
-            for (StudentAnswer sa : answers) {
-                Double score = (sa.getScore() != null) ? sa.getScore() : 0.0;
-                totalScore += score;
-
-                Question q = sa.getQuestion();
-                if (q != null && q.getFullScore() != null) {
-                    maxScore += q.getFullScore();
-                }
+            if (correct != null && studentAnswer != null && correct.trim().equalsIgnoreCase(studentAnswer.trim())) {
+                totalScore += question.getFullScore();
             }
 
-            results.add(new StudentResultDTO(
-                    student.getName(),
-                    exam.getTitle(),
-                    totalScore,
-                    maxScore
-            ));
+            maxScore += question.getFullScore();
         }
 
-        model.addAttribute("results", results);
+        model.addAttribute("answers", answers);
+        model.addAttribute("totalScore", totalScore);
+        model.addAttribute("maxScore", maxScore);
         return "results";
     }
 

@@ -1,25 +1,20 @@
 package com.wewe.temjaisoft.controller;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class CustomErrorController implements ErrorController {
 
-    @RequestMapping("/error")
+    @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST})
     public String handleError(HttpServletRequest request) {
-        // return ชื่อไฟล์ thymeleaf template เช่น error.html
-        return "error";
+        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        request.setAttribute("statusCode", status);
+        return "error"; // ให้ Spring ไปยัง error.html
     }
-
-    // สำหรับ Spring Boot 2.3+ ถ้าอยาก override path เอง ให้เพิ่ม method นี้
-    /*
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
-    */
 }
 

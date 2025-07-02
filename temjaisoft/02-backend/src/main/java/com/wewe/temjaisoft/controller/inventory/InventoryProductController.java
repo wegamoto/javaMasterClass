@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/inventory/products")
 public class InventoryProductController {
@@ -25,13 +27,15 @@ public class InventoryProductController {
     }
 
     @GetMapping
-    public String listProducts(Model model) {
+    public String listProducts(Model model, Principal principal) {
         model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         return "inventory/product-list";
     }
 
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Model model, Principal principal) {
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         model.addAttribute("product", new Product());
         model.addAttribute("formTitle", "เพิ่มสินค้าใหม่");
         model.addAttribute("formAction", "/inventory/products/save");
@@ -41,7 +45,8 @@ public class InventoryProductController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         Product product = productService.getProductById(id)
                 .orElseThrow(() -> new IllegalArgumentException("ไม่พบสินค้าด้วย ID: " + id));
 
@@ -54,7 +59,7 @@ public class InventoryProductController {
     }
 
     @PostMapping("/save")
-    public String saveProduct(@ModelAttribute("product") Product product) {
+    public String saveProduct(@ModelAttribute("product") Product product, Principal principal) {
         productService.saveProduct(product);
         return "redirect:/inventory/products";
     }

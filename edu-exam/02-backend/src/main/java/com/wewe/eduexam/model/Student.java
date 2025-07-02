@@ -21,7 +21,9 @@ public class Student {
 
     private String studentCode;
 
-    private String name;
+    private String name; // ✅ ต้องมี field ชื่อนี้
+
+    private String username;
 
     private String email;
 

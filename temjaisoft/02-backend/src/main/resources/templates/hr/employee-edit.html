@@ -13,46 +13,61 @@
 <header th:replace="~{fragments/navbar :: navbar}"></header>
 
 <div class="flex flex-grow">
-  <!-- ✅ Sidebar (ด้านซ้าย) -->
+  <!-- Sidebar -->
   <aside class="w-64 bg-white border-r shadow-sm hidden md:block" th:replace="~{fragments/sidebar :: sidebar('hr')}"></aside>
 
-  <!-- ✅ Main content -->
+  <!-- Main content -->
   <main class="max-w-3xl mx-auto mt-10 bg-white shadow-md rounded-lg p-8">
     <h1 class="text-2xl font-bold text-gray-800 mb-6">✏️ แก้ไขข้อมูลพนักงาน</h1>
 
     <form th:action="@{'/hr/update/' + ${employee.id}}" th:object="${employee}" method="post" class="grid grid-cols-1 gap-4">
+
       <div>
-        <label class="block font-medium mb-1">ชื่อ</label>
-        <input type="text" th:field="*{firstName}" class="w-full border rounded px-3 py-2" />
+        <label class="block font-medium mb-1" for="firstName">ชื่อ</label>
+        <input type="text" id="firstName" th:field="*{firstName}" class="w-full border rounded px-3 py-2" />
       </div>
+
       <div>
-        <label class="block font-medium mb-1">นามสกุล</label>
-        <input type="text" th:field="*{lastName}" class="w-full border rounded px-3 py-2" />
+        <label class="block font-medium mb-1" for="lastName">นามสกุล</label>
+        <input type="text" id="lastName" th:field="*{lastName}" class="w-full border rounded px-3 py-2" />
       </div>
+
       <div>
-        <label class="block font-medium mb-1">อีเมล</label>
-        <input type="email" th:field="*{email}" class="w-full border rounded px-3 py-2" />
+        <label class="block font-medium mb-1" for="email">อีเมล</label>
+        <input type="email" id="email" th:field="*{email}" class="w-full border rounded px-3 py-2" />
       </div>
+
       <div>
-        <label class="block font-medium mb-1">เบอร์โทร</label>
-        <input type="text" th:field="*{phone}" class="w-full border rounded px-3 py-2" />
+        <label class="block font-medium mb-1" for="phone">เบอร์โทร</label>
+        <input type="text" id="phone" th:field="*{phone}" class="w-full border rounded px-3 py-2" />
       </div>
+
       <div>
-        <label class="block font-medium mb-1">แผนก</label>
-        <input type="text" th:field="*{department}" class="w-full border rounded px-3 py-2" />
+        <label class="block font-medium mb-1" for="department">แผนก</label>
+        <select id="department" th:field="*{department.id}" class="w-full border rounded px-3 py-2">
+          <option th:each="dept : ${departments}"
+                  th:value="${dept.id}"
+                  th:text="${dept.name}">แผนก</option>
+        </select>
       </div>
+
       <div>
-        <label class="block font-medium mb-1">ตำแหน่ง</label>
-        <input type="text" th:field="*{position}" class="w-full border rounded px-3 py-2" />
+        <label class="block font-medium mb-1" for="position">ตำแหน่ง</label>
+        <select id="position" th:field="*{position.id}" class="w-full border rounded px-3 py-2">
+          <option th:each="pos : ${positions}"
+                  th:value="${pos.id}"
+                  th:text="${pos.name}">ตำแหน่ง</option>
+        </select>
       </div>
+
       <div>
-        <label class="block font-medium mb-1">วันเริ่มงาน</label>
-        <input type="date" th:field="*{startDate}" class="w-full border rounded px-3 py-2" />
+        <label class="block font-medium mb-1" for="startDate">วันเริ่มงาน</label>
+        <input type="date" id="startDate" th:field="*{startDate}" class="w-full border rounded px-3 py-2" />
       </div>
 
       <div class="flex justify-end space-x-2 mt-4">
         <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">💾 บันทึก</button>
-        <a th:href="@{/hr}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded">ยกเลิก</a>
+        <a th:href="@{/hr/employee/list}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded">ยกเลิก</a>
       </div>
     </form>
   </main>

@@ -25,19 +25,4 @@ public class LoginController {
     public String showLoginPage() {
         return "login"; // ชี้ไปยัง login.html
     }
-
-//    @PostMapping("/login")
-//    public String doLogin(@RequestParam String username,
-//                          @RequestParam String password) {
-//        try {
-//            UsernamePasswordAuthenticationToken authToken =
-//                    new UsernamePasswordAuthenticationToken(username, password);
-//            Authentication auth = authenticationManager.authenticate(authToken);
-//
-//            SecurityContextHolder.getContext().setAuthentication(auth);
-//            return "redirect:/dashboard";
-//        } catch (AuthenticationException e) {
-//            return "redirect:/login?error=true";
-//        }
-//    }
 }

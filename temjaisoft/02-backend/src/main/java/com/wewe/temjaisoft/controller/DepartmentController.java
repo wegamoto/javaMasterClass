@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/hr/departments")
@@ -16,25 +18,27 @@ public class DepartmentController {
     private final DepartmentRepository departmentRepository;
 
     @GetMapping
-    public String listDepartments(Model model) {
+    public String listDepartments(Model model, Principal principal) {
         model.addAttribute("departments", departmentRepository.findAll());
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         return "hr/department-list";
     }
 
     @GetMapping("/new")
-    public String showAddForm(Model model) {
+    public String showAddForm(Model model, Principal principal) {
         model.addAttribute("department", new Department());
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         return "hr/department-form";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Department department) {
+    public String save(@ModelAttribute Department department, Principal principal) {
         departmentRepository.save(department);
         return "redirect:/hr/departments";
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid ID: " + id));
         model.addAttribute("department", department);
@@ -42,7 +46,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes, Principal principal) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid department ID: " + id));
 

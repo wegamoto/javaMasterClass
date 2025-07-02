@@ -26,7 +26,7 @@
     <div class="max-w-6xl mx-auto bg-white shadow-md rounded-xl p-6">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">👨‍💼 รายชื่อพนักงาน</h1>
-        <a th:href="@{/hr/add}" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded shadow">
+        <a th:href="@{/hr/employees/new}" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded shadow">
           + เพิ่มพนักงาน
         </a>
       </div>
@@ -50,9 +50,9 @@
             <td class="px-4 py-2" th:text="${employee.position != null ? employee.position.name : 'ไม่ระบุ'}">ตำแหน่ง</td>
             <td class="px-4 py-2" th:text="${employee.department != null ? employee.department.name : 'ไม่ระบุ'}">แผนก</td>
             <td class="py-3 px-4 text-center space-x-2">
-              <a th:href="@{'/hr/' + ${employee.id}}" class="text-blue-600 hover:underline">ดู</a>
-              <a th:href="@{'/hr/edit/' + ${employee.id}}" class="text-yellow-500 hover:underline">แก้ไข</a>
-              <a th:href="@{'/hr/delete/' + ${employee.id}}"
+              <a th:href="@{'/hr/employees/' + ${employee.id}}" class="text-blue-600 hover:underline">ดู</a>
+              <a th:href="@{'/hr/employees/edit/' + ${employee.id}}" class="text-yellow-500 hover:underline">แก้ไข</a>
+              <a th:href="@{'/hr/employees/delete/' + ${employee.id}}"
                  onclick="return confirm('ยืนยันการลบพนักงานคนนี้?')"
                  class="text-red-600 hover:underline">ลบ</a>
             </td>

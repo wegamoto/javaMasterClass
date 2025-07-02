@@ -35,10 +35,16 @@ public class SecurityConfig {
                         .requestMatchers("/login","/login.html", "/register","/register.html", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // API สำหรับ register/login
                         .requestMatchers(HttpMethod.POST,"/choices/save").permitAll()
-                        .requestMatchers("/student/**").hasRole("STUDENT")
+
+
+                        .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN") // เสริมความปลอดภัยสำหรับ path admin
                         .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN") // ตัวอย่างสำหรับครู
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        // กำหนดหน้า 403 (Access Denied) เมื่อ user ไม่มีสิทธิ์
+                        .accessDeniedPage("/access-denied")
                 )
                 .formLogin(form -> form
                         .loginPage("/login")

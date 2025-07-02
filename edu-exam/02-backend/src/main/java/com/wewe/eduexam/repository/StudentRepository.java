@@ -10,4 +10,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByUser(User user); // ✅ เพิ่มเมธอดนี้
 
     Optional<Student> findByUser_Username(String username);
+
+    Optional<Student> findByUsername(String username);  // ✅ เพิ่ม method นี้
+
+    Optional<Student> findByUserUsername(String username);
 }

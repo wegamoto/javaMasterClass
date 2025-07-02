@@ -31,6 +31,9 @@ public class StudentController {
     public String listStudents(Model model) {
         List<Student> students = studentRepository.findAll();
         model.addAttribute("students", students);
+
+        System.out.println("✅ Students: " + students.size());
+
         return "student_list"; // HTML Template ชื่อ student_list.html
     }
 

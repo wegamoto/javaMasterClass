@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -25,7 +26,8 @@ public class InventoryStockController {
 
     // 🔍 แสดงรายการสต๊อก
     @GetMapping
-    public String listStocks(Model model) {
+    public String listStocks(Model model, Principal principal) {
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         List<Stock> stocks = stockService.findAll();
         model.addAttribute("stocks", stocks);
         return "inventory/stock-list";
@@ -33,7 +35,8 @@ public class InventoryStockController {
 
     // ➕ แสดงฟอร์มเพิ่มใหม่
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Model model, Principal principal) {
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         model.addAttribute("stock", new Stock());
         model.addAttribute("products", productService.getAllProducts());
         return "inventory/stock-form";
@@ -41,7 +44,8 @@ public class InventoryStockController {
 
     // ✏️ แก้ไขข้อมูล
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
+        model.addAttribute("username", principal !=null ? principal.getName() : "Guest");
         Stock stock = stockService.findById(id).orElseThrow(() -> new IllegalArgumentException("ไม่พบ stock id: " + id));
         model.addAttribute("stock", stock);
         model.addAttribute("products", productService.getAllProducts());
