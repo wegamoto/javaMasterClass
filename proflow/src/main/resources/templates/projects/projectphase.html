@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="h-full bg-gray-100 dark:bg-gray-900">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="'Project: ' + ${project.name}">Project Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 max-w-6xl mx-auto">
+<!-- Project Detail -->
+<section class="mb-8">
+    <h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">📁 Project Detail</h1>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded shadow space-y-3">
+        <p><strong>Name:</strong> <span th:text="${project.name}">Project Name</span></p>
+        <p><strong>Description:</strong> <span th:text="${project.description}">Project description</span></p>
+        <p><strong>Owner:</strong> <span th:text="${project.owner.name}">Owner Name</span></p>
+        <p><strong>Budget:</strong> <span th:text="${project.budget}">0.00</span></p>
+        <p><strong>Active:</strong> <span th:text="${project.active} ? 'Yes' : 'No'">Yes</span></p>
+    </div>
+</section>
+
+<!-- Phases -->
+<section>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">🧩 Project Phases</h2>
+        <a th:href="@{/phases/create(projectId=${project.id})}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            + Add Phase
+        </a>
+    </div>
+    <table class="min-w-full bg-white dark:bg-gray-800 rounded shadow">
+        <thead>
+        <tr>
+            <th class="py-2 px-4 border-b">#</th>
+            <th class="py-2 px-4 border-b">Name</th>
+            <th class="py-2 px-4 border-b">Start Date</th>
+            <th class="py-2 px-4 border-b">End Date</th>
+            <th class="py-2 px-4 border-b">Status</th>
+            <th class="py-2 px-4 border-b">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="phase, stat : ${project.phases}">
+            <td class="py-2 px-4 border-b" th:text="${stat.count}">1</td>
+            <td class="py-2 px-4 border-b" th:text="${phase.name}">Design</td>
+            <td class="py-2 px-4 border-b" th:text="${phase.startDate}">2025-07-01</td>
+            <td class="py-2 px-4 border-b" th:text="${phase.endDate}">2025-08-01</td>
+            <td class="py-2 px-4 border-b" th:text="${phase.status}">Planned</td>
+            <td class="py-2 px-4 border-b space-x-2">
+                <a th:href="@{/phases/edit/{id}(id=${phase.id})}" class="text-blue-600 hover:underline">Edit</a>
+                <a th:href="@{/phases/delete/{id}(id=${phase.id})}" class="text-red-600 hover:underline"
+                   onclick="return confirm('Delete this phase?')">Delete</a>
+            </td>
+        </tr>
+        <tr th:if="${project.phases.size() == 0}">
+            <td colspan="6" class="text-center py-4 text-gray-500">No phases found for this project.</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- Back link -->
+<div class="mt-6">
+    <a href="/projects" class="text-blue-500 hover:underline">&larr; Back to Projects</a>
+</div>
+</body>
+</html>

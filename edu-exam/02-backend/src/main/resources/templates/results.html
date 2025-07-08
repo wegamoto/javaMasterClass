@@ -1,64 +1,73 @@
 <!DOCTYPE html>
-<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>ผลคะแนน</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <title>ผลการสอบ | EduExam</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
-<!-- ✅ Navbar Fragment -->
+<!-- ✅ Navbar -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
+<!-- ✅ Layout -->
 <div class="flex flex-1">
 
-    <!-- ✅ Sidebar Fragment -->
-    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <!-- ✅ Sidebar -->
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-    <!-- ✅ Main Content -->
-    <main class="flex-1 p-6">
-        <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-            <h2 class="text-2xl font-bold mb-6 text-blue-800">📊 ดูผลคะแนนของนักเรียน</h2>
+  <!-- ✅ Main Content -->
+  <main class="flex-1 p-6">
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h2 class="text-2xl font-bold mb-4 text-center">ผลการสอบของคุณ</h2>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white rounded shadow">
-                    <thead class="bg-blue-600 text-white">
-                    <tr>
-                        <th class="py-2 px-4 text-left">ลำดับ</th>
-                        <th class="py-2 px-4 text-left">ชื่อนักเรียน</th>
-                        <th class="py-2 px-4 text-left">ชื่อข้อสอบ</th>
-                        <th class="py-2 px-4 text-left">คะแนน</th>
-                        <th class="py-2 px-4 text-left">คะแนนเต็ม</th>
-                        <th class="py-2 px-4 text-left">เปอร์เซ็นต์</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="result, iter : ${results}" class="border-b hover:bg-gray-50">
-                        <td class="py-2 px-4" th:text="${iter.index + 1}">1</td>
-                        <td class="py-2 px-4" th:text="${result.studentName}">ชื่อ</td>
-                        <td class="py-2 px-4"
-                            th:text="${result.examTitle != null and !result.examTitle.isEmpty() ? result.examTitle : 'ไม่มีชื่อข้อสอบ'}">
-                            ชื่อข้อสอบ
-                        </td>
-                        <td class="py-2 px-4" th:text="${result.score}">80</td>
-                        <td class="py-2 px-4" th:text="${result.maxScore != null ? result.maxScore : '-'}">100</td>
-                        <td class="py-2 px-4">
-                            <span th:if="${result.maxScore != null and result.maxScore > 0}"
-                                  th:text="${#numbers.formatDecimal(result.score * 100.0 / result.maxScore, 1, 'POINT', 1, 'NONE')} + '%'">80%</span>
-                            <span th:unless="${result.maxScore != null and result.maxScore > 0}">–</span>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(results)}">
-                        <td class="py-4 px-4 text-center text-gray-500" colspan="6">ไม่มีข้อมูลผลคะแนน</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
+      <!-- ✅ Score Summary -->
+      <div class="mb-6 text-center">
+        <p class="text-lg font-semibold text-green-600">
+          คะแนนที่ได้:
+          <span th:text="${totalScore}">0</span> /
+          <span th:text="${maxScore}">0</span>
+        </p>
+      </div>
+
+      <!-- ✅ Table Results -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+          <thead class="bg-gray-50 text-gray-700 text-left">
+          <tr>
+            <th class="px-4 py-2">ชื่อข้อสอบ</th>
+            <th class="px-4 py-2">คำถาม</th>
+            <th class="px-4 py-2">คำตอบที่เลือก</th>
+            <th class="px-4 py-2">คำตอบที่กรอก</th>
+            <th class="px-4 py-2 text-center">คะแนน</th>
+            <th class="px-4 py-2 text-center">คะแนนเต็ม</th>
+            <th class="px-4 py-2">เวลาที่ส่ง</th>
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200" th:if="${results != null}">
+          <tr th:each="result : ${results}">
+            <td class="px-4 py-2" th:text="${result.examTitle}">-</td>
+            <td class="px-4 py-2" th:text="${result.questionText}">-</td>
+            <td class="px-4 py-2" th:text="${result.choiceText}">-</td>
+            <td class="px-4 py-2" th:text="${result.textAnswer}">-</td>
+            <td class="px-4 py-2 text-center" th:text="${result.score}">0</td>
+            <td class="px-4 py-2 text-center" th:text="${result.maxScore}">0</td>
+            <td class="px-4 py-2" th:text="${#temporals.format(result.submittedAt, 'yyyy-MM-dd HH:mm')}">-</td>
+          </tr>
+          </tbody>
+          <tbody th:if="${results == null or results.empty}">
+          <tr>
+            <td colspan="7" class="px-4 py-4 text-center text-gray-500">ยังไม่มีข้อมูลผลการสอบ</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
 </div>
 
-<!-- ✅ Footer Fragment -->
+<!-- ✅ Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>

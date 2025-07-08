@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>เพิ่มคอร์ดใหม่ - Chordmate</title>
+  <link href="/css/output.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-lg mx-auto bg-white p-6 rounded shadow-md">
+  <h1 class="text-2xl font-bold mb-6">➕ เพิ่มคอร์ดใหม่</h1>
+
+  <form th:action="@{/chords/create}" th:object="${chord}" method="post" class="space-y-4">
+
+    <div>
+      <label for="chordName" class="block mb-1 font-semibold">ชื่อคอร์ด</label>
+      <input type="text" id="chordName" name="chordName" th:field="*{chordName}"
+             required
+             class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="time" class="block mb-1 font-semibold">เวลาที่คอร์ดขึ้น (วินาที)</label>
+      <input type="number" step="0.01" min="0" id="time" name="time" th:field="*{time}"
+             required
+             class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <!-- ซ่อน id เพลง -->
+    <input type="hidden" th:field="*{song.id}" />
+
+    <div class="flex justify-between items-center">
+      <a th:href="@{/chords/song/{songId}(songId=${chord.song.id})}"
+         class="text-gray-600 hover:underline">ย้อนกลับ</a>
+      <button type="submit"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        เพิ่มคอร์ด
+      </button>
+    </div>
+
+  </form>
+</div>
+
+</body>
+</html>

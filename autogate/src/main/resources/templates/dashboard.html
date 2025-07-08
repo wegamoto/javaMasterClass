@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-5xl mx-auto bg-white shadow-lg rounded-xl p-6">
+
+    <p class="text-sm text-gray-600">
+        Welcome, <span class="font-semibold" th:text="${#authentication.name}">User</span>
+        (<span th:text="${#strings.listJoin(#authentication.authorities.?[authority.startsWith('ROLE_')].![authority.substring(5)], ', ')}">ROLE</span>)
+    </p>
+
+    <!-- ✅ Logout Button -->
+    <div class="flex justify-end mb-4">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                Logout
+            </button>
+        </form>
+    </div>
+
+    <!-- ✅ Header -->
+    <h1 class="text-2xl font-bold mb-6">Dashboard - Daily Access Summary</h1>
+
+    <!-- ✅ Date Filter Form -->
+    <form method="get" action="/dashboard" class="flex items-end gap-4 mb-6">
+        <div>
+            <label class="block text-sm">Start Date:</label>
+            <input type="date" name="startDate" th:value="${startDate}" class="border rounded px-3 py-1" />
+        </div>
+        <div>
+            <label class="block text-sm">End Date:</label>
+            <input type="date" name="endDate" th:value="${endDate}" class="border rounded px-3 py-1" />
+        </div>
+        <div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
+        </div>
+    </form>
+
+    <div class="flex justify-end mb-4">
+        <button id="toggleChartBtn" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+            Switch to Bar Chart
+        </button>
+    </div>
+
+    <!-- ✅ Line Chart -->
+    <canvas id="accessChart" class="mb-10 h-96"></canvas>
+
+    <!-- ✅ Summary Table -->
+    <table class="table-auto w-full border border-gray-300 text-sm">
+        <thead class="bg-gray-200">
+        <tr>
+            <th class="border px-4 py-2 text-left">Date</th>
+            <th class="border px-4 py-2 text-green-600">Allowed</th>
+            <th class="border px-4 py-2 text-red-600">Denied</th>
+            <th class="border px-4 py-2">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${summary}" class="hover:bg-gray-100">
+            <td class="border px-4 py-2" th:text="${row.date}"></td>
+            <td class="border px-4 py-2 text-green-600 font-semibold" th:text="${row.allowedCount}"></td>
+            <td class="border px-4 py-2 text-red-600 font-semibold" th:text="${row.deniedCount}"></td>
+            <td class="border px-4 py-2 font-bold" th:text="${row.allowedCount + row.deniedCount}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ✅ Chart.js Script -->
+<script th:inline="javascript">
+    const labels = [[${dates}]];
+    const allowedData = [[${allowedList}]];
+    const deniedData = [[${deniedList}]];
+
+    let chartType = 'line'; // default
+    let chartInstance = null;
+
+    const ctx = document.getElementById('accessChart').getContext('2d');
+
+    function createChart(type) {
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Allowed',
+                        data: allowedData,
+                        backgroundColor: 'rgba(34,197,94,0.7)',
+                        borderColor: 'rgba(34,197,94,1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'Denied',
+                        data: deniedData,
+                        backgroundColor: 'rgba(239,68,68,0.7)',
+                        borderColor: 'rgba(239,68,68,1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: true,
+                        text: 'Access Log Over Time'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    document.getElementById('toggleChartBtn').addEventListener('click', () => {
+        chartType = chartType === 'line' ? 'bar' : 'line';
+        createChart(chartType);
+
+        // อัปเดตข้อความปุ่ม
+        document.getElementById('toggleChartBtn').innerText =
+            chartType === 'line' ? 'Switch to Bar Chart' : 'Switch to Line Chart';
+    });
+
+    // สร้าง chart ตอนโหลดหน้า
+    createChart(chartType);
+</script>
+
+
+</body>
+</html>

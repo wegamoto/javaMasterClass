@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" >
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="'คอร์ดของ ' + ${song.title} + ' - Chordmate'">Chord List</title>
+    <link href="/css/output.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow-md">
+
+    <h1 class="text-3xl font-bold mb-4" th:text="'คอร์ดของ ' + ${song.title}">Chords</h1>
+    <h2 class="text-xl mb-6 text-gray-600" th:text="${song.artist}">Artist Name</h2>
+
+    <div class="mb-4">
+        <a th:href="@{/songs/{id}(id=${song.id})}"
+           class="text-blue-600 hover:underline">← กลับไปหน้ารายละเอียดเพลง</a>
+    </div>
+
+    <table class="min-w-full border border-gray-300 rounded overflow-hidden">
+        <thead class="bg-gray-200 text-left">
+        <tr>
+            <th class="py-3 px-4 border-b border-gray-300">ชื่อคอร์ด</th>
+            <th class="py-3 px-4 border-b border-gray-300">เวลา (วินาที)</th>
+            <th class="py-3 px-4 border-b border-gray-300">ลบ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="chord : ${chords}" class="hover:bg-gray-50 border-b border-gray-300">
+            <td class="py-3 px-4" th:text="${chord.chordName}">Chord Name</td>
+            <td class="py-3 px-4" th:text="${#numbers.formatDecimal(chord.time, 0, 'POINT', 2, 'ZERO')}">0.00</td>
+            <td class="py-3 px-4">
+                <form th:action="@{/chords/delete/{id}(id=${chord.id})}" method="post" onsubmit="return confirm('ลบคอร์ดนี้?');">
+                    <button type="submit"
+                            class="text-red-600 hover:underline">ลบ</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(chords)}">
+            <td colspan="3" class="py-3 px-4 text-center text-gray-500">ยังไม่มีคอร์ดในเพลงนี้</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-6 text-right">
+        <a th:href="@{/chords/create/{songId}(songId=${song.id})}"
+           class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            ➕ เพิ่มคอร์ดใหม่
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

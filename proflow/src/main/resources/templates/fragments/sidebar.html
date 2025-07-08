@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" x-data>
+<body>
+
+<!-- Desktop Sidebar -->
+<aside th:fragment="sidebar"
+       class="w-64 bg-white dark:bg-gray-800 shadow hidden md:flex flex-col"
+       x-data="{ ownerMenuOpen: false, projectMenuOpen: false }">
+    <div class="p-4 text-2xl font-bold border-b dark:border-gray-700">ProFlow</div>
+    <nav class="flex-1 p-4 space-y-2 text-sm">
+        <a href="/dashboard" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">📊 Dashboard</a>
+
+        <!-- Projects menu -->
+        <div>
+            <button @click="projectMenuOpen = !projectMenuOpen"
+                    class="flex items-center justify-between w-full px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                🏗️ Projects
+                <svg :class="{'transform rotate-180': projectMenuOpen}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div x-show="projectMenuOpen" x-transition class="pl-6 mt-1 space-y-1 text-gray-700 dark:text-gray-300">
+                <a href="/projects" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">List Projects</a>
+                <a href="/projects/create" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Create Project</a>
+<!--                <a href="/projects/select" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Select Project</a>-->
+<!--                <a href="/project-details" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Project Details</a>-->
+<!--                <a href="/projects/projectphase" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Project Phases</a>-->
+            </div>
+        </div>
+
+        <!-- Owner menu -->
+        <div>
+            <button @click="ownerMenuOpen = !ownerMenuOpen"
+                    class="flex items-center justify-between w-full px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                👤 Owners
+                <svg :class="{'transform rotate-180': ownerMenuOpen}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div x-show="ownerMenuOpen" x-transition class="pl-6 mt-1 space-y-1 text-gray-700 dark:text-gray-300">
+                <a href="/owners" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">List Owners</a>
+                <a href="/owners/create" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Create Owner</a>
+<!--                <a href="/owners/select" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Select Owner</a>-->
+            </div>
+        </div>
+
+<!--        <a href="/cashflows" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">💸 Cash Flow</a>-->
+        <!-- Cash Flow menu -->
+        <div x-data="{ cashflowMenuOpen: false }">
+            <button @click="cashflowMenuOpen = !cashflowMenuOpen"
+                    class="flex items-center justify-between w-full px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                💸 Cash Flow
+                <svg :class="{'transform rotate-180': cashflowMenuOpen}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div x-show="cashflowMenuOpen" x-transition class="pl-6 mt-1 space-y-1 text-gray-700 dark:text-gray-300">
+                <a href="/cashflows" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">List Cash Flows</a>
+                <a href="/cashflows/create" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Create Cash Flow</a>
+                <a href="/cashflows/report" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Cash Flow Report</a>
+            </div>
+        </div>
+
+        <a href="/users" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">👥 Users</a>
+    </nav>
+    <div class="p-4 border-t dark:border-gray-700 text-sm">
+        <span class="text-gray-600 dark:text-gray-400">Logged in as</span>
+        <div class="font-semibold" th:text="${username}">admin@proflow</div>
+    </div>
+</aside>
+
+<!-- Mobile Sidebar -->
+<div th:fragment="mobileSidebar"
+     class="md:hidden fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform z-50"
+     id="mobileSidebar"
+     x-data="{ ownerMenuOpen: false, projectMenuOpen: false }">
+    <div class="p-4 text-xl font-bold border-b dark:border-gray-700">ProFlow</div>
+    <nav class="p-4 space-y-2 text-sm">
+        <a href="/dashboard" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">📊 Dashboard</a>
+
+        <!-- Projects menu mobile -->
+        <div>
+            <button @click="projectMenuOpen = !projectMenuOpen"
+                    class="flex items-center justify-between w-full px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                🏗️ Projects
+                <svg :class="{'transform rotate-180': projectMenuOpen}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div x-show="projectMenuOpen" x-transition class="pl-6 mt-1 space-y-1 text-gray-700 dark:text-gray-300">
+                <a href="/projects" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">List Projects</a>
+                <a href="/projects/create" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Create Project</a>
+                <a href="/projects/select" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Select Project</a>
+                <a href="/project-details" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Project Details</a>
+                <a href="/project-phases" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Project Phases</a>
+            </div>
+        </div>
+
+        <!-- Owner menu mobile -->
+        <div>
+            <button @click="ownerMenuOpen = !ownerMenuOpen"
+                    class="flex items-center justify-between w-full px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                👤 Owners
+                <svg :class="{'transform rotate-180': ownerMenuOpen}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div x-show="ownerMenuOpen" x-transition class="pl-6 mt-1 space-y-1 text-gray-700 dark:text-gray-300">
+                <a href="/owners" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">List Owners</a>
+                <a href="/owners/create" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Create Owner</a>
+                <a href="/owners/select" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Select Owner</a>
+            </div>
+        </div>
+
+        <!-- Cash Flow menu mobile -->
+        <div x-data="{ cashflowMenuOpen: false }">
+            <button @click="cashflowMenuOpen = !cashflowMenuOpen"
+                    class="flex items-center justify-between w-full px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                💸 Cash Flow
+                <svg :class="{'transform rotate-180': cashflowMenuOpen}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <div x-show="cashflowMenuOpen" x-transition class="pl-6 mt-1 space-y-1 text-gray-700 dark:text-gray-300">
+                <a href="/cashflows" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">List Cash Flows</a>
+                <a href="/cashflows/create" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Create Cash Flow</a>
+                <a href="/cashflows/report" class="block px-4 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Cash Flow Report</a>
+            </div>
+        </div>
+
+<!--        <a href="/cashflows" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">💸 Cash Flow</a>-->
+        <a href="/users" class="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">👥 Users</a>
+    </nav>
+</div>
+
+</body>
+</html>

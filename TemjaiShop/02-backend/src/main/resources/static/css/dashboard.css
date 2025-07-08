@@ -1,0 +1,59 @@
+/* dashboard.css */
+
+/* การ์ด hover */
+.card:hover {
+    transform: translateY(-4px);
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ปุ่ม */
+.card .btn {
+    font-weight: 500;
+}
+
+.btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: #000;
+}
+
+/* ตาราง */
+.table thead {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.container-fluid {
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #343a40;
+}
+
+@media (max-width: 768px) {
+    .card .btn {
+        font-size: 0.9rem;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+}

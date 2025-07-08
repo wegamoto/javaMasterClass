@@ -26,7 +26,7 @@ public class AuthPageController {
 
     @GetMapping("/home")
     public String home() {
-        return "dashboard";
+        return "home";
     }
 
     @GetMapping("/login")

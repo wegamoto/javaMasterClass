@@ -13,153 +13,144 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/student")
 public class StudentExamController {
 
     private final ExamRepository examRepository;
-
     private final ExamService examService;
-    private final UserRepository userService;
+    private final UserRepository userRepository;
     private final StudentAnswerRepository studentAnswerRepository;
     private final StudentService studentService;
     private final ChoiceRepository choiceRepository;
     private final StudentExamResultService studentExamResultService;
-    private final StudentExamResultRepository studentExamResultRepository;
 
-    public StudentExamController(ExamRepository examRepository, ExamService examService,
-                                 UserRepository userService, StudentAnswerRepository studentAnswerRepository,
-                                 StudentService studentService, ChoiceRepository choiceRepository,
-                                 StudentExamResultService studentExamResultService,
-                                 StudentExamResultRepository studentExamResultRepository) {
+    public StudentExamController(
+            ExamRepository examRepository,
+            ExamService examService,
+            UserRepository userRepository,
+            StudentAnswerRepository studentAnswerRepository,
+            StudentService studentService,
+            ChoiceRepository choiceRepository,
+            StudentExamResultService studentExamResultService
+    ) {
         this.examRepository = examRepository;
         this.examService = examService;
-        this.userService = userService;
+        this.userRepository = userRepository;
         this.studentAnswerRepository = studentAnswerRepository;
         this.studentService = studentService;
         this.choiceRepository = choiceRepository;
         this.studentExamResultService = studentExamResultService;
-        this.studentExamResultRepository = studentExamResultRepository;
     }
 
+    // ✅ รายการข้อสอบ
     @GetMapping("/exams")
     public String showAvailableExams(Model model) {
-        List<com.wewe.eduexam.model.Exam> exams = examRepository.findAll(); // ✅ ดึงจากฐานข้อมูล
+        List<Exam> exams = examRepository.findAll();
         model.addAttribute("exams", exams);
-        return "student_exams"; // ชื่อ template
+        return "student_exams";
     }
 
-    // คุณอาจจะมี method เริ่มทำข้อสอบตาม path นี้
+    // ✅ เริ่มทำข้อสอบ
     @GetMapping("/exam/start/{id}")
-    public String startExam(@PathVariable Long id, Model model) {
-        // ✅ ใช้ method ที่ JOIN FETCH questions และ choices
-        Optional<Exam> optionalExam = examService.getExamWithQuestionsAndChoices(id);
+    public String startExam(@PathVariable Long id, Model model, Principal principal) {
+        Exam exam = examService.getExamWithQuestionsAndChoices(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
 
-        if (optionalExam.isEmpty()) {
-            return "redirect:/error/404"; // ✅ ไม่พบข้อสอบ
-        }
-
-        Exam exam = optionalExam.get();
-
-        // ✅ ตรวจสอบว่า choices ถูกโหลด
-        exam.getQuestions().forEach(q -> {
-            System.out.println("Question: " + q.getContent());
-            System.out.println("Choices: " + (q.getChoices() != null ? q.getChoices().size() : "null"));
-        });
-
+        Student student = studentService.findByUsername(principal.getName());
         model.addAttribute("exam", exam);
-        return "exam-start"; // ✅ ชื่อไฟล์ HTML
+        model.addAttribute("studentName", student.getName());
+        return "exam-start";
     }
 
+    // ✅ ส่งคำตอบ
     @PostMapping("/exam/submit/{id}")
     public String submitExam(
-            @PathVariable("id") Long examId,
+            @PathVariable Long id,
             @RequestParam Map<String, String> answers,
             Principal principal
     ) {
-        String username = principal.getName();
-        Student student = studentService.findByUsername(username);
+        Student student = studentService.findByUsername(principal.getName());
+        Exam exam = examService.findExamWithQuestionsAndChoices(id);
+        if (exam == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found");
+        }
 
-        Exam exam = examService.findExamWithQuestionsAndChoices(examId);
 
-        int totalScore = 0;
+        double totalScore = 0.0;
 
         for (Question question : exam.getQuestions()) {
             String key = "answers[" + question.getId() + "]";
-            String value = answers.get(key);
+            String submittedValue = answers.get(key);
 
-            if (value == null || value.isBlank()) {
-                continue; // ✅ ข้ามถ้ายังไม่ได้ตอบ
-            }
+            if (submittedValue == null || submittedValue.isBlank()) continue;
 
             StudentAnswer studentAnswer = new StudentAnswer();
             studentAnswer.setStudent(student);
-            studentAnswer.setExam(exam); // ✅ ถ้ามีฟิลด์ exam
+            studentAnswer.setExam(exam);
             studentAnswer.setQuestion(question);
             studentAnswer.setSubmittedAt(LocalDateTime.now());
 
-            Double questionScore = 0.0;
+            double questionScore = 0.0;
 
             if (question.getType() == QuestionType.MULTIPLE_CHOICE) {
-                Long selectedChoiceId = Long.parseLong(value);
-                Choice selectedChoice = choiceRepository.findById(selectedChoiceId)
-                        .orElse(null);
-                studentAnswer.setSelectedChoice(selectedChoice);
+                Long choiceId = Long.parseLong(submittedValue);
+                Choice selected = choiceRepository.findById(choiceId).orElse(null);
+                studentAnswer.setSelectedChoice(selected);
 
-                Choice correctChoice = question.getChoices().stream()
+                Choice correct = question.getChoices().stream()
                         .filter(Choice::getIsCorrect)
                         .findFirst()
                         .orElse(null);
 
-                if (correctChoice != null && correctChoice.getId().equals(selectedChoiceId)) {
+                if (correct != null && correct.getId().equals(choiceId)) {
                     studentAnswer.setCorrect(true);
-                    questionScore = question.getFullScore(); // ✅ ตรวจจากคะแนนของคำถาม
+                    questionScore = question.getFullScore();
                 } else {
                     studentAnswer.setCorrect(false);
                 }
 
             } else if (question.getType() == QuestionType.TEXT) {
-                studentAnswer.setTextAnswer(value);
-                studentAnswer.setCorrect(false); // ✅ รอตรวจทีหลัง
+                studentAnswer.setTextAnswer(submittedValue);
+                studentAnswer.setCorrect(false); // ต้องตรวจภายหลัง
             }
 
             studentAnswer.setScore(questionScore);
             totalScore += questionScore;
-
             studentAnswerRepository.save(studentAnswer);
         }
 
-        // ✅ บันทึกคะแนนรวม
-        //studentExamResultService.saveResult(student.getId(), examId, totalScore);
-        StudentExamResult result = studentExamResultService.saveResult(student.getId(), examId, totalScore);
-
-        return "redirect:/student/exam/result/" + result.getId(); // ✅ ใช้ ID ที่แน่ใจว่าถูกต้อง
+        StudentExamResult result = studentExamResultService.saveResult(student.getId(), id, totalScore);
+        return "redirect:/student/exam/result/" + result.getId();
     }
 
+    // ✅ ดูคำตอบ
     @GetMapping("/answers/{examId}")
     public String viewAnswers(@PathVariable Long examId, Model model, Principal principal) {
-        Optional<User> student = userService.findByUsername(principal.getName());
-        Exam exam = examService.findById(examId);
+        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        if (userOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
 
-        List<StudentAnswer> answers = studentAnswerRepository.findByStudentAndExam(student, exam);
+        Student student = studentService.findByUsername(principal.getName());
+        Exam exam = examService.findById(examId);
+        List<StudentAnswer> answers = studentAnswerRepository.findByStudentAndExam(Optional.of(student.getUser()), exam);
 
         model.addAttribute("answers", answers);
-        return "student-answers"; // หน้าสำหรับแสดงคำตอบ
+        model.addAttribute("studentName", student.getName());
+        return "student-answers";
     }
 
+    // ✅ ดูผลคะแนน
     @GetMapping("/exam/result/{id}")
-    public String showResult(@PathVariable("id") Long resultId, Model model) {
-        StudentExamResult result = studentExamResultService.findById(resultId)
+    public String showResult(@PathVariable Long id, Model model) {
+        StudentExamResult result = studentExamResultService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Result not found"));
 
         model.addAttribute("result", result);
-        return "results"; // ชื่อ view ที่คุณต้องมี
+        model.addAttribute("studentName", result.getStudent().getName());
+        return "results";
     }
-
 }
-
-

@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class ProductController {
             @PathVariable Long id,
             @RequestPart("product") Product product,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile
-    ) {
+    ) throws IOException {
         return ResponseEntity.ok(productService.updateProduct(id, product, imageFile));
     }
 

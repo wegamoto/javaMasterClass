@@ -63,7 +63,7 @@
     <!-- ✅ Main Content -->
     <main class="col ps-md-4 main-content">
       <h2 class="text-center mb-5">
-        <i class="bi bi-star-fill text-warning me-2"></i>Recommended Products
+        <i class="bi bi-star-fill text-warning me-2"></i>Recommended Products / สินค้าขายดี
       </h2>
 
       <div class="row g-4">
@@ -86,7 +86,18 @@
               <h5 class="card-title mb-1" th:text="${product.name}">Product Name</h5>
               <p class="card-text small text-muted mb-2" th:text="${product.description}">Description</p>
               <div class="mb-3">
-                <span class="badge bg-success fs-6" th:text="'฿' + ${product.price}">฿0.00</span>
+                <span th:if="${product.discountPrice != null}" class="text-muted text-decoration-line-through me-2"
+                      th:text="'฿' + ${product.price}">฿0.00</span>
+                <span th:if="${product.discountPrice != null}" class="badge bg-danger fs-6"
+                      th:text="'฿' + ${product.discountPrice}">฿0.00</span>
+
+                <span th:if="${product.discountPrice == null}" class="badge bg-success fs-6"
+                      th:text="'฿' + ${product.price}">฿0.00</span>
+              </div>
+
+              <!-- ส่วนลด % -->
+              <div th:if="${product.discountPercent != null}" class="card-badge bg-success" style="top: 45px;">
+                <span th:text="'-' + ${product.discountPercent} + '%'">-10%</span>
               </div>
 
               <!-- ✅ Add to Cart -->

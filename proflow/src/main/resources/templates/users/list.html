@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // เปิด dark mode แบบอัตโนมัติ ตาม system
+        tailwind.config = {
+            darkMode: 'media' // หรือใช้ 'class' ถ้าคุณต้องการสลับเอง
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans min-h-screen">
+
+<!-- ใช้ layout และส่ง fragment content -->
+<div th:replace="layout :: layout (~{::body})"
+     th:with="content='users/list :: content', pageTitle='User List'"></div>
+
+<div class="container mx-auto p-4">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
+        <h1 class="text-2xl font-bold">User Management</h1>
+        <a th:href="@{/users/create}"
+           class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            + Add User
+        </a>
+    </div>
+
+    <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow-md rounded-lg">
+        <table class="min-w-full table-auto text-sm border border-gray-200 dark:border-gray-700">
+            <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+                <th class="px-4 py-2 border dark:border-gray-700">ID</th>
+                <th class="px-4 py-2 border dark:border-gray-700">Name</th>
+                <th class="px-4 py-2 border dark:border-gray-700">Email</th>
+                <th class="px-4 py-2 border dark:border-gray-700">Role</th>
+                <th class="px-4 py-2 border dark:border-gray-700">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-4 py-2 border dark:border-gray-700" th:text="${user.id}">1</td>
+                <td class="px-4 py-2 border dark:border-gray-700" th:text="${user.name}">John Doe</td>
+                <td class="px-4 py-2 border dark:border-gray-700" th:text="${user.email}">john@example.com</td>
+                <td class="px-4 py-2 border dark:border-gray-700" th:text="${user.role}">ADMIN</td>
+                <td class="px-4 py-2 border dark:border-gray-700">
+                    <a th:href="@{'/users/delete/' + ${user.id}}"
+                       class="text-red-600 dark:text-red-400 hover:underline"
+                       onclick="return confirm('Are you sure you want to delete this user?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

@@ -28,7 +28,6 @@ public class WebConfig implements WebMvcConfigurer {
         this.cartItemCountInterceptor = cartItemCountInterceptor;
     }
 
-
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
@@ -59,9 +58,13 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
+            System.out.println("OS: Windows");
+            System.out.println("Mapping /uploads/** to file:///C:/temjaishop/uploads/");
             registry.addResourceHandler("/uploads/**")
                     .addResourceLocations("file:///C:/temjaishop/uploads/");
         } else {
+            System.out.println("OS: Unix/Linux");
+            System.out.println("Mapping /uploads/** to file:/opt/temjaishop/uploads/");
             registry.addResourceHandler("/uploads/**")
                     .addResourceLocations("file:/opt/temjaishop/uploads/");
         }

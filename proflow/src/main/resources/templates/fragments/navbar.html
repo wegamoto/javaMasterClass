@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="navbar" class="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 shadow md:hidden">
+    <button id="menuToggle" class="text-gray-800 dark:text-gray-100 text-2xl">☰</button>
+    <div class="text-lg font-bold">ProFlow</div>
+    <div class="text-sm" th:text="${username}">admin@proflow</div>
+</header>
+</body>
+</html>

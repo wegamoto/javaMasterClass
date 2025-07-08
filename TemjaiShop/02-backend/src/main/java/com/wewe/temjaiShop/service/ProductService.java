@@ -10,6 +10,7 @@ import com.wewe.temjaiShop.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -69,7 +70,6 @@ public class ProductService {
 
     private final UserRepository userRepository;
 
-
     // ✅ แสดงสินค้าทั้งหมด
     public List<Product> findAll() {
         return productRepository.findAll();
@@ -103,30 +103,38 @@ public class ProductService {
         return productRepository.save(savedProduct);  // ใช้ productRepository.save(savedProduct)
     }
 
-    // ✅ แก้ไขสินค้า
-    public Product updateProduct(Long id, Product updatedProduct, MultipartFile imageFile) {
+    // ✅ แก้ไขสินค้า กรณีไม่ได้แก้ไขรูปใหม่ ไม่ต้องแก้ไขชื่อรูป ให้คงค่าเดิมไว้
+    public Product updateProduct(Long id, Product updatedProduct, MultipartFile imageFile) throws IOException {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
 
         existingProduct.setName(updatedProduct.getName());
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setPrice(updatedProduct.getPrice());
+        existingProduct.setDiscountPrice(updatedProduct.getDiscountPrice());
 
-        // หากมีไฟล์ใหม่ ให้อัปเดต
+        // ✅ กรณีมีการอัปโหลดภาพใหม่
         if (imageFile != null && !imageFile.isEmpty()) {
-            // ลบไฟล์เดิม
-            deleteImageIfExists(existingProduct.getImage());
+            String originalFilename = imageFile.getOriginalFilename();
+            String extension = originalFilename != null && originalFilename.contains(".")
+                    ? originalFilename.substring(originalFilename.lastIndexOf("."))
+                    : "";
+            String newFileName = UUID.randomUUID().toString() + extension;
 
-            // บันทึกไฟล์ใหม่
-            String newimageUrl = saveImage(imageFile);
-            existingProduct.setImage(newimageUrl);
+            Path destinationPath = Paths.get(uploadDir).resolve(newFileName);
+            Files.createDirectories(destinationPath.getParent());
+
+            Files.copy(imageFile.getInputStream(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+            existingProduct.setImage(newFileName); // ✅ เซ็ตชื่อภาพใหม่
         }
+        // ✅ กรณีไม่อัปโหลดภาพใหม่ → คงค่าเดิมไว้ (ไม่ต้องทำอะไร)
 
         return productRepository.save(existingProduct);
     }
 
     private void deleteImageIfExists(String imageName) {
-        if (imageName == null || imageName.isEmpty()) return;
+        if (imageName == null || imageName.isBlank()) return;
 
         String os = System.getProperty("os.name").toLowerCase();
         String uploadDir;
@@ -137,13 +145,18 @@ public class ProductService {
             uploadDir = "/home/ubuntu/temjaishop/uploads/";
         }
 
-        File file = new File(uploadDir + imageName);
-        if (file.exists()) {
-            file.delete();
+        Path imagePath = Paths.get(uploadDir).resolve(imageName);
+
+        try {
+            boolean deleted = Files.deleteIfExists(imagePath);
+            if (!deleted) {
+                System.out.println("Image not found or already deleted: " + imagePath);
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to delete image: " + imagePath + " - " + e.getMessage());
+            // หรือใช้ Logger แทน System.err
         }
     }
-
-
 
     // ✅ ลบสินค้า
     public void deleteProduct(Long id) {
@@ -293,39 +306,6 @@ public class ProductService {
         return true;
     }
 
-
-//    public void saveProductWithImage(Product product, MultipartFile imageFile) throws IOException {
-//        if (imageFile != null && !imageFile.isEmpty()) {
-//            // ✅ ทำความสะอาดชื่อไฟล์ต้นฉบับ
-//            String originalFileName = imageFile.getOriginalFilename();
-//            if (originalFileName == null) {
-//                throw new IOException("Invalid file name");
-//            }
-//
-//            String cleanFileName = originalFileName
-//                    .replaceAll("[^a-zA-Z0-9\\.\\-_]", "_")
-//                    .replace("'", "")
-//                    .trim();
-//
-//            // 🔒 ป้องกันชื่อซ้ำด้วย UUID
-//            String savedFilename = UUID.randomUUID() + "_" + cleanFileName;
-//
-//            // 📂 ใช้ค่าจาก application.yml
-//            Path uploadPath = Paths.get(uploadProperties.getDir()).toAbsolutePath().normalize();
-//            Files.createDirectories(uploadPath); // สร้างโฟลเดอร์หากยังไม่มี
-//
-//            // 📥 บันทึกไฟล์ลง disk
-//            Path filePath = uploadPath.resolve(savedFilename);
-//            imageFile.transferTo(filePath.toFile());
-//
-//            // 💾 บันทึกชื่อไฟล์ (ไม่รวม path) ลง DB
-//            product.setImage(savedFilename);
-//        }
-//
-//        // 💡 บันทึกข้อมูลสินค้า
-//        productRepository.save(product);
-//    }
-
     public List<Product> searchProducts(String searchQuery) {
         return productRepository.findByNameContainingIgnoreCase(searchQuery);  // ค้นหาสินค้าที่มีชื่อคล้ายกับคำค้น
     }
@@ -404,6 +384,12 @@ public class ProductService {
                 BigDecimal price = new BigDecimal(row.getCell(2).getNumericCellValue());
                 int stockQuantity = (int) row.getCell(3).getNumericCellValue();
 
+                // อ่าน discountPrice ถ้ามี (ตรวจ null ก่อน)
+                BigDecimal discountPrice = null;
+                if (row.getCell(4) != null && row.getCell(4).getCellType() == CellType.NUMERIC) {
+                    discountPrice = BigDecimal.valueOf(row.getCell(4).getNumericCellValue());
+                }
+
                 Category category = categoryRepository.findByName(categoryName)
                         .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
 
@@ -413,6 +399,7 @@ public class ProductService {
                 product.setCategory(category);
                 product.setPrice(price);
                 product.setStockQuantity(stockQuantity);
+                product.setDiscountPrice(discountPrice); // ✅ เพิ่มส่วนนี้
                 productRepository.save(product);
             }
         }

@@ -22,6 +22,10 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
+    private BigDecimal discountPrice; // ราคาหลังหักส่วนลด (หรือ null หากไม่มี)
+
+    private BigDecimal discountPercent; // 10 หมายถึงลด 10%
+
     @Column(name = "stock_quantity", nullable = false)
     private int stockQuantity = 0; // ค่า default เมื่อสร้างใหม่
     private int quantity;
@@ -157,6 +161,22 @@ public class Product {
 
     public void setSoldCount(Integer soldCount) {
         this.soldCount = soldCount;
+    }
+
+    public BigDecimal getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(BigDecimal discountPrice) {
+        this.discountPrice = discountPrice;
+    }
+
+    public BigDecimal getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public void setDiscountPercent(BigDecimal discountPercent) {
+        this.discountPercent = discountPercent;
     }
 
     @Override

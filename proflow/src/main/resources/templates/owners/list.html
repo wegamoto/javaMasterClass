@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en" class="dark h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Owner List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="h-full bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100" layout:decorate="~{layout}">
+
+<section layout:fragment="content">
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside th:replace="fragments/sidebar :: sidebar"
+               class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 hidden md:block"></aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-y-auto">
+
+            <!-- Navbar -->
+            <header th:replace="fragments/navbar :: navbar"></header>
+
+            <!-- Page Content -->
+            <main class="flex-1 p-6 max-w-7xl mx-auto w-full">
+
+                <!-- Page Title + Button -->
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-extrabold flex items-center gap-2">
+                        👤 Owner List
+                    </h1>
+                    <a th:href="@{/owners/create}"
+                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        + Create New Owner
+                    </a>
+                </div>
+
+                <!-- Owner Table -->
+                <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm uppercase">
+                        <tr>
+                            <th class="px-6 py-3 text-left">ID</th>
+                            <th class="px-6 py-3 text-left">Name</th>
+                            <th class="px-6 py-3 text-left">Email</th>
+                            <th class="px-6 py-3 text-left">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700"
+                               th:each="owner : ${owners}">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td class="px-6 py-4" th:text="${owner.id}">1</td>
+                            <td class="px-6 py-4" th:text="${owner.name}">Owner Name</td>
+                            <td class="px-6 py-4" th:text="${owner.email}">Email</td>
+                            <td class="px-6 py-4 space-x-4">
+                                <a th:href="@{|/owners/${owner.id}/edit|}"
+                                   class="text-blue-600 hover:underline">Edit</a>
+                                <form th:action="@{|/owners/${owner.id}/delete|}" method="post" class="inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this owner?');">
+                                    <button type="submit" class="text-red-600 hover:underline">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer -->
+                <footer th:replace="fragments/footer :: footer" class="mt-10"></footer>
+
+            </main>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Access Logs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+<div class="max-w-5xl mx-auto bg-white shadow-xl rounded-xl p-6">
+    <h1 class="text-2xl font-bold mb-4">Access Logs</h1>
+
+    <table class="table-auto w-full border-collapse border border-gray-300 text-sm">
+        <thead>
+        <tr class="bg-gray-200">
+            <th class="border px-4 py-2 text-left">#</th>
+            <th class="border px-4 py-2 text-left">Plate Number</th>
+            <th class="border px-4 py-2 text-left">Status</th>
+            <th class="border px-4 py-2 text-left">Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="log, iterStat : ${logs}" class="hover:bg-gray-100">
+            <td class="border px-4 py-2" th:text="${iterStat.index + 1}"></td>
+            <td class="border px-4 py-2" th:text="${log.plateNumber}"></td>
+            <td class="border px-4 py-2">
+                        <span th:text="${log.status}"
+                              th:classappend="${log.status == 'ALLOWED'} ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'"></span>
+            </td>
+            <td class="border px-4 py-2" th:text="${#temporals.format(log.accessTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

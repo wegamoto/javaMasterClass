@@ -64,7 +64,7 @@ public class ResultController {
         model.addAttribute("answers", answers);
         model.addAttribute("totalScore", totalScore);
         model.addAttribute("maxScore", maxScore);
-        return "results"; // results.html
+        return "results"; // results-old.html
     }
 }
 

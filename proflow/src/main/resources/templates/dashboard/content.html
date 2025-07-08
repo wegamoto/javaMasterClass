@@ -1,0 +1,28 @@
+<div th:fragment="content" class="p-4" xmlns:th="http://www.w3.org/1999/xhtml">
+  <h1 class="text-3xl font-extrabold mb-6 text-gray-900 dark:text-gray-100 flex items-center gap-2">
+    <span>📊</span> Dashboard Overview
+  </h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg">
+      <h2 class="text-xs uppercase font-semibold text-gray-400 mb-1">Active Projects</h2>
+      <p class="text-3xl font-extrabold text-gray-900 dark:text-gray-100" th:text="${totalProjects}">0</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg">
+      <h2 class="text-xs uppercase font-semibold text-gray-400 mb-1">Cash Flow This Month</h2>
+      <p class="text-3xl font-extrabold text-green-600 dark:text-green-400" th:text="'฿' + ${#numbers.formatDecimal(totalCashThisMonth, 0, 'COMMA', 2, 'POINT')}">฿0</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg">
+      <h2 class="text-xs uppercase font-semibold text-gray-400 mb-1">Pending Payments</h2>
+      <p class="text-3xl font-extrabold text-red-600 dark:text-red-400" th:text="'฿' + ${#numbers.formatDecimal(totalPendingPayments, 0, 'COMMA', 2, 'POINT')}">฿0</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg">
+      <h2 class="text-xs uppercase font-semibold text-gray-400 mb-1">Contractors</h2>
+      <p class="text-3xl font-extrabold text-gray-900 dark:text-gray-100" th:text="${totalContractors}">0</p>
+    </div>
+  </div>
+</div>
+

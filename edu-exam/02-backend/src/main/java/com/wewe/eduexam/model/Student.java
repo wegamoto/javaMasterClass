@@ -3,9 +3,10 @@ package com.wewe.eduexam.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
+@Table(name = "students")
 @Getter
 @Setter
-@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,8 +16,8 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     private String studentCode;

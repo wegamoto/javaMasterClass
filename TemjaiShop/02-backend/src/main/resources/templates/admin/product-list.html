@@ -38,6 +38,7 @@
         <th>ชื่อสินค้า</th>
         <th>รายละเอียด</th>
         <th>ราคา</th>
+        <th>ราคาส่วนลด</th> <!-- ✅ เพิ่ม -->
         <th>จำนวน</th>
         <th>จัดการ</th>
       </tr>
@@ -48,6 +49,10 @@
         <td th:text="${product.name}">สินค้า</td>
         <td th:text="${product.description}">รายละเอียด</td>
         <td th:text="${product.price}">100</td>
+        <td>
+          <span th:if="${product.discountPrice != null}" style="text-decoration: line-through;" th:text="${product.price}"></span>
+          <span th:text="${product.discountPrice != null ? product.discountPrice : product.price}"></span>
+        </td>
         <td th:text="${product.quantity}">5</td>
         <td>
           <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-warning btn-sm">แก้ไข</a>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${song.title} + ' - Chordmate'">Song Detail</title>
+  <link href="/css/output.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<main class="max-w-3xl mx-auto bg-white p-6 rounded shadow-md">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold" th:text="${song.title}">Song Title</h1>
+    <h2 class="text-xl text-gray-600" th:text="${song.artist}">Artist Name</h2>
+  </header>
+
+  <!-- Audio Player -->
+  <audio id="audioPlayer" controls preload="metadata" class="w-full mb-8 rounded border border-gray-300 shadow-sm">
+    <source th:src="@{${song.filePath}}" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Chords Timeline -->
+  <section>
+    <h3 class="text-2xl font-semibold mb-4">คอร์ด</h3>
+    <ul id="chordList" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded p-4 bg-gray-50">
+      <li th:each="chord : ${song.chords}"
+          th:attr="data-time=${chord.time}"
+          class="p-2 rounded border border-transparent cursor-pointer hover:border-blue-400 hover:bg-blue-100 transition"
+          th:text="${chord.chordName}">
+        Chord Name
+      </li>
+    </ul>
+  </section>
+</main>
+
+<script>
+  (() => {
+    const audio = document.getElementById('audioPlayer');
+    const chordList = document.getElementById('chordList');
+    const chords = Array.from(chordList.querySelectorAll('li')).map(li => ({
+      element: li,
+      time: parseFloat(li.getAttribute('data-time'))
+    }));
+
+    let currentChordIndex = -1;
+
+    audio.addEventListener('timeupdate', () => {
+      const currentTime = audio.currentTime;
+
+      // หา index คอร์ดที่เวลาน้อยกว่าหรือเท่ากับ currentTime มากที่สุด
+      let newIndex = -1;
+      for (let i = 0; i < chords.length; i++) {
+        if (chords[i].time <= currentTime) newIndex = i;
+        else break;
+      }
+
+      if (newIndex !== currentChordIndex) {
+        if (currentChordIndex >= 0) {
+          chords[currentChordIndex].element.classList.remove('bg-yellow-300', 'font-bold', 'border-yellow-400');
+        }
+        if (newIndex >= 0) {
+          chords[newIndex].element.classList.add('bg-yellow-300', 'font-bold', 'border-yellow-400');
+          chords[newIndex].element.scrollIntoView({behavior: "smooth", block: "center"});
+        }
+        currentChordIndex = newIndex;
+      }
+    });
+
+    // คลิกที่คอร์ดให้เพลงเล่นตรงเวลานั้น
+    chords.forEach(chord => {
+      chord.element.addEventListener('click', () => {
+        audio.currentTime = chord.time;
+        audio.play();
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

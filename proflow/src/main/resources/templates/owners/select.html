@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title>Select Owner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body layout:decorate="~{layout}">
+<section layout:fragment="content" class="max-w-4xl mx-auto py-10 px-4">
+
+    <h1 class="text-3xl font-bold mb-6">Select Owner</h1>
+
+    <ul class="space-y-4">
+        <li th:each="owner : ${owners}">
+            <a th:href="@{|/projects?ownerId=${owner.id}|}"
+               class="block p-4 bg-white rounded shadow hover:bg-indigo-50 transition">
+                <div class="text-xl font-semibold" th:text="${owner.name}"></div>
+                <div class="text-gray-600" th:text="${owner.email}"></div>
+            </a>
+        </li>
+    </ul>
+
+</section>
+</body>
+</html>

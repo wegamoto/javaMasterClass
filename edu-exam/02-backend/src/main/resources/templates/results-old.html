@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>ผลคะแนน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar Fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="flex flex-1">
+
+    <!-- ✅ Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- ✅ Main Content -->
+    <main class="flex-1 p-6">
+        <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
+            <h2 class="text-2xl font-bold mb-6 text-blue-800">📊 ดูผลคะแนนของนักเรียน</h2>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded shadow">
+                    <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="py-2 px-4 text-left">ลำดับ</th>
+                        <th class="py-2 px-4 text-left">ชื่อนักเรียน</th>
+                        <th class="py-2 px-4 text-left">ชื่อข้อสอบ</th>
+                        <th class="py-2 px-4 text-left">คะแนน</th>
+                        <th class="py-2 px-4 text-left">คะแนนเต็ม</th>
+                        <th class="py-2 px-4 text-left">เปอร์เซ็นต์</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="result, iter : ${results}" class="border-b hover:bg-gray-50">
+                        <td class="py-2 px-4" th:text="${iter.index + 1}">1</td>
+                        <td class="py-2 px-4" th:text="${result.studentName}">ชื่อ</td>
+                        <td class="py-2 px-4"
+                            th:text="${result.examTitle != null and !result.examTitle.isEmpty() ? result.examTitle : 'ไม่มีชื่อข้อสอบ'}">
+                            ชื่อข้อสอบ
+                        </td>
+                        <td class="py-2 px-4" th:text="${result.score}">80</td>
+                        <td class="py-2 px-4" th:text="${result.maxScore != null ? result.maxScore : '-'}">100</td>
+                        <td class="py-2 px-4">
+                                    <span th:if="${result.maxScore != null and result.maxScore > 0}"
+                                          th:text="${#numbers.formatDecimal(result.score * 100.0 / result.maxScore, 1, 'POINT', 1, 'NONE')} + '%'">
+                                        80%
+                                    </span>
+                            <span th:unless="${result.maxScore != null and result.maxScore > 0}">–</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(results)}">
+                        <td class="py-4 px-4 text-center text-gray-500" colspan="6">ไม่มีข้อมูลผลคะแนน</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

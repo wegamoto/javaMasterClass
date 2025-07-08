@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>บัญชีแยกประเภท | ERP System</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ฟอนต์ภาษาไทย -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar -->
+<header th:replace="~{fragments/navbar :: navbar}"></header>
+
+<!-- ✅ Layout -->
+<div class="flex flex-grow">
+  <!-- ✅ Sidebar -->
+  <aside class="w-64 bg-white border-r shadow-sm hidden md:block"
+         th:replace="~{fragments/sidebar :: sidebar('accounting')}"></aside>
+
+  <!-- ✅ Main content -->
+  <main class="flex-grow p-6">
+    <div class="bg-white shadow-2xl rounded-xl w-full p-8">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">📘 บัญชีแยกประเภท</h1>
+        <button onclick="document.getElementById('modal').classList.remove('hidden')"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          + เพิ่มบัญชี
+        </button>
+      </div>
+
+      <!-- ✅ Filters -->
+      <div class="flex flex-wrap gap-4 mb-6">
+        <div>
+          <label class="block text-sm font-medium">ประเภทบัญชี</label>
+          <select class="mt-1 border-gray-300 rounded p-2" name="type">
+            <option>ทั้งหมด</option>
+            <option>สินทรัพย์</option>
+            <option>หนี้สิน</option>
+            <option>ทุน</option>
+            <option>รายได้</option>
+            <option>ค่าใช้จ่าย</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">ค้นหา</label>
+          <input type="text" class="mt-1 border p-2 rounded" placeholder="ค้นหาด้วยชื่อหรือรหัส" />
+        </div>
+        <button class="mt-6 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">ค้นหา</button>
+      </div>
+
+      <!-- ✅ Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+          <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="px-4 py-2 text-left">รหัสบัญชี</th>
+            <th class="px-4 py-2 text-left">ชื่อบัญชี</th>
+            <th class="px-4 py-2 text-left">ประเภท</th>
+            <th class="px-4 py-2 text-left">บัญชีแม่</th>
+            <th class="px-4 py-2 text-left">สถานะ</th>
+            <th class="px-4 py-2 text-left">จัดการ</th>
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-100">
+          <tr th:each="acc : ${accounts}">
+            <td class="px-4 py-2" th:text="${acc.code}">1001</td>
+            <td class="px-4 py-2" th:text="${acc.name}">เงินสด</td>
+            <td class="px-4 py-2" th:text="${acc.type}">สินทรัพย์</td>
+            <td class="px-4 py-2" th:text="${acc.parent}">-</td>
+            <td class="px-4 py-2"><span class="text-green-600 font-semibold">ใช้งาน</span></td>
+            <td class="px-4 py-2">
+              <button class="text-blue-600 hover:underline">แก้ไข</button>
+              <button class="text-red-600 hover:underline ml-2">ลบ</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ✅ Modal เพิ่มบัญชี -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-lg w-full max-w-xl shadow-xl relative">
+    <h2 class="text-xl font-semibold mb-4">เพิ่มบัญชีแยกประเภท</h2>
+    <form th:action="@{/account-chart/add}" method="post" class="space-y-4">
+      <div>
+        <label class="block text-sm">รหัสบัญชี</label>
+        <input name="code" class="w-full border rounded p-2" required />
+      </div>
+      <div>
+        <label class="block text-sm">ชื่อบัญชี</label>
+        <input name="name" class="w-full border rounded p-2" required />
+      </div>
+      <div>
+        <label class="block text-sm">ประเภทบัญชี</label>
+        <select name="type" class="w-full border rounded p-2">
+          <option>สินทรัพย์</option>
+          <option>หนี้สิน</option>
+          <option>ทุน</option>
+          <option>รายได้</option>
+          <option>ค่าใช้จ่าย</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm">บัญชีแม่</label>
+        <select name="parent" class="w-full border rounded p-2">
+          <option value="">- ไม่มี -</option>
+          <option th:each="p : ${accounts}" th:value="${p.code}" th:text="${p.name}"></option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-2 pt-4">
+        <button type="button" onclick="document.getElementById('modal').classList.add('hidden')" class="px-4 py-2 border rounded">ยกเลิก</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">บันทึก</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ✅ Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

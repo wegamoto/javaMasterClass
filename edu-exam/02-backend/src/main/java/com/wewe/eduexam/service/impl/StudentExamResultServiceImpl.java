@@ -8,6 +8,7 @@ import com.wewe.eduexam.repository.StudentExamResultRepository;
 import com.wewe.eduexam.repository.StudentRepository;
 import com.wewe.eduexam.service.StudentExamResultService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -29,13 +30,15 @@ public class StudentExamResultServiceImpl implements StudentExamResultService {
     }
 
     @Override
-    public StudentExamResult saveResult(Long studentId, Long examId, Integer totalScore) {
+    @Transactional
+    public StudentExamResult saveResult(Long studentId, Long examId, Double totalScore) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("ไม่พบ Student ID: " + studentId));
+                .orElseThrow(() -> new IllegalArgumentException("❌ ไม่พบ Student ID: " + studentId));
 
         Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new IllegalArgumentException("ไม่พบ Exam ID: " + examId));
+                .orElseThrow(() -> new IllegalArgumentException("❌ ไม่พบ Exam ID: " + examId));
 
+        // ถ้ามีผลสอบอยู่แล้วให้แก้ไข, ถ้าไม่มีก็สร้างใหม่
         StudentExamResult result = resultRepository.findByStudentAndExam(student, exam)
                 .map(existing -> {
                     existing.setTotalScore(totalScore);

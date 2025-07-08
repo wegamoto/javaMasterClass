@@ -37,15 +37,15 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-200" th:each="student : ${students}">
           <tr>
-            <td class="px-4 py-2 text-gray-700" th:text="${student.id}"></td>
-            <td class="px-4 py-2 text-gray-700" th:text="${student.name}"></td>
-            <td class="px-4 py-2 text-gray-700" th:text="${student.email}"></td>
+            <td class="px-4 py-2 text-gray-700" th:text="${students.id}"></td>
+            <td class="px-4 py-2 text-gray-700" th:text="${students.name}"></td>
+            <td class="px-4 py-2 text-gray-700" th:text="${students.email}"></td>
             <td class="px-4 py-2 space-x-2">
-              <a th:href="@{'/students/edit/' + ${student.id}}"
+              <a th:href="@{'/students/edit/' + ${students.id}}"
                  class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">
                 แก้ไข
               </a>
-              <a th:href="@{'/students/delete/' + ${student.id}}"
+              <a th:href="@{'/students/delete/' + ${students.id}}"
                  onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบ?');"
                  class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
                 ลบ

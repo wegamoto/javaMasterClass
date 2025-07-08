@@ -24,7 +24,7 @@ public class StudentExamResult {
     @JoinColumn(name = "exam_id")
     private Exam exam;
 
-    private Integer totalScore;
+    private Double totalScore;
 
 }
 
