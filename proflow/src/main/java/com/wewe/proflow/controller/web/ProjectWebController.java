@@ -1,9 +1,14 @@
 package com.wewe.proflow.controller.web;
 
+import com.wewe.proflow.dto.OwnerDTO;
 import com.wewe.proflow.dto.ProjectDTO;
+import com.wewe.proflow.dto.UserDTO;
+import com.wewe.proflow.model.Owner;
 import com.wewe.proflow.model.Project;
 import com.wewe.proflow.repository.ProjectRepository;
+import com.wewe.proflow.service.OwnerService;
 import com.wewe.proflow.service.ProjectService;
+import com.wewe.proflow.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,10 +26,17 @@ public class ProjectWebController {
 
     private final ProjectRepository projectRepository;
 
+    private final OwnerService ownerService;
+
+    // ✅ เพิ่ม UserService
+    private final UserService userService;
+
     @Autowired
-    public ProjectWebController(ProjectService projectService, ProjectRepository projectRepository) {
+    public ProjectWebController(ProjectService projectService, ProjectRepository projectRepository, OwnerService ownerService, UserService userService) {
         this.projectService = projectService;
         this.projectRepository = projectRepository;
+        this.ownerService = ownerService;
+        this.userService = userService;
     }
 
     // ✅ แก้ไขให้โหลด projects ทั้งหมดมาใช้ใน select.html
@@ -89,7 +101,7 @@ public class ProjectWebController {
         return "projects/list";
     }
 
-    // Show form for creating a new project
+    // ✅ Show form for creating a new project (เพิ่ม owners ใน model)
     @GetMapping("/create")
     public String createForm(Model model, @RequestParam(value = "ownerId", required = false) Long ownerId) {
         if (!checkOwnerId(ownerId)) {
@@ -99,6 +111,11 @@ public class ProjectWebController {
         ProjectDTO dto = new ProjectDTO();
         dto.setOwnerId(ownerId);
         model.addAttribute("project", dto);
+
+        // 🔹 เพิ่มรายชื่อ owner สำหรับ dropdown
+        List<Owner> owners = ownerService.getAllOwners();
+        model.addAttribute("owners", owners);
+
         return "projects/create";
     }
 
@@ -123,15 +140,37 @@ public class ProjectWebController {
         return buildRedirectToList(dto.getOwnerId());
     }
 
-    // Show an edit form
+    // ✅ Show edit form (พร้อมรองรับ ownerId + owners สำหรับ dropdown)
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(
+            @PathVariable Long id,
+            @RequestParam(value = "ownerId", required = false) Long ownerId,
+            Model model
+    ) {
         ProjectDTO dto = projectService.getProjectById(id);
-        if (dto == null || !checkOwnerId(dto.getOwnerId())) {
+
+        if (dto == null) {
             return "redirect:/owners/select";
         }
+
+        // ✅ ถ้ามี ownerId จาก query ให้ override เพื่อป้องกัน inconsistency
+        if (ownerId != null && ownerId > 0) {
+            dto.setOwnerId(ownerId);
+        }
+
+        // ✅ ตรวจสอบ ownerId อีกครั้งเพื่อความปลอดภัย
+        if (!checkOwnerId(dto.getOwnerId())) {
+            return "redirect:/owners/select";
+        }
+
         model.addAttribute("project", dto);
-        return "projects/form";
+
+        // 🔹 เพิ่มรายชื่อ owner สำหรับ dropdown
+        List<Owner> owners = ownerService.getAllOwners();
+        model.addAttribute("owners", owners);
+
+
+        return "projects/create"; // ใช้หน้าเดียวกับ create สำหรับการ edit
     }
 
     // Update project
@@ -169,14 +208,4 @@ public class ProjectWebController {
         projectService.deleteProject(id);
         return buildRedirectToList(ownerId);
     }
-
-//    // ✅ แสดง projectphase.html (รายละเอียดโปรเจกต์ + phases)
-//    @GetMapping("/{id}")
-//    public String viewProjectDetail(@PathVariable Long id, Model model) {
-//        Project project = projectRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid project ID: " + id));
-//
-//        model.addAttribute("project", project);
-//        return "projects/projectphase"; // ชี้ไปที่ projectphase.html
-//    }
 }

@@ -115,4 +115,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project updated = projectRepository.save(project);
         return mapToDTO(updated);
     }
+
+    @Override
+    public List<Project> findAll() {
+        return projectRepository.findAll();
+    }
 }

@@ -1,6 +1,7 @@
 package com.wewe.proflow.service.impl;
 
 import com.wewe.proflow.dto.UserDTO;
+import com.wewe.proflow.model.Role;
 import com.wewe.proflow.model.User;
 import com.wewe.proflow.repository.UserRepository;
 import com.wewe.proflow.service.UserService;
@@ -65,5 +66,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User> findByRole(Role role) {
+        return userRepository.findByRole(role);
+    }
+
+    @Override
+    public void updateUser(UserDTO dto) {
+        User user = userRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        user.setRole(dto.getRole());
+        userRepository.save(user);
     }
 }

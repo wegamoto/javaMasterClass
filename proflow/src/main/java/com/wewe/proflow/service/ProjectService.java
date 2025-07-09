@@ -1,6 +1,7 @@
 package com.wewe.proflow.service;
 
 import com.wewe.proflow.dto.ProjectDTO;
+import com.wewe.proflow.model.Project;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface ProjectService {
     long countProjectsByOwner(Long ownerId);
 
     ProjectDTO updateProject(Long id, ProjectDTO projectDTO);
+
+    List<Project> findAll();
 }

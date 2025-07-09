@@ -18,6 +18,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/api/**").permitAll() // ✅ ให้ access API ได้
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/contractor/**").hasRole("CONTRACTOR")
                         .requestMatchers("/dashboard/**").authenticated()  // ✅ ใคร login แล้วเข้าถึงได้

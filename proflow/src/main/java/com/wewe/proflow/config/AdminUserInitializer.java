@@ -31,6 +31,17 @@ public class AdminUserInitializer implements CommandLineRunner {
             userRepository.save(admin);
             System.out.println("✅ Default admin created: admin@proflow.com / admin123");
         }
+        // ✅ สร้าง Contractor ถ้ายังไม่มี
+        if (userRepository.findByEmail("contractor1@proflow.com").isEmpty()) {
+            User contractor = new User();
+            contractor.setName("John Contractor");
+            contractor.setEmail("contractor1@proflow.com");
+            contractor.setPassword(passwordEncoder.encode("contractor123"));
+            contractor.setRole(Role.CONTRACTOR);
+
+            userRepository.save(contractor);
+            System.out.println("✅ Default contractor created: contractor1@proflow.com / contractor123");
+        }
     }
 }
 

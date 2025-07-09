@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark h-full">
+<head>
+  <meta charset="UTF-8">
+  <title>Cash Flow Report</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+
+<div class="flex h-screen overflow-hidden">
+
+  <!-- ✅ Sidebar Fragment -->
+  <aside th:replace="fragments/sidebar :: sidebar" class="w-64 hidden md:block"></aside>
+
+  <!-- ✅ Main Content -->
+  <div class="flex-1 flex flex-col overflow-y-auto">
+
+    <!-- ✅ Navbar Fragment -->
+    <header th:replace="fragments/navbar :: navbar"></header>
+
+    <!-- ✅ Page Content -->
+    <main class="flex-1 p-6 max-w-6xl mx-auto">
+      <h1 class="text-3xl font-bold mb-6">💰 Cash Flow Report</h1>
+
+      <div class="flex justify-end space-x-2 mb-4">
+        <a href="/cashflows/export/pdf"
+           class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2"
+               viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 4v16m8-8H4"/>
+          </svg>
+          Export PDF
+        </a>
+
+        <a href="/cashflows/export/excel"
+           class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2"
+               viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 4H8a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M10 9l4 6m0-6l-4 6"/>
+          </svg>
+          Export Excel
+        </a>
+      </div>
+
+
+      <table class="min-w-full bg-white dark:bg-gray-800 border rounded-lg shadow overflow-hidden">
+        <thead class="bg-gray-100 dark:bg-gray-700">
+        <tr>
+          <th class="px-4 py-2 text-left">Date</th>
+          <th class="px-4 py-2 text-left">Project</th>
+          <th class="px-4 py-2 text-left">Phase</th>
+          <th class="px-4 py-2 text-left">Contractor</th>
+          <th class="px-4 py-2 text-left">Type</th>
+          <th class="px-4 py-2 text-left">Amount</th>
+          <th class="px-4 py-2 text-left">Status</th>
+          <th class="px-4 py-2 text-left">Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="flow : ${cashFlows}" class="border-t">
+          <td class="px-4 py-2" th:text="${flow.date}">2025-07-09</td>
+          <td class="px-4 py-2" th:text="${flow.project.name}">Project X</td>
+          <td class="px-4 py-2" th:text="${flow.phase != null ? flow.phase.name : '—'}">Phase 1</td>
+          <td class="px-4 py-2" th:text="${flow.contractor != null ? flow.contractor.name : '—'}">John Doe</td>
+          <td class="px-4 py-2" th:text="${flow.type}">EXPENSE</td>
+          <td class="px-4 py-2" th:text="${#numbers.formatDecimal(flow.amount, 1, 'POINT', 2, 'COMMA')}">12,000.00</td>
+          <td class="px-4 py-2" th:text="${flow.status}">PENDING</td>
+          <td class="px-4 py-2" th:text="${flow.description}">Material Purchase</td>
+        </tr>
+        </tbody>
+      </table>
+    </main>
+
+    <!-- ✅ Footer Fragment -->
+    <footer th:replace="fragments/footer :: footer" class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
+      <!-- fallback footer text -->
+      &copy; 2025 ProFlow. All rights reserved.
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>

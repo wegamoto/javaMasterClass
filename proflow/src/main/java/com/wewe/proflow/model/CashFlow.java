@@ -1,5 +1,6 @@
 package com.wewe.proflow.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,10 +30,12 @@ public class CashFlow {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonBackReference
     private Project project;
 
     @ManyToOne
     @JoinColumn(name = "phase_id")
+    @JsonBackReference
     private ProjectPhase phase;
 
     @ManyToOne
