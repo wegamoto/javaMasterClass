@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Campaign Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex">
+  <!-- Sidebar -->
+  <div th:replace="fragments/sidebar :: sidebar"></div>
+
+  <!-- Main Content -->
+  <div class="flex-1 p-6">
+    <h2 class="text-2xl font-semibold mb-6" th:text="${campaign.id != null ? '✏️ Edit Campaign' : '➕ Create Campaign'}"></h2>
+
+    <form th:action="@{/campaigns/save}" th:object="${campaign}" method="post" class="space-y-4 max-w-3xl">
+      <input type="hidden" th:field="*{id}"/>
+
+      <div>
+        <label class="block font-medium">Name</label>
+        <input type="text" th:field="*{name}" class="border p-2 w-full rounded"/>
+      </div>
+
+      <div>
+        <label class="block font-medium">Type</label>
+        <select th:field="*{type}" class="border p-2 w-full rounded">
+          <option value="ONLINE">ONLINE</option>
+          <option value="OFFLINE">OFFLINE</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-medium">Status</label>
+        <select th:field="*{status}" class="border p-2 w-full rounded">
+          <option value="PLANNED">PLANNED</option>
+          <option value="ONGOING">ONGOING</option>
+          <option value="COMPLETED">COMPLETED</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-medium">Owner</label>
+        <select th:field="*{owner}" class="border p-2 w-full rounded">
+          <option th:each="u : ${users}" th:value="${u}" th:text="${u.name}">User</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-medium">Estimated Budget</label>
+        <input type="number" step="0.01" th:field="*{estimatedBudget}" class="border p-2 w-full rounded"/>
+      </div>
+
+      <div class="flex gap-4">
+        <div class="w-1/2">
+          <label class="block font-medium">Start Date</label>
+          <input type="date" th:field="*{startDate}" class="border p-2 w-full rounded"/>
+        </div>
+        <div class="w-1/2">
+          <label class="block font-medium">End Date</label>
+          <input type="date" th:field="*{endDate}" class="border p-2 w-full rounded"/>
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-medium">Description</label>
+        <textarea th:field="*{description}" rows="4" class="border p-2 w-full rounded"></textarea>
+      </div>
+
+      <div class="pt-4">
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">💾 Save</button>
+        <a href="/campaigns" class="ml-3 text-gray-600 hover:underline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

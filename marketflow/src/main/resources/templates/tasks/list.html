@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Marketing Tasks - MarketFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-100 min-h-screen">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-indigo-700">📋 Marketing Tasks</h1>
+      <a href="/tasks/create"
+         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        + Create New Task
+      </a>
+    </div>
+
+    <!-- Task Table -->
+    <div class="bg-white shadow rounded-lg overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100 text-gray-600 uppercase text-sm">
+        <tr>
+          <th class="px-6 py-3 text-left">Title</th>
+          <th class="px-6 py-3 text-left">Status</th>
+          <th class="px-6 py-3 text-left">Due Date</th>
+          <th class="px-6 py-3 text-left">Actions</th>
+        </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 text-sm">
+        <tr th:each="task : ${tasks}" class="hover:bg-gray-50">
+          <td class="px-6 py-3" th:text="${task.title}">Task Title</td>
+          <td class="px-6 py-3">
+                            <span class="inline-block px-3 py-1 rounded-full text-white text-xs font-semibold"
+                                  th:text="${task.status}"
+                                  th:classappend="${task.status.name() == 'PENDING'} ? 'bg-yellow-500' :
+                                                  (task.status.name() == 'COMPLETED') ? 'bg-green-500' :
+                                                  (task.status.name() == 'IN_PROGRESS') ? 'bg-blue-500' : 'bg-gray-400'">
+                                Status
+                            </span>
+          </td>
+          <td class="px-6 py-3" th:text="${task.dueDate}">2025-01-01</td>
+          <td class="px-6 py-3">
+            <a th:href="@{/tasks/edit/{id}(id=${task.id})}"
+               class="text-indigo-600 hover:underline mr-4">Edit</a>
+            <a th:href="@{/tasks/delete/{id}(id=${task.id})}"
+               class="text-red-600 hover:underline">Delete</a>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(tasks)}">
+          <td colspan="4" class="text-center text-gray-400 py-4">No tasks available</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

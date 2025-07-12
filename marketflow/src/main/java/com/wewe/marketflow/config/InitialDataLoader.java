@@ -37,7 +37,7 @@ public class InitialDataLoader implements CommandLineRunner {
             User admin = new User();
             admin.setName("Admin");
             admin.setEmail("admin@market.com");
-            admin.setPassword(new BCryptPasswordEncoder().encode("admin123"));
+            admin.setPassword(new BCryptPasswordEncoder().encode("@!admin123"));
             admin.setRole(adminRole);
             userRepo.save(admin);
         }

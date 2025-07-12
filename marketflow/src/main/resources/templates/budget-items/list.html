@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Budget Items</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-100 p-4">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-indigo-700">💰 Budget Items</h1>
+      <a href="/budget-items/create"
+         class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+        + Create New Budget Item
+      </a>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+      <table class="min-w-full text-left">
+        <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+        <tr>
+          <th class="py-3 px-6">Category</th>
+          <th class="py-3 px-6">Description</th>
+          <th class="py-3 px-6">Amount</th>
+          <th class="py-3 px-6">Spend Date</th>
+          <th class="py-3 px-6">Actions</th>
+        </tr>
+        </thead>
+        <tbody class="text-gray-700 text-sm">
+        <tr th:each="item : ${budgetItems}" class="border-b hover:bg-gray-50">
+          <td class="py-3 px-6" th:text="${item.category}">Category</td>
+          <td class="py-3 px-6" th:text="${item.description}">Description</td>
+          <td class="py-3 px-6" th:text="${#numbers.formatDecimal(item.amount, 2, 'COMMA',  '.',  'COMMA')}">Amount</td>
+          <td class="py-3 px-6" th:text="${item.spendDate}">Spend Date</td>
+          <td class="py-3 px-6">
+            <a th:href="@{/budget-items/edit/{id}(id=${item.id})}"
+               class="text-indigo-600 hover:underline mr-4">Edit</a>
+            <a th:href="@{/budget-items/delete/{id}(id=${item.id})}"
+               class="text-red-600 hover:underline">Delete</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

@@ -1,9 +1,19 @@
 package com.wewe.marketflow.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDate;
+
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MarketingTask {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
@@ -12,12 +22,15 @@ public class MarketingTask {
     private String detail;
 
     private LocalDate dueDate;
-    private String status; // TODO, IN_PROGRESS, DONE
 
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to_id")
     private User assignedTo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campaign_id")
     private Campaign campaign;
 }
-

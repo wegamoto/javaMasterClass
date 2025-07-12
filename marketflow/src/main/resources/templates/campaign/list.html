@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Campaigns</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex">
+  <!-- Sidebar -->
+  <div th:replace="fragments/sidebar :: sidebar"></div>
+
+  <!-- Main Content -->
+  <div class="flex-1 p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-semibold">📁 Campaigns</h2>
+      <a href="/campaigns/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">➕ New Campaign</a>
+    </div>
+
+    <table class="min-w-full bg-white shadow rounded">
+      <thead class="bg-gray-200">
+      <tr>
+        <th class="p-2 text-left">Name</th>
+        <th class="p-2 text-left">Type</th>
+        <th class="p-2 text-left">Status</th>
+        <th class="p-2 text-left">Owner</th>
+        <th class="p-2 text-left">Budget</th>
+        <th class="p-2 text-left">Dates</th>
+        <th class="p-2">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="c : ${campaigns}" class="border-t hover:bg-gray-50">
+        <td class="p-2" th:text="${c.name}">Campaign A</td>
+        <td class="p-2" th:text="${c.type}">ONLINE</td>
+        <td class="p-2" th:text="${c.status}">PLANNED</td>
+        <td class="p-2" th:text="${c.owner != null ? c.owner.name : '-'}">User</td>
+        <td class="p-2" th:text="${c.estimatedBudget}">10000</td>
+        <td class="p-2" th:text="${c.startDate} + ' - ' + ${c.endDate}">2025-01-01</td>
+        <td class="p-2 space-x-2 text-center">
+          <a th:href="@{'/campaigns/edit/' + ${c.id}}" class="text-blue-600 hover:underline">Edit</a>
+          <a th:href="@{'/campaigns/delete/' + ${c.id}}" class="text-red-600 hover:underline"
+             onclick="return confirm('ยืนยันการลบ?')">Delete</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

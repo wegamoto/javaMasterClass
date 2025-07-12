@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MarketFlow Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-100 min-h-screen">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <h1 class="text-2xl font-bold mb-6 text-indigo-700">📊 MarketFlow Dashboard</h1>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white shadow rounded p-4 text-center">
+                <div class="text-sm text-gray-500">Campaigns</div>
+                <div class="text-2xl font-semibold" th:text="${summary.totalCampaigns}">0</div>
+            </div>
+            <div class="bg-white shadow rounded p-4 text-center">
+                <div class="text-sm text-gray-500">Tasks</div>
+                <div class="text-2xl font-semibold" th:text="${summary.totalTasks}">0</div>
+            </div>
+            <div class="bg-white shadow rounded p-4 text-center">
+                <div class="text-sm text-gray-500">Budget Items</div>
+                <div class="text-2xl font-semibold" th:text="${summary.totalBudgetItems}">0</div>
+            </div>
+            <div class="bg-white shadow rounded p-4 text-center">
+                <div class="text-sm text-gray-500">Total Spent</div>
+                <div class="text-xl font-semibold text-green-600">฿ <span th:text="${summary.totalBudgetSpent}">0</span></div>
+            </div>
+        </div>
+
+        <!-- Task Status -->
+        <h2 class="text-xl font-semibold mb-4">📌 Task Status Summary</h2>
+        <ul class="bg-white shadow rounded divide-y mb-8">
+            <li th:each="entry : ${summary.taskStatusCount}" class="flex justify-between px-4 py-2">
+                <span th:text="${entry.key}">Status</span>
+                <span class="bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full" th:text="${entry.value}">0</span>
+            </li>
+        </ul>
+
+        <!-- Chart -->
+        <div class="bg-white shadow rounded p-6">
+            <canvas id="taskStatusChart" width="400" height="200"></canvas>
+        </div>
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const taskStatusLabels = [[${taskStatusLabels}]];
+    const taskStatusData = [[${taskStatusData}]];
+
+    const ctxTaskStatus = document.getElementById('taskStatusChart').getContext('2d');
+    new Chart(ctxTaskStatus, {
+        type: 'bar',
+        data: {
+            labels: taskStatusLabels,
+            datasets: [{
+                label: 'จำนวน Task',
+                data: taskStatusData,
+                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 }, title: { display: true, text: 'จำนวน' } },
+                x: { title: { display: true, text: 'สถานะ' } }
+            },
+            plugins: { legend: { display: false }, tooltip: { enabled: true } }
+        }
+    });
+
+    const spendingCategoryLabels = [[${spendingCategoryLabels}]];
+    const spendingCategoryData = [[${spendingCategoryData}]];
+
+    const ctxSpendingCategory = document.getElementById('spendingCategoryChart').getContext('2d');
+    new Chart(ctxSpendingCategory, {
+        type: 'pie',
+        data: {
+            labels: spendingCategoryLabels,
+            datasets: [{
+                label: 'Budget Spending',
+                data: spendingCategoryData,
+                backgroundColor: [
+                    '#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#8b5cf6', '#ec4899', '#6366f1'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: { enabled: true }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+</body>
+</html>

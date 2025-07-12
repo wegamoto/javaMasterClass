@@ -1,0 +1,65 @@
+<!-- fragments/sidebar.html -->
+<div th:fragment="sidebar" class="bg-gray-100 p-4 h-full" xmlns:th="http://www.w3.org/1999/xhtml">
+  <h2 class="text-lg font-semibold mb-4">เมนูหลัก</h2>
+  <ul class="space-y-2 text-sm">
+
+    <li>
+      <a href="/dashboard" class="block p-2 rounded hover:bg-indigo-100 font-medium">📊 Dashboard</a>
+    </li>
+
+    <!-- Campaigns -->
+    <li>
+      <details class="group">
+        <summary class="cursor-pointer p-2 rounded hover:bg-indigo-100 font-medium">📁 Campaigns</summary>
+        <ul class="ml-4 mt-1 space-y-1">
+          <li><a href="/campaigns" class="block px-2 py-1 hover:bg-indigo-50">📋 รายการทั้งหมด</a></li>
+          <li><a href="/campaigns/create" class="block px-2 py-1 hover:bg-indigo-50">➕ สร้างแคมเปญ</a></li>
+        </ul>
+      </details>
+    </li>
+
+    <!-- Tasks -->
+    <li>
+      <details class="group">
+        <summary class="cursor-pointer p-2 rounded hover:bg-indigo-100 font-medium">📝 Tasks</summary>
+        <ul class="ml-4 mt-1 space-y-1">
+          <li><a href="/tasks" class="block px-2 py-1 hover:bg-indigo-50">📋 รายการทั้งหมด</a></li>
+          <li><a href="/tasks/create" class="block px-2 py-1 hover:bg-indigo-50">➕ สร้าง Task</a></li>
+        </ul>
+      </details>
+    </li>
+
+    <!-- Budget Items -->
+    <li>
+      <details class="group">
+        <summary class="cursor-pointer p-2 rounded hover:bg-indigo-100 font-medium">💰 Budget Items</summary>
+        <ul class="ml-4 mt-1 space-y-1">
+          <li><a href="/budget-items" class="block px-2 py-1 hover:bg-indigo-50">📋 รายการทั้งหมด</a></li>
+          <li><a href="/budget-items/create" class="block px-2 py-1 hover:bg-indigo-50">➕ เพิ่ม Budget</a></li>
+        </ul>
+      </details>
+    </li>
+
+    <!-- Users -->
+    <li>
+      <details class="group">
+        <summary class="cursor-pointer p-2 rounded hover:bg-indigo-100 font-medium">👤 Users</summary>
+        <ul class="ml-4 mt-1 space-y-1">
+          <li><a href="/users" class="block px-2 py-1 hover:bg-indigo-50">📋 รายชื่อผู้ใช้</a></li>
+          <li><a href="/users/create" class="block px-2 py-1 hover:bg-indigo-50">➕ เพิ่มผู้ใช้</a></li>
+        </ul>
+      </details>
+    </li>
+
+    <!-- Settings -->
+    <li>
+      <a href="/settings" class="block p-2 rounded hover:bg-indigo-100 font-medium">⚙️ ตั้งค่า</a>
+    </li>
+
+    <!-- Logout -->
+    <li>
+      <a href="/logout" class="block p-2 rounded hover:bg-red-100 text-red-600 font-medium">🚪 ออกจากระบบ</a>
+    </li>
+
+  </ul>
+</div>
