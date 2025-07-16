@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>ใบแจ้งหนี้ #<span th:text="${invoice.id}"></span></title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet" />
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+    </style>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#F59E0B',
+                        'brand-light': '#FEF3C7',
+                        'brand-accent': '#B45309',
+                    },
+                    boxShadow: {
+                        soft: '0 4px 12px rgba(0,0,0,0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<header class="sticky top-0 z-50 bg-white shadow-soft">
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<!-- Layout -->
+<div class="flex flex-1 max-w-7xl mx-auto w-full gap-6 px-4 md:px-6 py-6">
+
+    <!-- Sidebar -->
+    <aside class="w-64 shrink-0 hidden md:block">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 bg-white shadow-soft rounded-2xl p-6 md:p-8 space-y-8">
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+            <h1 class="text-3xl font-bold text-brand">
+                ใบแจ้งหนี้ #<span th:text="${invoice.id}"></span>
+            </h1>
+            <a href="/invoices" class="text-gray-600 hover:text-brand transition">← กลับไปยังรายการ</a>
+        </div>
+
+        <!-- Client Info -->
+        <section class="space-y-2 text-gray-700">
+            <p><span class="font-semibold">ชื่อลูกค้า:</span> <span th:text="${invoice.clientName}">ลูกค้า A</span></p>
+            <p><span class="font-semibold">อีเมลลูกค้า:</span> <span th:text="${invoice.clientEmail}">email@example.com</span></p>
+            <p><span class="font-semibold">วันที่สร้าง:</span> <span th:text="${createdAtFormatted}">15/07/2025</span></p>
+            <p><span class="font-semibold">ใช้ VAT 7%:</span> <span th:text="${invoice.vatApplied ? 'ใช่' : 'ไม่ใช่'}">ใช่</span></p>
+        </section>
+
+        <!-- Items Table -->
+        <section>
+            <h2 class="text-xl font-semibold border-b pb-2 mb-4 text-gray-800">รายการสินค้า / บริการ</h2>
+
+            <div class="overflow-x-auto rounded-xl border border-gray-200">
+                <table class="w-full text-sm text-gray-700">
+                    <thead class="bg-brand-light">
+                    <tr>
+                        <th class="p-3 text-left">ลำดับ</th>
+                        <th class="p-3 text-left">รายละเอียด</th>
+                        <th class="p-3 text-right">ราคา (บาท)</th>
+                        <th class="p-3 text-right">จำนวน</th>
+                        <th class="p-3 text-right">รวม (บาท)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item, iterStat : ${items}" class="border-t hover:bg-gray-100">
+                        <td class="p-3" th:text="${iterStat.count}">1</td>
+                        <td class="p-3" th:text="${item.description}">บริการออกแบบ</td>
+                        <td class="p-3 text-right" th:text="${item.priceFormatted}">5,000.00</td>
+                        <td class="p-3 text-right" th:text="${item.quantity}">1</td>
+                        <td class="p-3 text-right" th:text="${item.totalFormatted}">5,000.00</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="bg-gray-50 border-t">
+                        <td colspan="4" class="p-3 text-right font-semibold">ยอดก่อน VAT</td>
+                        <td class="p-3 text-right" th:text="${subtotalFormatted}">5,000.00</td>
+                    </tr>
+                    <tr class="bg-gray-50 border-t" th:if="${invoice.vatApplied}">
+                        <td colspan="4" class="p-3 text-right font-semibold">VAT 7%</td>
+                        <td class="p-3 text-right" th:text="${vatFormatted}">350.00</td>
+                    </tr>
+                    <tr class="font-bold border-t bg-gray-100">
+                        <td colspan="4" class="p-3 text-right">รวมทั้งสิ้น</td>
+                        <td class="p-3 text-right" th:text="${totalAmountFormatted}">5,350.00</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-white mt-auto shadow-soft">
+    <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+</body>
+</html>

@@ -7,6 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/budget-items")
 @RequiredArgsConstructor
@@ -16,7 +21,19 @@ public class BudgetItemPageController {
 
     @GetMapping
     public String listPage(Model model) {
-        model.addAttribute("budgetItems", budgetItemService.getAll());
+        List<BudgetItem> budgetItems = budgetItemService.getAll();
+
+        // แก้ไขค่า amount ให้มี 2 ตำแหน่งทศนิยม
+        List<BudgetItem> formattedItems = budgetItems.stream()
+                .map(item -> {
+                    if (item.getAmount() != null) {
+                        // ปรับ decimal scale เป็น 2 ตำแหน่ง
+                        item.setAmount(item.getAmount().setScale(2, RoundingMode.HALF_UP));
+                    }
+                    return item;
+                }).collect(Collectors.toList());
+
+        model.addAttribute("budgetItems", formattedItems);
         return "budget-items/list";
     }
 
@@ -35,6 +52,11 @@ public class BudgetItemPageController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute BudgetItem budgetItem) {
+        // ✅ Fix: ป้องกัน amount เป็น null
+        if (budgetItem.getAmount() == null) {
+            budgetItem.setAmount(BigDecimal.ZERO);
+        }
+
         budgetItemService.save(budgetItem);
         return "redirect:/budget-items";
     }

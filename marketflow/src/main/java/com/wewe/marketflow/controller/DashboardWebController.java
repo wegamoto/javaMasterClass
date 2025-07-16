@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.NumberFormat;
+import java.util.*;
 
 @Controller
 public class DashboardWebController {
@@ -26,7 +24,7 @@ public class DashboardWebController {
         DashboardSummaryDTO summary = dashboardService.getSummary();
         Map<String, BigDecimal> spendingByCategory = dashboardService.getSpendingByCategory();
 
-        // ตรวจสอบให้แน่ใจว่าไม่ null ก่อนใช้งาน
+        // ตรวจสอบ null
         if (summary.getTaskStatusCount() == null) {
             summary.setTaskStatusCount(new HashMap<>());
         }
@@ -44,8 +42,16 @@ public class DashboardWebController {
         List<String> spendingCategoryLabels = new ArrayList<>(spendingByCategory.keySet());
         List<BigDecimal> spendingCategoryData = new ArrayList<>(spendingByCategory.values());
 
+        // แปลง totalBudgetSpent เป็น String พร้อม comma
+        String totalBudgetSpentFormatted = "0";
+        if (summary.getTotalBudgetSpent() != null) {
+            totalBudgetSpentFormatted = NumberFormat.getNumberInstance(Locale.US)
+                    .format(summary.getTotalBudgetSpent());
+        }
+
         // ส่งข้อมูลไปยัง view
         model.addAttribute("summary", summary);
+        model.addAttribute("totalBudgetSpentFormatted", totalBudgetSpentFormatted);
         model.addAttribute("taskStatusLabels", taskStatusLabels);
         model.addAttribute("taskStatusData", taskStatusData);
         model.addAttribute("spendingCategoryLabels", spendingCategoryLabels);
@@ -53,7 +59,6 @@ public class DashboardWebController {
 
         return "dashboard";
     }
-
 
 }
 

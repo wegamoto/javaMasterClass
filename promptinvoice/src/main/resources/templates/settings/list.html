@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ตั้งค่า - PromptInvoice</title>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet" />
+  <style>body { font-family: 'Prompt', sans-serif; }</style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#F59E0B',
+            'brand-light': '#FEF3C7',
+            'brand-accent': '#B45309',
+          },
+          boxShadow: {
+            soft: '0 4px 8px rgba(0,0,0,0.1)',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Main Layout -->
+<div class="flex flex-1 max-w-screen-xl mx-auto w-full px-4 md:px-6 py-6 gap-6">
+
+  <!-- Sidebar -->
+  <aside class="w-64" th:replace="fragments/sidebar :: sidebar"></aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 bg-white rounded-2xl shadow-soft p-6 md:p-8 space-y-6">
+    <h1 class="text-3xl font-bold text-brand mb-4">ตั้งค่า</h1>
+
+    <div>
+      <a href="/settings/new"
+         class="inline-block bg-brand text-white px-4 py-2 rounded-lg shadow hover:bg-brand-accent transition">
+        + เพิ่มค่า Setting ใหม่
+      </a>
+    </div>
+
+    <div class="overflow-auto">
+      <table class="min-w-full table-auto border-collapse">
+        <thead>
+        <tr class="bg-brand text-white">
+          <th class="p-3 text-left rounded-tl-xl">#</th>
+          <th class="p-3 text-left">Key</th>
+          <th class="p-3 text-left">Value</th>
+          <th class="p-3 text-left rounded-tr-xl">จัดการ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="setting, iterStat : ${settings}" class="border-b hover:bg-gray-100">
+          <td class="p-3" th:text="${iterStat.count}">1</td>
+          <td class="p-3" th:text="${setting.key}">example_key</td>
+          <td class="p-3" th:text="${setting.value}">example_value</td>
+          <td class="p-3 space-x-3">
+            <a th:href="@{/settings/edit/{id}(id=${setting.id})}" class="text-blue-600 hover:underline">แก้ไข</a>
+            <a th:href="@{/settings/delete/{id}(id=${setting.id})}" class="text-red-600 hover:underline"
+               onclick="return confirm('คุณแน่ใจหรือว่าต้องการลบ setting นี้?');">ลบ</a>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(settings)}">
+          <td colspan="4" class="text-center p-6 text-gray-500 italic">ไม่มีข้อมูลตั้งค่า</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="mt-auto" th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

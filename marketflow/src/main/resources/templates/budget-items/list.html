@@ -42,7 +42,7 @@
         <tr th:each="item : ${budgetItems}" class="border-b hover:bg-gray-50">
           <td class="py-3 px-6" th:text="${item.category}">Category</td>
           <td class="py-3 px-6" th:text="${item.description}">Description</td>
-          <td class="py-3 px-6" th:text="${#numbers.formatDecimal(item.amount, 2, 'COMMA',  '.',  'COMMA')}">Amount</td>
+          <td class="py-3 px-6" th:text="${item.amount}">Amount</td>
           <td class="py-3 px-6" th:text="${item.spendDate}">Spend Date</td>
           <td class="py-3 px-6">
             <a th:href="@{/budget-items/edit/{id}(id=${item.id})}"

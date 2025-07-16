@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="InvoiceStatus=${T(com.wewe.promptinvoice.model.InvoiceStatus)}"
+      lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - PromptInvoice</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet" />
+    <style>body { font-family: 'Prompt', sans-serif; }</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                brand: '#F59E0B',
+                'brand-light': '#FEF3C7',
+                'brand-accent': '#B45309',
+              },
+              boxShadow: {
+                soft: '0 4px 8px rgba(0,0,0,0.1)',
+              }
+            }
+          }
+        }
+    </script>
+
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex flex-1 max-w-7xl mx-auto mt-6 gap-6 px-6">
+
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 bg-white rounded-2xl shadow-soft p-8 space-y-8">
+        <h1 class="text-3xl font-bold text-brand">แดชบอร์ด</h1>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Card 1: ยอดใบแจ้งหนี้ทั้งหมด -->
+            <div class="bg-brand-light rounded-xl p-6 shadow-soft flex flex-col items-center">
+                <div class="text-5xl font-bold text-brand mb-2" th:text="${totalInvoices}">0</div>
+                <div class="text-gray-700 font-semibold">ใบแจ้งหนี้ทั้งหมด</div>
+            </div>
+
+            <!-- Card 2: ยอดเงินรวม -->
+            <div class="bg-brand-light rounded-xl p-6 shadow-soft flex flex-col items-center">
+                <div class="text-5xl font-bold text-brand mb-2" th:text="${totalAmountFormatted}">0.00</div>
+                <div class="text-gray-700 font-semibold">ยอดเงินรวม (บาท)</div>
+            </div>
+
+            <!-- Card 3: ลูกค้าทั้งหมด -->
+            <div class="bg-brand-light rounded-xl p-6 shadow-soft flex flex-col items-center">
+                <div class="text-5xl font-bold text-brand mb-2" th:text="${totalClients}">0</div>
+                <div class="text-gray-700 font-semibold">ลูกค้าทั้งหมด</div>
+            </div>
+
+            <!-- Card 4: ใบแจ้งหนี้ค้างชำระ หรือเกินกำหนดชำระ -->
+            <div class="bg-brand-light rounded-xl p-6 shadow-soft flex flex-col items-center">
+                <div class="text-5xl font-bold text-red-600 mb-2" th:text="${overdueInvoices}">0</div>
+                <div class="text-gray-700 font-semibold">ใบแจ้งหนี้ค้างชำระ</div>
+            </div>
+
+            <!-- Card 5: ใบแจ้งหนี้ที่ชำระแล้ว -->
+            <div class="bg-green-100 rounded-xl p-6 shadow-soft flex flex-col items-center">
+                <div class="text-5xl font-bold text-green-700 mb-2" th:text="${paidInvoices}">0</div>
+                <div class="text-gray-700 font-semibold">ใบแจ้งหนี้ที่ชำระแล้ว</div>
+            </div>
+
+            <!-- Card 6: ใบแจ้งหนี้ที่ยังไม่ชำระ -->
+            <div class="bg-yellow-100 rounded-xl p-6 shadow-soft flex flex-col items-center">
+                <div class="text-5xl font-bold text-yellow-700 mb-2" th:text="${unpaidInvoices}">0</div>
+                <div class="text-gray-700 font-semibold">ใบแจ้งหนี้ที่ยังไม่ชำระ</div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold text-brand mb-4">รายการใบแจ้งหนี้ล่าสุด</h2>
+            <table class="min-w-full table-auto border-collapse">
+                <thead>
+                <tr class="bg-brand text-white">
+                    <th class="p-3 text-left rounded-tl-xl">#</th>
+                    <th class="p-3 text-left">ชื่อลูกค้า</th>
+                    <th class="p-3 text-left">วันที่</th>
+                    <th class="p-3 text-left">ยอดเงิน (บาท)</th>
+                    <th class="p-3 text-left rounded-tr-xl">สถานะ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="invoice, iterStat : ${recentInvoices}" class="border-b hover:bg-gray-100 cursor-pointer"
+                    th:onclick="'window.location.href=\'/invoices/' + ${invoice.id} + '\''">
+                    <td class="p-3" th:text="${iterStat.count}">1</td>
+                    <td class="p-3" th:text="${invoice.clientName}">ลูกค้า A</td>
+                    <td class="p-3" th:text="${invoice.createdAt}">14/07/2025</td>
+                    <td class="p-3" th:text="${invoice.totalAmountFormatted}">1,000.00</td>
+                    <td class="p-3">
+                        <span th:text="${invoice.statusDisplayName}"
+                              th:classappend="${invoice.status} == ${InvoiceStatus.OVERDUE} ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'">
+                            สถานะ
+                        </span>
+                    </td>
+                </tr>
+                <tr th:if="${recentInvoices.isEmpty()}">
+                    <td colspan="5" class="text-center p-6 text-gray-500 italic">ไม่มีใบแจ้งหนี้ล่าสุด</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

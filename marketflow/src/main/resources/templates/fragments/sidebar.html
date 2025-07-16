@@ -47,13 +47,24 @@
         <ul class="ml-4 mt-1 space-y-1">
           <li><a href="/users" class="block px-2 py-1 hover:bg-indigo-50">📋 รายชื่อผู้ใช้</a></li>
           <li><a href="/users/create" class="block px-2 py-1 hover:bg-indigo-50">➕ เพิ่มผู้ใช้</a></li>
+          <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <a href="/users/change-password" class="block px-2 py-1 hover:bg-indigo-50">🔒 แก้ไขรหัสผ่าน</a>
+          </li>
+          <!-- Debug Role -->
+          <li class="text-xs text-gray-400" th:text="${#authentication.authorities}"></li>
         </ul>
       </details>
     </li>
 
     <!-- Settings -->
     <li>
-      <a href="/settings" class="block p-2 rounded hover:bg-indigo-100 font-medium">⚙️ ตั้งค่า</a>
+      <details class="group">
+        <summary class="cursor-pointer p-2 rounded hover:bg-indigo-100 font-medium">⚙️ ตั้งค่า</summary>
+        <ul class="ml-4 mt-1 space-y-1">
+          <li><a href="/settings" class="block px-2 py-1 hover:bg-indigo-50">📋 รายการตั้งค่า</a></li>
+          <li><a href="/settings/create" class="block px-2 py-1 hover:bg-indigo-50">➕ เพิ่มการตั้งค่า</a></li>
+        </ul>
+      </details>
     </li>
 
     <!-- Logout -->

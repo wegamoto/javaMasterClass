@@ -63,6 +63,27 @@ public class CampaignPageController {
         return "redirect:/campaigns";
     }
 
+    @PostMapping("/save")
+    public String saveCampaign(
+            @Valid @ModelAttribute("campaign") Campaign campaign,
+            BindingResult result,
+            Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("users", userRepo.findAll());
+            return "campaign/form";
+        }
+
+        // ถ้าเป็นการแก้ไข ตรวจสอบว่ามี campaign เดิมใน DB หรือไม่
+        if (campaign.getId() != null) {
+            campaignRepo.findById(campaign.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid campaign ID: " + campaign.getId()));
+        }
+
+        campaignRepo.save(campaign);
+        return "redirect:/campaigns";
+    }
+
     @GetMapping("/delete/{id}")
     public String deleteCampaign(@PathVariable Long id) {
         campaignRepo.deleteById(id);

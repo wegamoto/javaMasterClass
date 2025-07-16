@@ -45,8 +45,10 @@
 
       <div>
         <label class="block font-medium">Owner</label>
-        <select th:field="*{owner}" class="border p-2 w-full rounded">
-          <option th:each="u : ${users}" th:value="${u}" th:text="${u.name}">User</option>
+        <select th:field="*{owner.id}" class="border p-2 w-full rounded" required>
+          <option value="" disabled th:selected="${campaign.owner == null}">-- Select User --</option>
+          <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.name}"
+                  th:selected="${campaign.owner != null} ? ${u.id} == ${campaign.owner.id} : false"></option>
         </select>
       </div>
 

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>สร้างใบแจ้งหนี้</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet" />
+    <style>body { font-family: 'Prompt', sans-serif; }</style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#F59E0B',
+                        'brand-light': '#FEF3C7',
+                        'brand-accent': '#B45309',
+                    },
+                    boxShadow: {
+                        soft: '0 4px 8px rgba(0,0,0,0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        function addItemRow() {
+            const container = document.getElementById("item-rows");
+            const row = document.createElement("div");
+            row.className = "grid grid-cols-3 gap-3 mb-2";
+            row.innerHTML = `
+                <input type="text" placeholder="รายละเอียด" class="border rounded-xl px-3 py-2 item-desc col-span-1" required>
+                <input type="number" placeholder="ราคา" class="border rounded-xl px-3 py-2 item-price col-span-1" step="0.01" min="0" required>
+                <input type="number" placeholder="จำนวน" class="border rounded-xl px-3 py-2 item-qty col-span-1" value="1" min="1" required>
+            `;
+            container.appendChild(row);
+        }
+
+        function prepareFormData() {
+            const descs = document.querySelectorAll(".item-desc");
+            const prices = document.querySelectorAll(".item-price");
+            const qtys = document.querySelectorAll(".item-qty");
+            let items = [];
+
+            for (let i = 0; i < descs.length; i++) {
+                const desc = descs[i].value.trim();
+                const price = parseFloat(prices[i].value);
+                const qty = parseInt(qtys[i].value);
+
+                if (!desc || isNaN(price) || price < 0 || isNaN(qty) || qty < 1) {
+                    alert("กรุณากรอกข้อมูลรายการสินค้าให้ถูกต้องทุกช่อง");
+                    return false;
+                }
+
+                items.push({ desc, price, quantity: qty });
+            }
+
+            document.getElementById("itemsJson").value = JSON.stringify(items);
+
+            let total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const vat = document.getElementById("vatApplied").checked ? total * 0.07 : 0;
+            document.getElementById("totalAmount").value = (total + vat).toFixed(2);
+
+            return true;
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Layout Container -->
+<div class="flex flex-1 max-w-7xl mx-auto mt-6 gap-6 px-6 w-full">
+
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- Main Form Content -->
+    <main class="flex-1 bg-white shadow-soft rounded-2xl p-8 space-y-6">
+
+        <h1 class="text-3xl font-bold text-brand">สร้างใบแจ้งหนี้</h1>
+
+        <form th:action="@{/invoices}" th:object="${invoice}" method="post" onsubmit="return prepareFormData()" class="space-y-6">
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1" for="clientName">ชื่อลูกค้า</label>
+                <input type="text" th:field="*{clientName}" id="clientName"
+                       class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-brand-accent" required>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1" for="clientEmail">อีเมลลูกค้า</label>
+                <input type="email" th:field="*{clientEmail}" id="clientEmail"
+                       class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-brand-accent">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1" for="status">สถานะใบแจ้งหนี้</label>
+                <select th:field="*{status}" id="status"
+                        class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-brand-accent" required>
+                    <option th:each="s : ${T(com.wewe.promptinvoice.model.InvoiceStatus).values()}"
+                            th:value="${s.name()}"
+                            th:text="${s.displayName}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <input type="checkbox" th:field="*{vatApplied}" id="vatApplied" class="w-5 h-5 text-brand">
+                <label for="vatApplied" class="text-gray-700">ใช้ VAT 7%</label>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">รายการสินค้า / บริการ</label>
+                <div id="item-rows" class="space-y-2"></div>
+                <button type="button" onclick="addItemRow()"
+                        class="mt-3 bg-brand hover:bg-brand-accent text-white font-medium px-4 py-2 rounded-xl transition duration-200">
+                    + เพิ่มรายการ
+                </button>
+            </div>
+
+            <input type="hidden" id="itemsJson" th:field="*{itemsJson}" />
+            <input type="hidden" id="totalAmount" th:field="*{totalAmount}" />
+
+            <div class="pt-4 border-t">
+                <button type="submit"
+                        class="bg-brand hover:bg-brand-accent text-white font-semibold px-6 py-2 rounded-xl transition duration-200">
+                    💾 บันทึกใบแจ้งหนี้
+                </button>
+                <a href="/invoices" class="ml-4 text-gray-600 hover:text-brand transition">ย้อนกลับ</a>
+            </div>
+
+        </form>
+
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script>
+    addItemRow();
+</script>
+
+</body>
+</html>

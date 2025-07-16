@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="InvoiceStatus=${T(com.wewe.promptinvoice.model.InvoiceStatus)}"
+      lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>รายงานยอดขาย - PromptInvoice</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet" />
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#F59E0B',
+                        'brand-light': '#FEF3C7',
+                        'brand-accent': '#B45309',
+                    },
+                    boxShadow: {
+                        soft: '0 4px 8px rgba(0,0,0,0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<header class="w-full shadow bg-white z-10">
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<!-- Content Container -->
+<div class="flex flex-1 max-w-screen-xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 gap-6">
+
+    <!-- Sidebar (fixed width) -->
+    <aside class="hidden lg:block w-64">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+    </aside>
+
+    <!-- Main content area -->
+    <main class="flex-1 bg-white rounded-2xl shadow-soft p-6 sm:p-8 space-y-8 overflow-auto">
+        <h1 class="text-3xl font-bold text-brand">รายงานยอดขาย</h1>
+
+        <!-- Filter Form -->
+        <form method="get" class="flex flex-wrap gap-4 items-end">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">จากวันที่</label>
+                <input type="date" name="startDate" th:value="${startDate}"
+                       class="border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:ring-brand focus:border-brand w-full" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ถึงวันที่</label>
+                <input type="date" name="endDate" th:value="${endDate}"
+                       class="border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:ring-brand focus:border-brand w-full" />
+            </div>
+            <div class="pt-6">
+                <button type="submit"
+                        class="bg-brand text-white font-semibold px-5 py-2 rounded-lg hover:bg-brand-accent shadow-soft">
+                    ดูรายงาน
+                </button>
+            </div>
+        </form>
+
+        <!-- Summary -->
+        <div class="text-xl font-semibold">
+            ยอดขายรวม: <span class="text-green-600" th:text="${totalAmountFormatted}">0.00</span> บาท
+        </div>
+
+        <!-- Sales Chart -->
+        <div class="bg-white p-4 rounded-lg shadow-soft">
+            <h2 class="text-lg font-semibold mb-4 text-gray-700">กราฟยอดขาย</h2>
+            <canvas id="salesChart" height="100"></canvas>
+        </div>
+
+        <!-- Invoice Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200 rounded-xl overflow-hidden shadow-soft">
+                <thead class="bg-brand text-white">
+                <tr>
+                    <th class="text-left p-3">#</th>
+                    <th class="text-left p-3">วันที่</th>
+                    <th class="text-left p-3">ลูกค้า</th>
+                    <th class="text-left p-3">ยอดเงิน</th>
+                    <th class="text-left p-3">สถานะ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="invoice, iterStat : ${invoices}" class="border-b hover:bg-gray-100 cursor-pointer"
+                    th:onclick="'window.location.href=\'/invoices/' + ${invoice.id} + '\''">
+                    <td class="p-3" th:text="${iterStat.count}">1</td>
+                    <td class="p-3" th:text="${#temporals.format(invoice.createdAt, 'dd/MM/yyyy')}">14/07/2025</td>
+                    <td class="p-3" th:text="${invoice.clientName}">ลูกค้า A</td>
+                    <td class="p-3" th:text="${#numbers.formatDecimal(invoice.totalAmount, 1, 'COMMA', 2, 'POINT')}">1,000.00</td>
+                    <td class="p-3">
+                            <span th:text="${invoice.status.displayName}"
+                                  th:classappend="${invoice.status} == ${InvoiceStatus.OVERDUE} ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'">
+                                ชำระแล้ว
+                            </span>
+                    </td>
+                </tr>
+                <tr th:if="${invoices.isEmpty()}">
+                    <td colspan="5" class="text-center p-6 text-gray-500 italic">ไม่มีข้อมูลในช่วงเวลานี้</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-white shadow-inner mt-6">
+    <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const salesData = /*[[${salesChartData}]]*/ [];
+    const chartLabels = salesData.map(item => item.label); // วันที่หรือเดือน
+    const chartValues = salesData.map(item => item.amount);
+
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar', // หรือ 'line'
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                label: 'ยอดขาย (บาท)',
+                data: chartValues,
+                backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                borderColor: '#F59E0B',
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => value.toLocaleString() + ' บาท'
+                    }
+                }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+</body>
+</html>

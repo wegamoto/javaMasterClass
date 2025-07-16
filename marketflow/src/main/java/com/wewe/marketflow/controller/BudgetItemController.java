@@ -4,6 +4,7 @@ import com.wewe.marketflow.model.BudgetItem;
 import com.wewe.marketflow.service.BudgetItemService;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,6 +24,11 @@ public class BudgetItemController {
 
     @PostMapping
     public BudgetItem create(@RequestBody BudgetItem item) {
+        // 💡 Fix: ensure amount is not null or invalid
+        if (item.getAmount() == null || item.getAmount().signum() < 0) {
+            item.setAmount(BigDecimal.ZERO);
+        }
+
         return budgetItemService.save(item);
     }
 
@@ -31,4 +37,3 @@ public class BudgetItemController {
         return budgetItemService.findByCampaignId(campaignId);
     }
 }
-

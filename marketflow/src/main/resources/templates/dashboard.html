@@ -38,7 +38,9 @@
             </div>
             <div class="bg-white shadow rounded p-4 text-center">
                 <div class="text-sm text-gray-500">Total Spent</div>
-                <div class="text-xl font-semibold text-green-600">฿ <span th:text="${summary.totalBudgetSpent}">0</span></div>
+                <div class="text-xl font-semibold text-green-600">
+                    ฿ <span th:text="${totalBudgetSpentFormatted}">0</span>
+                </div>
             </div>
         </div>
 

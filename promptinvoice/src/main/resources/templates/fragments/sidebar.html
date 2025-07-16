@@ -1,0 +1,55 @@
+<div th:fragment="sidebar"
+     class="w-56 p-0 font-prompt"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <div class="sticky top-16 bg-gray-100 h-[calc(100vh-4rem)] p-6 space-y-8 rounded-r-2xl shadow-soft overflow-y-auto">
+        <h2 class="font-semibold text-xl text-brand mb-6">เมนูหลัก</h2>
+
+        <nav class="space-y-3">
+            <a href="/"
+               class="block px-3 py-2 rounded-md transition"
+               th:classappend="${requestURI == '/'} ? 'bg-brand-light text-brand font-semibold' : 'text-gray-700 hover:text-brand'">
+                หน้าแรก
+            </a>
+            <a href="/invoices"
+               class="block px-3 py-2 rounded-md transition"
+               th:classappend="${requestURI == '/invoices'} ? 'bg-brand-light text-brand font-semibold' : 'text-gray-700 hover:text-brand'">
+                รายการใบแจ้งหนี้
+            </a>
+            <a href="/invoices/new"
+               class="block px-3 py-2 rounded-md transition"
+               th:classappend="${requestURI == '/invoices/new'} ? 'bg-brand-light text-brand font-semibold' : 'text-gray-700 hover:text-brand'">
+                สร้างใบแจ้งหนี้
+            </a>
+            <a href="/settings"
+               class="block px-3 py-2 rounded-md transition"
+               th:classappend="${requestURI.startsWith('/settings')} ? 'bg-brand-light text-brand font-semibold' : 'text-gray-700 hover:text-brand'">
+                ตั้งค่า
+            </a>
+        </nav>
+
+        <section class="mt-10">
+            <h3 class="text-gray-600 uppercase tracking-wide font-semibold mb-3">รายงาน</h3>
+            <ul class="space-y-2 text-gray-700">
+                <li>
+                    <a href="/reports/sales"
+                       th:classappend="${requestURI == '/reports/sales'} ? 'text-brand font-semibold' : 'hover:text-brand'">
+                        ยอดขาย
+                    </a>
+                </li>
+                <li>
+                    <a href="/reports/clients"
+                       th:classappend="${requestURI == '/reports/clients'} ? 'text-brand font-semibold' : 'hover:text-brand'">
+                        ลูกค้า
+                    </a>
+                </li>
+                <li>
+                    <a href="/reports/invoices"
+                       th:classappend="${requestURI == '/reports/invoices'} ? 'text-brand font-semibold' : 'hover:text-brand'">
+                        ใบแจ้งหนี้
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>
