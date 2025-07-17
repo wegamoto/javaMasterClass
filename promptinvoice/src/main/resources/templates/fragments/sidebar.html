@@ -28,6 +28,26 @@
             </a>
         </nav>
 
+        <!-- การจัดการสถานะใบแจ้งหนี้ -->
+        <section>
+            <h3 class="text-gray-600 uppercase tracking-wide font-semibold mb-3">การจัดการใบแจ้งหนี้</h3>
+            <ul class="space-y-2 text-gray-700">
+                <li>
+                    <a href="/invoices"
+                       th:classappend="${requestURI == '/invoices'} ? 'text-brand font-semibold' : 'hover:text-brand'">
+                        ดูรายการทั้งหมด
+                    </a>
+                </li>
+                <li>
+                    <a href="/invoices/status/edit"
+                       th:classappend="${requestURI == '/invoices/status/edit'} ? 'text-brand font-semibold' : 'hover:text-brand'">
+                        แก้ไขสถานะใบแจ้งหนี้
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+
         <section class="mt-10">
             <h3 class="text-gray-600 uppercase tracking-wide font-semibold mb-3">รายงาน</h3>
             <ul class="space-y-2 text-gray-700">

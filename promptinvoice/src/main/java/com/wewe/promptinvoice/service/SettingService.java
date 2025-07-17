@@ -35,4 +35,14 @@ public class SettingService {
     public Optional<Setting> findByKey(String key) {
         return settingRepository.findByKey(key);
     }
+
+    public String getValue(String key, String defaultValue) {
+        return settingRepository.findByKey(key)
+                .map(Setting::getValue)
+                .orElse(defaultValue);
+    }
+
+    public String getPromptPayPhone() {
+        return getValue("promptpay.phone", "0000000000"); // default fallback
+    }
 }

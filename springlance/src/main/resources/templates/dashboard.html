@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Dashboard - Springlance</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<!-- Sidebar (fixed) -->
+<aside th:replace="fragments/sidebar :: sidebar"
+       class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] bg-gradient-to-b from-pink-500 via-red-500 to-yellow-400 text-white overflow-y-auto z-40">
+</aside>
+
+<!-- Main content wrapper -->
+<div class="ml-64 flex flex-col min-h-screen min-w-0">
+
+    <!-- Navbar -->
+    <header th:replace="fragments/navbar :: navbar"
+            class="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 z-50 flex items-center px-6 shadow-md">
+        <!-- navbar content replaced by fragment -->
+    </header>
+
+    <!-- Content -->
+    <main class="flex-grow pt-20 px-6 overflow-auto max-w-7xl mx-auto">
+        <h1 class="text-4xl font-extrabold mb-8 text-gray-800">Welcome to your Dashboard!</h1>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Card: My Projects -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+                <h2 class="text-xl font-semibold mb-4 text-pink-600">My Projects</h2>
+                <p class="text-gray-600">You currently have <span class="font-bold">5</span> active projects.</p>
+                <a href="/projects"
+                   class="inline-block mt-4 text-pink-500 hover:text-pink-700 font-semibold transition">
+                    View Projects &rarr;
+                </a>
+            </div>
+
+            <!-- Card: Messages -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+                <h2 class="text-xl font-semibold mb-4 text-pink-600">Messages</h2>
+                <p class="text-gray-600">You have <span class="font-bold">3</span> unread messages.</p>
+                <a href="/messages"
+                   class="inline-block mt-4 text-pink-500 hover:text-pink-700 font-semibold transition">
+                    Check Messages &rarr;
+                </a>
+            </div>
+
+            <!-- Card: Invoices -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+                <h2 class="text-xl font-semibold mb-4 text-pink-600">Invoices</h2>
+                <p class="text-gray-600">You have <span class="font-bold">2</span> pending invoices.</p>
+                <a href="/invoices"
+                   class="inline-block mt-4 text-pink-500 hover:text-pink-700 font-semibold transition">
+                    View Invoices &rarr;
+                </a>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"
+            class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white p-6 mt-auto max-w-7xl mx-auto ml-0">
+    </footer>
+
+</div>
+
+<!-- Optional JS -->
+<script>
+    function toggleMenu(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle("hidden");
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Navbar Fragment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:fragment="navbar"
+     class="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 shadow-md z-50 flex items-center px-6">
+
+    <nav class="max-w-7xl mx-auto w-full flex justify-between items-center">
+
+        <div class="flex-shrink-0">
+            <a href="/" class="text-white font-extrabold text-2xl hover:text-yellow-300">Springlance</a>
+        </div>
+
+        <div class="hidden md:flex space-x-6">
+            <a href="/dashboard" class="text-white hover:text-yellow-300 font-semibold transition">Dashboard</a>
+            <a href="/projects" class="text-white hover:text-yellow-300 font-semibold transition">Projects</a>
+            <a href="/messages" class="text-white hover:text-yellow-300 font-semibold transition">Messages</a>
+            <a href="/logout" class="text-white hover:text-red-400 font-semibold transition">Logout</a>
+        </div>
+
+    </nav>
+
+</div>
+</body>
+</html>

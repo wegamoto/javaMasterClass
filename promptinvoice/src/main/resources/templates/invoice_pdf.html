@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: 'TH Sarabun New', sans-serif; font-size: 16pt; }
+    img.qr { width: 200px; height: 200px; }
+  </style>
+</head>
+<body>
+<h1>ใบแจ้งหนี้</h1>
+<p>รหัส: <span th:text="${invoice.id}">#001</span></p>
+<p>วันที่: <span th:text="${#temporals.format(invoice.createdAt, 'dd/MM/yyyy')}">16/07/2025</span></p>
+<p>ยอดชำระ: <span th:text="${invoice.totalAmount}">1000.00</span> บาท</p>
+
+<h2>ชำระผ่าน PromptPay</h2>
+<img class="qr" th:src="'data:image/png;base64,' + ${qrBase64}" alt="QR Code" />
+</body>
+</html>

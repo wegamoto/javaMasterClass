@@ -10,6 +10,7 @@
     <style>
         body { font-family: 'Prompt', sans-serif; }
     </style>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -46,6 +47,14 @@
     <!-- Main content area -->
     <main class="flex-1 bg-white rounded-2xl shadow-soft p-6 sm:p-8 space-y-8 overflow-auto">
         <h1 class="text-3xl font-bold text-brand">รายงานยอดขาย</h1>
+
+        <!-- ✅ ช่วงวันที่ที่แสดงเป็นวัน/เดือน/ปี -->
+        <div class="text-gray-600 text-sm">
+            รายงานจากวันที่
+            <span th:text="${#temporals.format(startDate, 'dd/MM/yyyy')}">01/07/2025</span>
+            ถึงวันที่
+            <span th:text="${#temporals.format(endDate, 'dd/MM/yyyy')}">16/07/2025</span>
+        </div>
 
         <!-- Filter Form -->
         <form method="get" class="flex flex-wrap gap-4 items-end">
@@ -118,40 +127,93 @@
     <div th:replace="fragments/footer :: footer"></div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     const salesData = /*[[${salesChartData}]]*/ [];
-    const chartLabels = salesData.map(item => item.label); // วันที่หรือเดือน
+    const chartLabels = salesData.map(item => item.label);
     const chartValues = salesData.map(item => item.amount);
+    // สมมติมีส่งจำนวนใบแจ้งหนี้มา
+    const invoiceCounts = /*[[${invoiceCounts}]]*/ [];
 
     const ctx = document.getElementById('salesChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar', // หรือ 'line'
+
+    if(chartLabels.length === 0) {
+      ctx.font = '16px Prompt, sans-serif';
+      ctx.fillText('ไม่มีข้อมูลกราฟในช่วงเวลานี้', ctx.canvas.width / 2 - 100, ctx.canvas.height / 2);
+    } else {
+      new Chart(ctx, {
+        type: 'bar',
         data: {
-            labels: chartLabels,
-            datasets: [{
-                label: 'ยอดขาย (บาท)',
-                data: chartValues,
-                backgroundColor: 'rgba(245, 158, 11, 0.7)',
-                borderColor: '#F59E0B',
-                borderWidth: 2,
-                borderRadius: 6
-            }]
+          labels: chartLabels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'ยอดขาย (บาท)',
+              data: chartValues,
+              backgroundColor: 'rgba(245, 158, 11, 0.7)',
+              borderColor: '#F59E0B',
+              borderWidth: 2,
+              borderRadius: 6
+            },
+            {
+              type: 'line',
+              label: 'จำนวนใบแจ้งหนี้',
+              data: invoiceCounts,
+              borderColor: '#2563EB',
+              backgroundColor: 'rgba(37, 99, 235, 0.2)',
+              fill: true,
+              tension: 0.3,
+              yAxisID: 'y1'
+            }
+          ]
         },
         options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: value => value.toLocaleString() + ' บาท'
-                    }
+          responsive: true,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: context => context.parsed.y.toLocaleString() + (context.dataset.type === 'bar' ? ' บาท' : ' ใบ')
+              }
+            },
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: {
+                  size: 14,
+                  family: 'Prompt, sans-serif'
                 }
+              }
             }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              position: 'left',
+              ticks: {
+                callback: value => value.toLocaleString() + ' บาท'
+              }
+            },
+            y1: {
+              beginAtZero: true,
+              position: 'right',
+              grid: { drawOnChartArea: false },
+              ticks: { callback: value => value.toLocaleString() }
+            },
+            x: {
+              ticks: {
+                font: { family: 'Prompt, sans-serif' }
+              }
+            }
+          }
         }
-    });
+      });
+    }
     /*]]>*/
 </script>
+
 
 </body>
 </html>
