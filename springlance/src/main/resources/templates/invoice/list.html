@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoices - Springlance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- ✅ Navbar (fixed at top) -->
+<div class="fixed top-0 left-0 right-0 z-50" th:replace="fragments/navbar :: navbar"></div>
+
+<!-- ✅ Sidebar (fixed on the left) -->
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<!-- ✅ Main Content -->
+<main class="flex-grow pt-20 px-4 md:px-8 ml-64">
+  <section class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Your Invoices</h1>
+
+    <div class="overflow-x-auto bg-white rounded-lg shadow p-4">
+      <table class="min-w-full table-auto">
+        <thead class="bg-gray-100 text-gray-700 font-semibold">
+        <tr>
+          <th class="px-4 py-2 text-left">Project</th>
+          <th class="px-4 py-2">Amount</th>
+          <th class="px-4 py-2">Issue Date</th>
+          <th class="px-4 py-2">Paid</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="invoice : ${invoices}" class="border-b hover:bg-gray-50">
+          <td class="px-4 py-2" th:text="${invoice.project.title}">Project X</td>
+          <td class="px-4 py-2" th:text="${invoice.amount}">5000.00</td>
+          <td class="px-4 py-2" th:text="${invoice.issueDate}">2025-07-18</td>
+          <td class="px-4 py-2">
+            <span th:if="${invoice.isPaid}" class="text-green-600 font-semibold">Paid</span>
+            <span th:if="${!invoice.isPaid}" class="text-red-600 font-semibold">Unpaid</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- ✅ Footer -->
+<footer class="bg-purple-600 text-white mt-12 px-4 md:px-8 py-4 ml-64">
+  <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+<script>
+  function toggleMenu(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle("hidden");
+  }
+</script>
+
+</body>
+</html>

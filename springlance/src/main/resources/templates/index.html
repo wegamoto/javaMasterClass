@@ -4,43 +4,65 @@
     <meta charset="UTF-8" />
     <title>Springlance - Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 min-h-screen flex flex-col">
+<body class="bg-gray-100 min-h-screen flex flex-col">
 
-<!-- Include Navbar -->
-<div th:replace="fragments/navbar :: navbar"></div>
+<!-- Navbar (fixed at top) -->
+<div class="fixed top-0 left-0 right-0 z-50" th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Sidebar (fixed on the left) -->
+<div th:replace="fragments/sidebar :: sidebar"></div>
 
 <!-- Main Content -->
-<main class="container mx-auto flex-grow px-6 pt-20 pb-12">
-    <h2 class="text-4xl font-extrabold text-white mb-10 text-center drop-shadow-lg">
-        Welcome to Springlance
-    </h2>
+<main class="flex-grow pt-20 px-4 md:px-8 ml-64">
+    <section class="max-w-6xl mx-auto text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">
+            Welcome to <span class="text-pink-600">Springlance</span>
+        </h1>
+        <p class="text-gray-600 text-lg">
+            Your gateway to finding the perfect freelancer or project.
+        </p>
+    </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-white bg-opacity-90 p-8 rounded-3xl shadow-2xl hover:shadow-pink-500 transition-shadow duration-300">
-            <h3 class="text-xl font-bold mb-3 text-purple-700">Post Projects</h3>
+    <section class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+            <h3 class="text-xl font-semibold mb-3 text-pink-600">Post Projects</h3>
             <p class="text-gray-700 leading-relaxed">
                 Clients can post new projects and receive bids from skilled freelancers.
             </p>
         </div>
-        <div class="bg-white bg-opacity-90 p-8 rounded-3xl shadow-2xl hover:shadow-pink-500 transition-shadow duration-300">
-            <h3 class="text-xl font-bold mb-3 text-purple-700">Freelance Jobs</h3>
+
+        <!-- Card 2 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+            <h3 class="text-xl font-semibold mb-3 text-pink-600">Freelance Jobs</h3>
             <p class="text-gray-700 leading-relaxed">
                 Freelancers can browse projects and submit proposals for work they love.
             </p>
         </div>
-        <div class="bg-white bg-opacity-90 p-8 rounded-3xl shadow-2xl hover:shadow-pink-500 transition-shadow duration-300">
-            <h3 class="text-xl font-bold mb-3 text-purple-700">Secure Payments</h3>
+
+        <!-- Card 3 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+            <h3 class="text-xl font-semibold mb-3 text-pink-600">Secure Payments</h3>
             <p class="text-gray-700 leading-relaxed">
                 Manage invoices and payments easily and securely through the platform.
             </p>
         </div>
-    </div>
+    </section>
 </main>
 
-<!-- Include Footer -->
-<div th:replace="fragments/footer :: footer"></div>
+<!-- Footer -->
+<footer class="bg-purple-600 text-white mt-12 px-4 md:px-8 py-4 ml-64">
+    <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+<script>
+    function toggleMenu(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle("hidden");
+    }
+</script>
 
 </body>
 </html>

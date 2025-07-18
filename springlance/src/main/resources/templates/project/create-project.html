@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Project Request</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- Navbar (fixed on top) -->
+<div class="fixed top-0 left-0 right-0 z-50" th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Main wrapper -->
+<div class="flex flex-1 pt-16">
+  <!-- Sidebar (fixed on left) -->
+  <aside class="w-72 hidden md:block fixed top-16 left-0 bottom-0 z-40 bg-gradient-to-b from-pink-500 via-red-500 to-yellow-400 text-white px-6 py-8">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+  </aside>
+
+  <!-- Main content area -->
+  <main class="flex-1 ml-0 md:ml-72 px-4 md:px-8 py-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-2xl font-bold mb-6 text-red-700">Create Project Request</h2>
+
+      <form th:action="@{/projects}" th:object="${projectRequest}" method="post" class="space-y-6">
+        <!-- Fields -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">Title</label>
+          <input type="text" th:field="*{title}" class="w-full border px-4 py-2 rounded" placeholder="Project title"/>
+        </div>
+
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">Description</label>
+          <textarea th:field="*{description}" rows="4" class="w-full border px-4 py-2 rounded" placeholder="Describe your project..."></textarea>
+        </div>
+
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">Budget (USD)</label>
+          <input type="number" step="0.01" th:field="*{budget}" class="w-full border px-4 py-2 rounded"/>
+        </div>
+
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">Deadline</label>
+          <input type="date" th:field="*{deadline}" class="w-full border px-4 py-2 rounded"/>
+        </div>
+
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">Status</label>
+          <select th:field="*{status}" class="w-full border px-4 py-2 rounded">
+            <option value="REQUESTED">REQUESTED</option>
+            <option value="ACCEPTED">ACCEPTED</option>
+            <option value="IN_PROGRESS">IN_PROGRESS</option>
+            <option value="COMPLETED">COMPLETED</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">Client</label>
+          <select th:field="*{client.id}" class="w-full border px-4 py-2 rounded">
+            <option th:each="user : ${clients}" th:value="${user.id}" th:text="${user.fullName}">Client Name</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end">
+          <a href="/projects" class="mr-4 text-gray-600 hover:underline">Cancel</a>
+          <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- Footer (ชิด sidebar) -->
+<footer class="bg-purple-600 text-white ml-0 md:ml-72 px-4 md:px-8 py-4">
+  <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+<script>
+  function toggleMenu(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle("hidden");
+  }
+</script>
+
+</body>
+</html>

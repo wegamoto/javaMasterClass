@@ -14,4 +14,5 @@ public interface ProjectRequestService {
     List<ProjectRequest> findByFreelancerId(Long freelancerId);
     void delete(Long id);
     List<ProjectRequest> findByClient(Optional<User> user);
+    List<ProjectRequest> findByUser(User user);
 }

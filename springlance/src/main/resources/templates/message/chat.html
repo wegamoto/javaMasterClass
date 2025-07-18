@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat - [[${project.title}]]</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<!-- ✅ Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- ✅ Sidebar -->
+<aside class="w-72 hidden md:block fixed top-16 left-0 bottom-0 z-40 bg-gradient-to-b from-pink-500 via-red-500 to-yellow-400 text-white px-6 py-8">
+  <div th:replace="fragments/sidebar :: sidebar"></div>
+</aside>
+
+<!-- ✅ Main Chat Container -->
+<div class="ml-0 md:ml-72 pt-20 px-4 md:px-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-red-700">Chat: <span th:text="${project.title}">Project Title</span></h1>
+    <a th:href="@{/projects/{id}(id=${project.id})}" class="text-sm text-blue-600 hover:underline">← Back to Project</a>
+  </div>
+
+  <!-- Chat Box -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-6 max-h-[60vh] overflow-y-auto space-y-4">
+    <div th:each="message : ${messages}">
+      <div th:if="${message.sender.id == currentUser.id}"
+           class="text-right">
+        <div class="inline-block bg-red-500 text-white px-4 py-2 rounded-lg">
+          <span th:text="${message.content}">Hello</span>
+        </div>
+        <div class="text-xs text-gray-500 mt-1" th:text="${#temporals.format(message.sentAt, 'dd MMM HH:mm')}"></div>
+      </div>
+
+      <div th:if="${message.sender.id != currentUser.id}"
+           class="text-left">
+        <div class="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">
+          <span th:text="${message.content}">Hi</span>
+        </div>
+        <div class="text-xs text-gray-500 mt-1" th:text="${#temporals.format(message.sentAt, 'dd MMM HH:mm')}"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Input -->
+  <form th:action="@{/messages/send}" method="post" class="flex items-center space-x-2">
+    <input type="hidden" name="projectId" th:value="${project.id}" />
+    <input type="text" name="content" placeholder="Type your message..."
+           th:field="*{newMessage.content}"
+           class="flex-1 px-4 py-2 rounded border border-gray-300 focus:outline-none" required />
+    <button type="submit"
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+      Send
+    </button>
+  </form>
+</div>
+
+<!-- ✅ Footer -->
+<footer class="bg-purple-600 text-white mt-12 px-4 md:px-8 py-4 ml-0 md:ml-72">
+  <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+<script>
+  function toggleMenu(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle("hidden");
+  }
+</script>
+
+</body>
+</html>

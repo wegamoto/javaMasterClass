@@ -3,7 +3,6 @@ package com.wewe.springlance.controller;
 import com.wewe.springlance.model.ProjectRequest;
 import com.wewe.springlance.model.User;
 import com.wewe.springlance.repository.ProjectRequestRepository;
-import com.wewe.springlance.repository.UserRepository;
 import com.wewe.springlance.service.ProjectRequestService;
 import com.wewe.springlance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,42 +28,49 @@ public class ProjectRequestController {
     @Autowired
     private UserService userService;
 
+    // 📄 1. แสดงรายการโปรเจกต์ทั้งหมด
     @GetMapping
     public String listProjects(Model model) {
         model.addAttribute("projects", projectRequestRepository.findAllByOrderByCreatedAtDesc());
         return "project/list";
     }
 
+
+    // 👤 2. แสดงเฉพาะโปรเจกต์ของผู้ใช้ปัจจุบัน
     @GetMapping("/my")
     public String myProjects(Model model, Principal principal) {
-        String email = principal.getName(); // get email
+        String email = principal.getName();
         Optional<User> user = userService.findByEmail(email);
-        List<ProjectRequest> myProjects = projectRequestService.findByClient(user); // เปลี่ยนเป็น client แทน owner ตาม entity ที่มี
+        List<ProjectRequest> myProjects = projectRequestService.findByClient(user);
         model.addAttribute("myProjects", myProjects);
         return "project/my";
     }
 
-
-    @GetMapping("/new")
+    // 🆕 3. ฟอร์มสร้างโปรเจกต์ใหม่
+    @GetMapping("/create")
     public String showCreateForm(Model model) {
-        model.addAttribute("project", new ProjectRequest());
-        return "project/create"; // /templates/project/create.html
+        model.addAttribute("projectRequest", new ProjectRequest());
+        return "project/create-project";
     }
 
-    @PostMapping("/save")
-    public String saveProject(@ModelAttribute ProjectRequest projectRequest) {
+    // 💾 4. บันทึกโปรเจกต์ใหม่
+    @PostMapping
+    public String saveProject(@ModelAttribute ProjectRequest projectRequest, Principal principal) {
+        String email = principal.getName();
+        Optional<User> user = userService.findByEmail(email);
+        user.ifPresent(projectRequest::setClient); // ตั้ง client จาก user ที่ล็อกอิน
         projectRequest.setStatus("REQUESTED");
-        projectRequest.setCreatedAt(java.time.LocalDateTime.now());
+        projectRequest.setCreatedAt(LocalDateTime.now());
         projectRequestService.save(projectRequest);
-        return "redirect:/projects";
+        return "redirect:/projects/my";
     }
 
+    // 🔍 5. ดูโปรเจกต์ตาม id
     @GetMapping("/{id}")
     public String viewProject(@PathVariable Long id, Model model) {
         projectRequestService.findById(id).ifPresent(project ->
                 model.addAttribute("project", project)
         );
-        return "project/view"; // /templates/project/view.html
+        return "project/view";
     }
 }
-

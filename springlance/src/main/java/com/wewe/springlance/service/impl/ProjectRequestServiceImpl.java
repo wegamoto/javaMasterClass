@@ -52,4 +52,10 @@ public class ProjectRequestServiceImpl implements ProjectRequestService {
     public List<ProjectRequest> findByClient(Optional<User> user) {
         return projectRequestRepository.findByClient(user); // ใช้ client แทน owner ตามที่คุณปรับใน model
     }
+
+    @Override
+    public List<ProjectRequest> findByUser(User user) {
+        return projectRequestRepository.findByUser(user);
+    }
+
 }

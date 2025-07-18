@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Messages - Projects</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<!-- Include Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Sidebar -->
+<aside class="w-72 hidden md:block fixed top-16 left-0 bottom-0 z-40 bg-gradient-to-b from-pink-500 via-red-500 to-yellow-400 text-white px-6 py-8">
+  <div th:replace="fragments/sidebar :: sidebar"></div>
+</aside>
+
+<!-- Main content wrapper -->
+<div class="ml-0 md:ml-72 pt-20 px-4 md:px-8">
+
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-red-700 mb-4">Messages - Your Projects</h1>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-pink-100 text-red-800">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">#</th>
+        <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Project Title</th>
+        <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Client</th>
+        <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Freelancer</th>
+        <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Budget</th>
+        <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Status</th>
+        <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider">Chat</th>
+      </tr>
+      </thead>
+      <tbody th:if="${projects != null}" th:each="project, iterStat : ${projects}" class="bg-white divide-y divide-gray-100">
+      <tr>
+        <td class="px-6 py-4 text-sm text-gray-700" th:text="${iterStat.count}">1</td>
+        <td class="px-6 py-4 text-sm font-medium text-gray-900" th:text="${project.title}">Project Title</td>
+        <td class="px-6 py-4 text-sm text-gray-700" th:text="${project.client.fullName}">Client Name</td>
+        <td class="px-6 py-4 text-sm text-gray-700" th:text="${project.freelancer != null ? project.freelancer.fullName : 'Not assigned'}">Freelancer Name</td>
+        <td class="px-6 py-4 text-sm text-gray-700" th:text="${project.budget} + ' USD'">1000 USD</td>
+        <td class="px-6 py-4 text-sm">
+                        <span th:classappend="${project.status == 'REQUESTED'} ? 'text-yellow-600' : (project.status == 'ACCEPTED' ? 'text-blue-600' : (project.status == 'IN_PROGRESS' ? 'text-orange-600' : (project.status == 'COMPLETED' ? 'text-green-600' : 'text-gray-500')))}"
+                              th:text="${project.status}">Status</span>
+        </td>
+        <td class="px-6 py-4 text-sm text-right">
+          <a th:href="@{/messages/project/{id}(id=${project.id})}" class="text-blue-600 hover:underline">Chat</a>
+        </td>
+      </tr>
+      </tbody>
+      <tbody th:if="${projects == null or #lists.isEmpty(projects)}">
+      <tr>
+        <td colspan="7" class="text-center px-6 py-8 text-gray-500">
+          No projects with messages found.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="bg-purple-600 text-white mt-12 px-4 md:px-8 py-4 ml-72">
+  <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+<script>
+  function toggleMenu(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle("hidden");
+  }
+</script>
+
+</body>
+</html>

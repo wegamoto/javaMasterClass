@@ -19,7 +19,13 @@
             <a href="/dashboard" class="text-white hover:text-yellow-300 font-semibold transition">Dashboard</a>
             <a href="/projects" class="text-white hover:text-yellow-300 font-semibold transition">Projects</a>
             <a href="/messages" class="text-white hover:text-yellow-300 font-semibold transition">Messages</a>
-            <a href="/logout" class="text-white hover:text-red-400 font-semibold transition">Logout</a>
+            <!-- Logout Button -->
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="text-white hover:text-red-400 font-semibold transition">
+                    Logout
+                </button>
+            </form>
         </div>
 
     </nav>

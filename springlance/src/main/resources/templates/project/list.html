@@ -10,13 +10,21 @@
 <!-- Include Navbar -->
 <div th:replace="fragments/navbar :: navbar"></div>
 
-<!-- Include Sidebar -->
-<div th:replace="fragments/sidebar :: sidebar"></div>
+<!-- Sidebar -->
+<aside class="w-72 hidden md:block fixed top-16 left-0 bottom-0 z-40 bg-gradient-to-b from-pink-500 via-red-500 to-yellow-400 text-white px-6 py-8">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+</aside>
 
 <!-- Main content wrapper -->
 <div class="ml-0 md:ml-72 pt-20 px-4 md:px-8">
 
-    <h1 class="text-3xl font-bold mb-6 text-red-700">Project List</h1>
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-red-700">Project List</h1>
+        <a href="/projects/create"
+           class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+            + Create Project
+        </a>
+    </div>
 
     <!-- Table wrapper -->
     <div class="bg-white shadow-md rounded-lg overflow-x-auto">
@@ -34,19 +42,26 @@
             <tbody class="bg-white divide-y divide-gray-100" th:if="${projects != null}" th:each="project, iterStat : ${projects}">
             <tr>
                 <td class="px-6 py-4 text-sm text-gray-700" th:text="${iterStat.count}">1</td>
-                <td class="px-6 py-4 text-sm text-gray-900 font-medium" th:text="${project.title}">Website Development</td>
-                <td class="px-6 py-4 text-sm text-gray-700" th:text="${project.client.name}">John Doe</td>
+                <td class="px-6 py-4 text-sm text-gray-900 font-medium" th:text="${project.title}">Website Development
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700" th:text="${project.client?.fullName}">John Doe</td>
                 <td class="px-6 py-4 text-sm text-gray-700" th:text="${project.budget} + ' USD'">500</td>
                 <td class="px-6 py-4 text-sm">
-                    <span th:classappend="${project.status == 'OPEN'} ? 'text-green-600' : 'text-gray-500'" th:text="${project.status}">OPEN</span>
+            <span th:classappend="${project.status == 'REQUESTED'} ? 'text-yellow-600' : (project.status == 'ACCEPTED' ? 'text-blue-600' : 'text-gray-500')"
+                  th:text="${project.status}">REQUESTED</span>
                 </td>
-                <td class="px-6 py-4 text-sm text-right">
-                    <a th:href="@{/projects/{id}(id=${project.id})}" class="text-blue-600 hover:underline">View</a>
-                    |
-                    <a th:href="@{/projects/edit/{id}(id=${project.id})}" class="text-yellow-600 hover:underline">Edit</a>
+                <td class="px-6 py-4 text-sm text-right space-x-2">
+                    <a th:href="@{/projects/{id}(id=${project.id})}" class="text-blue-600 hover:underline">View</a> |
+
+                    <a th:href="@{/projects/edit/{id}(id=${project.id})}" class="text-yellow-600 hover:underline">Edit</a> |
+
+                    <a th:href="@{/messages/project/{id}(id=${project.id})}" class="text-pink-600 hover:underline">Chat</a> |
+
+                    <a th:href="@{/invoices/new(projectId=${project.id})}" class="text-purple-600 hover:underline">Invoice</a>
                 </td>
             </tr>
             </tbody>
+
             <tbody th:if="${projects == null || #lists.isEmpty(projects)}">
             <tr>
                 <td colspan="6" class="text-center px-6 py-8 text-gray-500">
@@ -59,7 +74,10 @@
 </div>
 
 <!-- Footer -->
-<div th:replace="fragments/footer :: footer"></div>
+<footer class="bg-purple-600 text-white mt-12 px-4 md:px-8 py-4 ml-64">
+    <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
 <script>
     function toggleMenu(id) {
         const el = document.getElementById(id);
