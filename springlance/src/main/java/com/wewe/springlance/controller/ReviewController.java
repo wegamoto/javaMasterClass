@@ -2,6 +2,7 @@ package com.wewe.springlance.controller;
 
 import com.wewe.springlance.model.Review;
 import com.wewe.springlance.model.User;
+import com.wewe.springlance.repository.ReviewRepository;
 import com.wewe.springlance.service.ProjectRequestService;
 import com.wewe.springlance.service.ReviewService;
 import com.wewe.springlance.service.UserService;
@@ -24,6 +25,15 @@ public class ReviewController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @GetMapping
+    public String showReviews(Model model) {
+        model.addAttribute("reviews", reviewRepository.findAll());
+        return "reviews"; // ไปยัง reviews.html
+    }
 
     @GetMapping("/project/{projectId}/new")
     public String showReviewForm(@PathVariable Long projectId, Model model) {
@@ -51,4 +61,6 @@ public class ReviewController {
         model.addAttribute("review", review);
         return "review/view"; // /templates/review/view.html
     }
+
+
 }

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>หนังสือรับรองการหักภาษี ณ ที่จ่าย - TaxCertify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+        .no-print {
+            display: none;
+        }
+    }
+  </style>
+</head>
+<body class="bg-white text-black p-10 text-sm">
+
+<!-- ปุ่มย้อนกลับ / พิมพ์ -->
+<div class="mb-6 no-print">
+  <a href="/dashboard" class="text-blue-600 underline mr-4">← Back to Dashboard</a>
+  <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
+    🖨 พิมพ์เอกสาร
+  </button>
+</div>
+
+<!-- ส่วนหัว -->
+<div class="text-center mb-6">
+  <h1 class="text-xl font-bold">หนังสือรับรองการหักภาษี ณ ที่จ่าย</h1>
+  <p>(ตามมาตรา 50 ทวิ แห่งประมวลรัษฎากร)</p>
+</div>
+
+<!-- ข้อมูลผู้มีหน้าที่หักภาษี -->
+<div class="mb-4">
+  <p><strong>ชื่อผู้มีหน้าที่หักภาษี:</strong> <span th:text="${record.payer.name}">บริษัท ABC จำกัด</span></p>
+  <p><strong>เลขประจำตัวผู้เสียภาษี:</strong> <span th:text="${record.payer.taxId}">0123456789012</span></p>
+  <p><strong>ที่อยู่:</strong> <span th:text="${record.payer.address}">123 ถนนสุขุมวิท กทม.</span></p>
+</div>
+
+<!-- ข้อมูลผู้รับเงิน -->
+<div class="mb-4">
+  <p><strong>ชื่อผู้รับเงิน:</strong> <span th:text="${record.payee.name}">นายวิทยา นักพัฒนา</span></p>
+  <p><strong>เลขประจำตัวผู้เสียภาษี:</strong> <span th:text="${record.payee.taxId}">1234567890123</span></p>
+  <p><strong>ที่อยู่:</strong> <span th:text="${record.payee.address}">456 ถ.งามวงศ์วาน</span></p>
+  <p><strong>ประเภทเงินได้:</strong> <span th:text="${record.payee.incomeType}">ค่าจ้างทำของ มาตรา 40(2)</span></p>
+</div>
+
+<!-- รายละเอียดการจ่าย -->
+<div class="mb-6">
+  <p><strong>วันที่จ่าย:</strong>
+    <span th:text="${#dates.format(record.date, 'dd/MM/yyyy')}">21/07/2025</span>
+  </p>
+  <p><strong>จำนวนเงินที่จ่าย:</strong>
+    <span th:text="${#numbers.formatDecimal(record.amount, 2)}">50,000.00</span> บาท
+  </p>
+  <p><strong>อัตราภาษีที่หัก:</strong>
+    <span th:text="${#numbers.formatDecimal(record.taxRate * 100, 0)}">3</span>%
+  </p>
+  <p><strong>จำนวนภาษีที่หัก:</strong>
+    <span th:text="${#numbers.formatDecimal(record.taxAmount, 2)}">1,500.00</span> บาท
+  </p>
+  <p><strong>ยอดที่จ่ายจริง:</strong>
+    <span th:text="${#numbers.formatDecimal(record.amount.subtract(record.taxAmount), 2)}">48,500.00</span> บาท
+  </p>
+</div>
+
+<!-- ลายเซ็น -->
+<div class="text-right mt-12">
+  <p>ลงชื่อ....................................................</p>
+  <p class="mt-1">( <span th:text="${record.payer.name}">บริษัท ABC จำกัด</span> )</p>
+  <p class="mt-1">ผู้มีหน้าที่หักภาษี ณ ที่จ่าย</p>
+</div>
+
+</body>
+</html>

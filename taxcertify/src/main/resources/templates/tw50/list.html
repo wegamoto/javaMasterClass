@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>รายการหักภาษี ณ ที่จ่าย</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+<div th:replace="fragments :: navbar"></div>
+
+<div class="flex flex-1">
+  <aside class="w-64" th:replace="fragments :: sidebar"></aside>
+
+  <main class="flex-1 p-6">
+    <h1 class="text-2xl font-bold text-indigo-700 mb-6">รายการหักภาษี ณ ที่จ่าย (TW50)</h1>
+
+    <div class="flex justify-end mb-4 space-x-2">
+      <a href="/tw50/new" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow">
+        + เพิ่มรายการใหม่
+      </a>
+
+      <a href="/tw50/export/excel"
+         class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow"
+         target="_blank">
+        Export Excel
+      </a>
+
+      <a href="/tw50/export/pdf"
+         class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded shadow"
+         target="_blank">
+        Export PDF
+      </a>
+
+    </div>
+
+    <table class="w-full bg-white shadow rounded-lg text-sm">
+      <thead class="bg-indigo-100 text-indigo-900">
+      <tr>
+        <th class="p-3 text-left">วันที่</th>
+        <th class="p-3 text-left">ผู้จ่าย</th>
+        <th class="p-3 text-left">ผู้รับเงิน</th>
+        <th class="p-3 text-right">จำนวนเงิน</th>
+        <th class="p-3 text-right">อัตราภาษี</th>
+        <th class="p-3 text-right">ภาษีที่หัก</th>
+        <th class="p-3 text-left">รายละเอียด</th>
+        <th class="p-3 text-left">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="record : ${records}" class="border-b hover:bg-gray-50">
+        <td class="p-3" th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}">01/07/2025</td>
+        <td class="p-3" th:text="${record.payer.name}">บริษัท A</td>
+        <td class="p-3" th:text="${record.payee.name}">นาย ก</td>
+        <td class="p-3 text-right" th:text="${#numbers.formatDecimal(record.amount, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+        <td class="p-3 text-right" th:text="${#numbers.formatDecimal(record.taxRate, 1, 'COMMA', 2, 'POINT')}">0.03</td>
+        <td class="p-3 text-right"
+            th:text="${#numbers.formatDecimal(record.amount.multiply(record.taxRate), 1, 'COMMA', 2, 'POINT')}">0.00</td>
+        <td class="p-3" th:text="${record.description}">ค่าที่ปรึกษา</td>
+        <td class="p-3 flex space-x-2">
+          <a th:href="@{/tw50/edit/{id}(id=${record.id})}"
+             class="text-blue-600 hover:underline">แก้ไข</a>
+          <form th:action="@{/tw50/delete/{id}(id=${record.id})}" method="post" onsubmit="return confirm('ยืนยันลบรายการนี้?');">
+            <button type="submit" class="text-red-600 hover:underline">ลบ</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+
+<div th:replace="fragments :: footer"></div>
+
+</body>
+</html>

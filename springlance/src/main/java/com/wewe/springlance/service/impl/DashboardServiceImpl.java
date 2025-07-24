@@ -6,6 +6,8 @@ import com.wewe.springlance.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class DashboardServiceImpl implements DashboardService {
 
@@ -22,12 +24,12 @@ public class DashboardServiceImpl implements DashboardService {
     private ReviewRepository reviewRepository;
 
     @Override
-    public int countProjectsByUser(User user) {
+    public int countProjectsByUser(Optional<User> user) {
         return projectRequestRepository.countByClient(user);
     }
 
     @Override
-    public int countUnreadMessagesByUser(User user) {
+    public int countUnreadMessagesByUser(Optional<User> user) {
         return messageRepository.countByReceiverAndIsReadFalse(user);
     }
 

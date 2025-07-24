@@ -19,35 +19,32 @@
   <div class="max-w-4xl mx-auto bg-white p-6 shadow-lg rounded-xl mt-4">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Create New Invoice</h2>
 
-    <form th:action="@{/invoices/save}" method="post" class="space-y-4">
+    <form th:action="@{/invoices/save}" th:object="${invoice}" method="post" class="space-y-4">
+
       <div>
-        <label for="projectId" class="block font-medium mb-1">Select Project</label>
-        <select id="projectId" name="projectId" required
-                class="w-full border border-gray-300 rounded px-4 py-2">
-          <option value="" disabled selected>Select a project</option>
+        <label for="project.id" class="block font-medium mb-1">Select Project</label>
+        <select th:field="*{project.id}" class="w-full border border-gray-300 rounded px-4 py-2" required>
+          <option value="" disabled>Select a project</option>
           <option th:each="project : ${projects}"
                   th:value="${project.id}"
                   th:text="${project.title}"
-                  th:selected="${project.id == selectedProjectId}">
+                  th:selected="${project.id == invoice.project?.id}">
           </option>
         </select>
       </div>
 
       <div>
         <label for="amount" class="block font-medium mb-1">Amount</label>
-        <input type="number" step="0.01" name="amount" id="amount" required
-               class="w-full border border-gray-300 rounded px-4 py-2" />
+        <input type="number" step="0.01" th:field="*{amount}" class="w-full border border-gray-300 rounded px-4 py-2" required/>
       </div>
 
       <div>
         <label for="issueDate" class="block font-medium mb-1">Issue Date</label>
-        <input type="date" name="issueDate" id="issueDate" required
-               class="w-full border border-gray-300 rounded px-4 py-2" />
+        <input type="date" th:field="*{issueDate}" class="w-full border border-gray-300 rounded px-4 py-2" required/>
       </div>
 
       <div class="flex items-center space-x-2">
-        <input type="checkbox" name="isPaid" id="isPaid"
-               class="rounded border-gray-300">
+        <input type="checkbox" th:field="*{isPaid}" class="rounded border-gray-300">
         <label for="isPaid" class="font-medium text-gray-700">Mark as Paid</label>
       </div>
 

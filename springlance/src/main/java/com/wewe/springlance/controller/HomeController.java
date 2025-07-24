@@ -13,11 +13,11 @@ public class HomeController {
         return "index"; // /templates/index.html
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        // TODO: load user-specific data
-        model.addAttribute("dashboardMessage", "Welcome to your dashboard");
-        return "dashboard"; // /templates/dashboard.html
-    }
+//    @GetMapping("/dashboard")
+//    public String dashboard(Model model) {
+//        // TODO: load user-specific data
+//        model.addAttribute("dashboardMessage", "Welcome to your dashboard");
+//        return "dashboard"; // /templates/dashboard.html
+//    }
 }
 

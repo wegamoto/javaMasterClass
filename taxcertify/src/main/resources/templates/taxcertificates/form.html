@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>New Tax Certificate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8 flex flex-col min-h-screen">
+
+<!-- Navbar -->
+<div th:replace="fragments :: navbar"></div>
+
+<div class="flex flex-1">
+
+  <!-- Sidebar -->
+  <div th:replace="fragments :: sidebar"></div>
+
+  <!-- Main content -->
+  <main class="flex-grow p-8">
+    <h2 class="text-2xl font-bold mb-6 text-purple-700">Add New Tax Certificate</h2>
+
+    <form th:action="@{/taxcertificates/save}" th:object="${cert}" method="post"
+          class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-lg">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Code</label>
+        <input type="text" th:field="*{code}"
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"/>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">Payee Name</label>
+        <input type="text" th:field="*{payeeName}"
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"/>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <button class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" type="submit">
+          Save
+        </button>
+        <a href="/taxcertificates" class="inline-block align-baseline font-bold text-sm text-indigo-600 hover:text-indigo-800">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </main>
+</div>
+
+<!-- Footer -->
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

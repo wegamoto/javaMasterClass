@@ -8,13 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
     List<Message> findByProjectIdOrderBySentAtAsc(Long projectId);
 
     // ✅ นับจำนวนข้อความที่ยังไม่ได้อ่านโดยผู้ใช้คนนี้
-    int countByReceiverAndIsReadFalse(User receiver);
+    int countByReceiverAndIsReadFalse(Optional<User> receiver);
 
     List<Message> findBySenderOrReceiver(User sender, User receiver);
 

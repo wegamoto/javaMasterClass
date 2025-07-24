@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payees List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<!-- รวม navbar -->
+<div th:replace="fragments :: navbar"></div>
+
+<div class="flex flex-1">
+  <!-- รวม sidebar -->
+  <aside th:replace="fragments :: sidebar" class="flex-shrink-0"></aside>
+
+  <!-- Main content -->
+  <main class="flex-grow p-6 bg-gray-50">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Payees</h1>
+      <a href="/payees/new"
+         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        + Add New
+      </a>
+    </div>
+
+    <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
+      <thead class="bg-blue-600 text-white">
+      <tr>
+        <th class="py-2 px-4 text-left">ID</th>
+        <th class="py-2 px-4 text-left">Name</th>
+        <th class="py-2 px-4 text-left">Tax ID</th>
+        <th class="py-2 px-4 text-left">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="payee : ${payees}" class="border-b hover:bg-blue-50">
+        <td class="py-2 px-4" th:text="${payee.id}">1</td>
+        <td class="py-2 px-4" th:text="${payee.name}">John Doe</td>
+        <td class="py-2 px-4" th:text="${payee.taxId}">1234567890</td>
+        <td class="py-2 px-4">
+          <a th:href="@{/payees/form/{id}(id=${payee.id})}"
+             class="text-blue-600 hover:underline mr-4">Edit</a>
+          <!-- ลบถ้าต้องการ ลิงค์ลบจะเป็น form POST หรือ DELETE แนะนำใช้ JS confirm -->
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(payees)}">
+        <td colspan="4" class="text-center py-4 text-gray-500">No payees found</td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+
+<!-- รวม footer -->
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

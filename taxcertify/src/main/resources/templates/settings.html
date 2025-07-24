@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<!-- Navbar -->
+<div th:replace="fragments :: navbar"></div>
+
+<div class="flex flex-1">
+  <!-- Sidebar -->
+  <div th:replace="fragments :: sidebar"></div>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 bg-gray-50">
+    <h1 class="text-3xl font-bold mb-6">Settings</h1>
+
+    <div class="bg-white rounded-lg shadow p-6 max-w-xl">
+      <p class="text-gray-700 text-lg">This is your application settings page.</p>
+      <p class="mt-2 text-sm text-gray-500">You can manage application preferences here.</p>
+      <!-- Add your settings form or content here -->
+    </div>
+  </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments :: footer"></div>
+
+</body>
+</html>

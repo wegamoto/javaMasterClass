@@ -5,6 +5,17 @@
   <title>Invoices - Springlance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .badge-status {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border-radius: 9999px;
+    }
+  </style>
+
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
@@ -33,10 +44,15 @@
         <tr th:each="invoice : ${invoices}" class="border-b hover:bg-gray-50">
           <td class="px-4 py-2" th:text="${invoice.project.title}">Project X</td>
           <td class="px-4 py-2" th:text="${invoice.amount}">5000.00</td>
-          <td class="px-4 py-2" th:text="${invoice.issueDate}">2025-07-18</td>
+          <td class="px-4 py-2" th:text="${#temporals.format(invoice.issueDate, 'yyyy-MM-dd')}">2025-07-18</td>
           <td class="px-4 py-2">
-            <span th:if="${invoice.isPaid}" class="text-green-600 font-semibold">Paid</span>
-            <span th:if="${!invoice.isPaid}" class="text-red-600 font-semibold">Unpaid</span>
+            <span th:if="${invoice.status != null}" th:switch="${invoice.status}">
+              <span th:case="'PAID'" class="badge-status bg-green-100 text-green-700">Paid</span>
+              <span th:case="'PENDING'" class="badge-status bg-yellow-100 text-yellow-700">Pending</span>
+              <span th:case="'CANCELLED'" class="badge-status bg-gray-200 text-gray-700">Cancelled</span>
+              <span th:case="*" class="badge-status bg-red-100 text-red-700">Unknown</span>
+            </span>
+            <span th:if="${invoice.status == null}" class="badge-status bg-red-100 text-red-700">Missing</span>
           </td>
         </tr>
         </tbody>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Add New Payer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<div th:replace="fragments :: navbar"></div>
+
+<div class="flex flex-1">
+  <!-- Sidebar -->
+  <aside th:replace="fragments :: sidebar"></aside>
+
+  <!-- Main content -->
+  <main class="flex-1 p-6">
+    <h1 class="text-2xl font-bold text-indigo-700 mb-4">Add New Payer</h1>
+
+    <form th:action="@{/payers/save}" th:object="${payer}" method="post"
+          class="bg-white p-6 rounded shadow-md space-y-4 max-w-lg">
+
+      <!-- Hidden ID (optional, for editing later) -->
+      <input type="hidden" th:field="*{id}" />
+
+      <div>
+        <label class="block font-semibold">Name</label>
+        <input type="text" th:field="*{name}"
+               class="w-full border px-3 py-2 rounded" placeholder="Enter payer name" required/>
+      </div>
+
+      <div class="flex justify-end">
+        <a href="/payers" class="mr-4 px-4 py-2 text-gray-600 hover:text-gray-900">Cancel</a>
+        <button type="submit"
+                class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+          Save
+        </button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<!-- Footer -->
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

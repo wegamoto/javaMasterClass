@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Springlance - Reviews</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<!-- Navbar (fixed at top) -->
+<div class="fixed top-0 left-0 right-0 z-50" th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Sidebar (fixed on the left) -->
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<!-- Main Content -->
+<main class="flex-grow pt-20 px-4 md:px-8 ml-64">
+  <section class="max-w-6xl mx-auto text-center mb-12">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">
+      User <span class="text-pink-600">Reviews</span>
+    </h1>
+    <p class="text-gray-600 text-lg">
+      See what users are saying about their experiences on Springlance.
+    </p>
+  </section>
+
+  <section class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Example Review Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+      <h3 class="text-lg font-semibold text-pink-600 mb-2">Jane Doe</h3>
+      <p class="text-gray-700 mb-2 italic">"Great platform! I found a talented freelancer within a day."</p>
+      <div class="text-yellow-500">★★★★★</div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+      <h3 class="text-lg font-semibold text-pink-600 mb-2">John Smith</h3>
+      <p class="text-gray-700 mb-2 italic">"The bidding process was smooth and easy to manage."</p>
+      <div class="text-yellow-500">★★★★☆</div>
+    </div>
+
+    <!-- Add more review cards as needed -->
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-purple-600 text-white mt-12 px-4 md:px-8 py-4 ml-64">
+  <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+<script>
+  function toggleMenu(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle("hidden");
+  }
+</script>
+
+</body>
+</html>

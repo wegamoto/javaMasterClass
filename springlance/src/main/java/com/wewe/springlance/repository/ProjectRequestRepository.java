@@ -14,7 +14,7 @@ public interface ProjectRequestRepository extends JpaRepository<ProjectRequest, 
 
     List<ProjectRequest> findByFreelancerId(Long freelancerId);
 
-    int countByClient(User client);
+    int countByClient(Optional<User> client);
 
     List<ProjectRequest> findAllByOrderByCreatedAtDesc();
 

@@ -1,5 +1,6 @@
 package com.wewe.springlance.model;
 
+import com.wewe.springlance.model.enums.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,16 @@ public class Invoice {
 
     @OneToOne
     private ProjectRequest project;
+
+    @ManyToOne
+    private User freelancer;
+
+    @ManyToOne
+    private User client;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InvoiceStatus status;
 
     // getter/setter
 }

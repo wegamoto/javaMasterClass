@@ -2,6 +2,7 @@ package com.wewe.springlance.controller;
 
 import com.wewe.springlance.model.Invoice;
 import com.wewe.springlance.model.User;
+import com.wewe.springlance.model.enums.InvoiceStatus;
 import com.wewe.springlance.service.InvoiceService;
 import com.wewe.springlance.service.ProjectRequestService;
 import com.wewe.springlance.service.UserService;
@@ -45,7 +46,7 @@ public class InvoiceController {
 
     @PostMapping("/save")
     public String saveInvoice(@ModelAttribute Invoice invoice) {
-        invoice.setIsPaid(false);
+        invoice.setStatus(InvoiceStatus.PENDING); // ✅ ใช้ enum แทน isPaid
         invoiceService.save(invoice);
         return "redirect:/invoices/project/" + invoice.getProject().getId();
     }

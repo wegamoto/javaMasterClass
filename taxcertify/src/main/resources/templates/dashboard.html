@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+<div th:replace="fragments :: navbar"></div>
+
+<div class="flex flex-1">
+    <aside class="w-64" th:replace="fragments :: sidebar"></aside>
+
+    <main class="flex-1 p-6">
+        <h1 class="text-2xl font-bold text-indigo-700 mb-4">แดชบอร์ด - <span th:text="${currentMonth}">กรกฎาคม 2025</span></h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-4 rounded shadow text-center">
+                <div class="text-gray-500">รายการทั้งหมด</div>
+                <div class="text-3xl font-bold" th:text="${totalRecords}">0</div>
+            </div>
+            <div class="bg-white p-4 rounded shadow text-center">
+                <div class="text-gray-500">ภาษีที่หักรวม</div>
+                <!-- แก้ไขตรงนี้: ใช้ 'COMMA' แทน 2 -->
+                <div class="text-3xl font-bold" th:text="${#numbers.formatDecimal(totalTax, 1, 'COMMA', 2, 'POINT')}">0.00</div>
+            </div>
+            <div class="bg-white p-4 rounded shadow text-center">
+                <div class="text-gray-500">ส่งออก</div>
+                <div class="mt-2 flex justify-center space-x-2">
+                    <a href="/tw50/export/excel" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm">Excel</a>
+                    <a href="/tw50/export/pdf" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm">PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-semibold mb-2">รายการล่าสุด</h2>
+        <table class="w-full bg-white shadow rounded-lg text-sm">
+            <thead class="bg-indigo-100 text-indigo-900">
+            <tr>
+                <th class="p-3 text-left">วันที่</th>
+                <th class="p-3 text-left">ผู้จ่าย</th>
+                <th class="p-3 text-left">ผู้รับเงิน</th>
+                <th class="p-3 text-right">จำนวนเงิน</th>
+                <th class="p-3 text-right">ภาษีที่หัก</th>
+                <th class="p-3 text-left">รายละเอียด</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="record : ${recentRecords}">
+                <td th:text="${record.formattedDate}">01 Jul 2025</td>
+                <td th:text="${record.payerName}">บริษัท A</td>
+                <td th:text="${record.payeeName}">นาย ก</td>
+                <td th:text="${record.formattedAmount}">1,000.00</td>
+                <td th:text="${record.formattedTaxAmount}">30.00</td>
+                <td th:text="${record.description}">ค่าที่ปรึกษา</td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+
+<div th:replace="fragments :: footer"></div>
+
+</body>
+</html>

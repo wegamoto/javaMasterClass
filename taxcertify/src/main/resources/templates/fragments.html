@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fragments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<div th:fragment="navbar"
+     class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-5 flex justify-between items-center shadow-lg">
+    <div class="text-2xl font-extrabold tracking-wide drop-shadow-lg select-none">
+        TaxCertify
+    </div>
+    <nav class="space-x-8 font-semibold text-lg">
+        <a href="/dashboard"
+           class="hover:text-yellow-300 transition-colors duration-300">Dashboard</a>
+        <a href="/tw50"
+           class="hover:text-yellow-300 transition-colors duration-300">TW50</a>
+        <a href="/logout"
+           class="hover:text-yellow-300 transition-colors duration-300">Logout</a>
+    </nav>
+</div>
+
+<!-- Sidebar -->
+<div th:fragment="sidebar"
+     class="bg-gradient-to-b from-purple-200 via-indigo-100 to-pink-100 w-64 min-h-screen p-6 shadow-inner">
+    <ul class="space-y-3 font-medium text-indigo-800">
+        <li>
+            <a href="/dashboard"
+               class="flex items-center p-3 rounded-lg hover:bg-indigo-400 hover:text-white transition">
+                <!-- Icon (optional) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"/>
+                </svg>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <!-- Parent menu with submenu toggle -->
+            <button
+                    class="flex items-center justify-between w-full p-3 rounded-lg hover:bg-indigo-400 hover:text-white transition focus:outline-none"
+                    onclick="document.getElementById('payeesSubmenu').classList.toggle('hidden')">
+                <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c3.866 0 7.365 1.571 9.879 4.095M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Payees
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                     id="payeesArrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <!-- Submenu -->
+            <ul id="payeesSubmenu" class="hidden mt-2 ml-8 space-y-1 text-indigo-700 font-normal">
+                <li>
+                    <a href="/payees" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">All Payees</a>
+                </li>
+                <li>
+                    <a href="/payees/new" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Add New Payee</a>
+                </li>
+                <li>
+                    <a href="/payees/reports" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Reports</a>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <!-- Parent menu with submenu toggle -->
+            <button
+                    class="flex items-center justify-between w-full p-3 rounded-lg hover:bg-indigo-400 hover:text-white transition focus:outline-none"
+                    onclick="document.getElementById('payersSubmenu').classList.toggle('hidden')">
+        <span class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            Payers
+        </span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                     id="payersArrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <!-- Submenu -->
+            <ul id="payersSubmenu" class="hidden mt-2 ml-8 space-y-1 text-indigo-700 font-normal">
+                <li>
+                    <a href="/payers" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">All Payers</a>
+                </li>
+                <li>
+                    <a href="/payers/new" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Add New Payer</a>
+                </li>
+                <li>
+                    <a href="/payers/reports" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Reports</a>
+                </li>
+            </ul>
+        </li>
+
+
+
+
+
+        <li>
+            <!-- Parent menu with submenu toggle -->
+            <button
+                    class="flex items-center justify-between w-full p-3 rounded-lg hover:bg-indigo-400 hover:text-white transition focus:outline-none"
+                    onclick="document.getElementById('certSubmenu').classList.toggle('hidden')">
+                        <span class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h1"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6v4H9z"/>
+                            </svg>
+                            Tax Certificates
+                        </span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                     id="certArrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <!-- Submenu -->
+            <ul id="certSubmenu" class="hidden mt-2 ml-8 space-y-1 text-indigo-700 font-normal">
+                <li>
+                    <a href="/taxcertificates" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">All Certificates</a>
+                </li>
+                <li>
+                    <a href="/taxcertificates/new" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Add New Certificate</a>
+                </li>
+                <li>
+                    <a href="/taxcertificates/reports" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Reports</a>
+                </li>
+            </ul>
+        </li>
+
+
+
+        <li>
+            <!-- Parent menu with submenu toggle -->
+            <button
+                    class="flex items-center justify-between w-full p-3 rounded-lg hover:bg-indigo-400 hover:text-white transition focus:outline-none"
+                    onclick="document.getElementById('tw50Submenu').classList.toggle('hidden')">
+        <span class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h1"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6v4H9z"/>
+            </svg>
+            TW50
+        </span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                     id="tw50Arrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <!-- Submenu -->
+            <ul id="tw50Submenu" class="hidden mt-2 ml-8 space-y-1 text-indigo-700 font-normal">
+                <li>
+                    <a href="/tw50" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">TW50 Dashboard</a>
+                </li>
+                <li>
+                    <a href="/tw50/list" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">All TW50</a>
+                </li>
+                <li>
+                    <a href="/tw50/upload" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Upload Excel</a>
+                </li>
+                <li>
+                    <a href="/tw50/reports" class="block p-2 rounded hover:bg-indigo-300 hover:text-white transition">Reports</a>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="/settings"
+               class="flex items-center p-3 rounded-lg hover:bg-indigo-400 hover:text-white transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/>
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Settings
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script>
+    // Optionally add rotation animation for arrow on submenu toggle
+    document.querySelector('button[onclick]').addEventListener('click', function() {
+        const arrow = document.getElementById('payeesArrow');
+        arrow.classList.toggle('rotate-180');
+    });
+</script>
+
+
+<!-- Footer -->
+<footer th:fragment="footer" class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-center p-4 mt-auto shadow-inner">
+    &copy; 2025 TaxCertify. All rights reserved.
+</footer>
+
+</body>
+</html>

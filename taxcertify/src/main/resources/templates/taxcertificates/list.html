@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tax Certificates</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<!-- navbar -->
+<div th:replace="fragments :: navbar"></div>
+
+<div class="flex flex-1">
+  <!-- sidebar -->
+  <div th:replace="fragments :: sidebar"></div>
+
+  <!-- main content -->
+  <main class="flex-1 p-6 bg-gray-50">
+    <h1 class="text-3xl font-bold mb-6">Tax Certificates</h1>
+
+    <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
+      <thead class="bg-indigo-600 text-white">
+      <tr>
+        <th class="py-2 px-4 text-left">ID</th>
+        <th class="py-2 px-4 text-left">Certificate Code</th>
+        <th class="py-2 px-4 text-left">Payee</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="cert : ${certificates}" class="border-b hover:bg-indigo-50">
+        <td class="py-2 px-4" th:text="${cert.id}">1</td>
+        <td class="py-2 px-4" th:text="${cert.code}">TAX-2025-001</td>
+        <td class="py-2 px-4" th:text="${cert.payeeName}">John Doe</td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(certificates)}">
+        <td colspan="3" class="text-center py-4 text-gray-500">No tax certificates found</td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+
+<!-- footer -->
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Withholding Tax Record - TaxCertify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<div class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow-md">
+  <h2 class="text-2xl font-semibold mb-6 text-blue-600">Add Withholding Tax Record</h2>
+
+  <form th:action="@{/withholding/save}" th:object="${record}" method="post" class="space-y-4">
+
+    <!-- Date -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Payment Date</label>
+      <input type="date" th:field="*{date}" class="mt-1 w-full border rounded-lg p-2" required>
+    </div>
+
+    <!-- Payer -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Payer</label>
+      <select th:field="*{payer}" class="mt-1 w-full border rounded-lg p-2" required>
+        <option value="" disabled selected>Select payer</option>
+        <option th:each="payer : ${payers}"
+                th:value="${payer}"
+                th:text="${payer.name}">Example Co., Ltd.</option>
+      </select>
+    </div>
+
+    <!-- Payee -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Payee</label>
+      <select th:field="*{payee}" class="mt-1 w-full border rounded-lg p-2" required>
+        <option value="" disabled selected>Select payee</option>
+        <option th:each="payee : ${payees}"
+                th:value="${payee}"
+                th:text="${payee.name}">John Developer</option>
+      </select>
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Description</label>
+      <input type="text" th:field="*{description}" placeholder="e.g., ระบบจัดการภาษี"
+             class="mt-1 w-full border rounded-lg p-2">
+    </div>
+
+    <!-- Amount -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Payment Amount (THB)</label>
+      <input type="number" step="0.01" th:field="*{amount}" class="mt-1 w-full border rounded-lg p-2" required>
+    </div>
+
+    <!-- Tax Rate -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Tax Rate</label>
+      <select th:field="*{taxRate}" class="mt-1 w-full border rounded-lg p-2" required>
+        <option value="0.01">1%</option>
+        <option value="0.03" selected>3%</option>
+        <option value="0.05">5%</option>
+      </select>
+    </div>
+
+    <!-- Submit -->
+    <div class="pt-4">
+      <button type="submit"
+              class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+        Save Record
+      </button>
+      <a href="/dashboard"
+         class="ml-4 text-gray-600 hover:underline text-sm">Cancel</a>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>
