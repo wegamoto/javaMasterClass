@@ -9,5 +9,6 @@ import java.time.LocalTime;
 // repository/BookingRepository.java
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     boolean existsByDateAndTime(LocalDate date, LocalTime time);
+    long countByDate(LocalDate date);
 }
 

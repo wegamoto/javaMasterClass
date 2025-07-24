@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 📱 responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservy - ระบบจองคิว</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -20,6 +20,15 @@
         <input name="name" class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="ชื่อผู้จอง" required>
         <input name="date" type="date" class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400" required>
         <input name="time" type="time" class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400" required>
+
+        <!-- 🔧 เลือกประเภทบริการ -->
+        <select name="serviceType" class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400" required>
+            <option value="">-- เลือกประเภทบริการ --</option>
+            <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
+            <option value="ตัดผม">ตัดผม</option>
+            <option value="ขอคำปรึกษา">ขอคำปรึกษา</option>
+        </select>
+
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-md transition duration-200">
             📌 จองคิว
         </button>
@@ -34,17 +43,30 @@
         <table class="w-full mt-2 table-auto text-sm border border-gray-200 shadow-sm rounded-md overflow-hidden">
             <thead class="bg-indigo-200 text-indigo-900 text-left">
             <tr>
+                <th class="px-3 py-2">เลขคิว</th>
                 <th class="px-3 py-2">ชื่อ</th>
+                <th class="px-3 py-2">บริการ</th>
                 <th class="px-3 py-2">วันที่</th>
                 <th class="px-3 py-2">เวลา</th>
+                <th class="px-3 py-2">สถานะ</th>
                 <th class="px-3 py-2 text-center">ลบ</th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
             <tr th:each="b : ${bookings}" class="hover:bg-indigo-50">
+                <td class="px-3 py-2 font-mono text-indigo-700 font-semibold" th:text="${b.queueNumber}">Q-000</td>
                 <td class="px-3 py-2" th:text="${b.name}"></td>
+                <td class="px-3 py-2" th:text="${b.serviceType}"></td>
                 <td class="px-3 py-2" th:text="${b.date}"></td>
                 <td class="px-3 py-2" th:text="${b.time}"></td>
+                <td class="px-3 py-2">
+                    <span th:switch="${b.status}">
+                        <span th:case="'PENDING'" class="text-yellow-600 font-medium">รอดำเนินการ</span>
+                        <span th:case="'COMPLETED'" class="text-green-600 font-medium">เสร็จแล้ว</span>
+                        <span th:case="'CANCELLED'" class="text-red-500 font-medium">ยกเลิก</span>
+                        <span th:case="*">-</span>
+                    </span>
+                </td>
                 <td class="px-3 py-2 text-center">
                     <form th:action="@{/delete}" method="post" onsubmit="return confirm('ยืนยันการลบคิว?');">
                         <input type="hidden" name="id" th:value="${b.id}">

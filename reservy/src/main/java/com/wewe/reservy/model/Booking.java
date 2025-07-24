@@ -1,12 +1,11 @@
 package com.wewe.reservy.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 // model/Booking.java
@@ -22,6 +21,20 @@ public class Booking {
     private LocalDate date;
 
     private LocalTime time;
+
+    private String serviceType;
+
+    // ✅ เลขคิว เช่น Q001
+    @Column(unique = true)
+    private String queueNumber;
+
+    // ✅ สถานะของคิว
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status = BookingStatus.PENDING;
+
+    // ✅ วันที่เวลาจองอัตโนมัติ
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     // Getter, Setter
 }
