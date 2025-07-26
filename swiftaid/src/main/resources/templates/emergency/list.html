@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>รายการเคสฉุกเฉิน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar Fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex min-h-screen">
+
+    <!-- Sidebar Fragment -->
+    <aside class="w-64 hidden md:block bg-white">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <h1 class="text-2xl font-bold mb-4">รายการเคสฉุกเฉิน</h1>
+
+        <form method="get" action="#" class="mb-4 flex gap-4 items-end">
+            <div>
+                <label for="start" class="block text-sm font-semibold">จากวันที่</label>
+                <input type="date" id="start" name="start" th:value="${start}" class="border rounded px-3 py-1">
+            </div>
+            <div>
+                <label for="end" class="block text-sm font-semibold">ถึงวันที่</label>
+                <input type="date" id="end" name="end" th:value="${end}" class="border rounded px-3 py-1">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                🔍 กรอง
+            </button>
+        </form>
+
+        <a href="/emergencies/new" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            ➕ แจ้งเคสใหม่
+        </a>
+
+        <table class="table-auto w-full mt-4 bg-white shadow rounded">
+            <thead>
+            <tr>
+                <th class="px-4 py-2 text-left">ID</th>
+                <th class="px-4 py-2 text-left">คำอธิบาย</th>
+                <th class="px-4 py-2 text-left">สถานะ</th>
+                <th class="px-4 py-2 text-left">ทีมที่รับผิดชอบ</th>
+                <th class="px-4 py-2 text-left">วันที่แจ้ง</th> <!-- ✅ เพิ่มหัวคอลัมน์ -->
+                <th class="px-4 py-2 text-center">การจัดการ</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="case : ${cases}" class="border-t hover:bg-gray-50">
+                <td th:text="${case.id}" class="px-4 py-2"></td>
+                <td th:text="${case.description}" class="px-4 py-2"></td>
+                <td th:text="${case.status}" class="px-4 py-2"></td>
+                <td th:text="${case.team?.name}" class="px-4 py-2"></td>
+                <td th:text="${#temporals.format(case.reportedAt, 'dd/MM/yyyy HH:mm')}" class="px-4 py-2"></td> <!-- ✅ แสดงวันที่ -->
+                <td class="px-4 py-2 text-center space-x-2">
+                    <a th:href="@{/emergencies/{id}/edit(id=${case.id})}" class="text-blue-600 hover:underline">✏️ แก้ไข</a>
+                    <form th:action="@{/emergencies/{id}/delete(id=${case.id})}" method="post" class="inline">
+                        <button type="submit" class="text-red-600 hover:underline"
+                                onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบเคสนี้?')">❌ ลบ</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+
+<!-- Footer Fragment -->
+<footer class="mt-auto bg-gray-200 text-center text-sm py-4">
+    <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+</body>
+</html>

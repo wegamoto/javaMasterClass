@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>รายละเอียดเคสฉุกเฉิน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<!-- ✅ Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex min-h-screen">
+
+    <!-- ✅ Sidebar -->
+    <aside class="w-64 hidden md:block bg-white border-r">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+    </aside>
+
+    <!-- ✅ Main Content -->
+    <main class="flex-1 p-6">
+        <div class="bg-white rounded shadow p-6 max-w-3xl mx-auto">
+
+            <h1 class="text-2xl font-bold mb-6">รายละเอียดเคสฉุกเฉิน</h1>
+
+            <div class="space-y-4 text-gray-800">
+                <div><strong>ID:</strong> <span th:text="${emergencyCase.id}"></span></div>
+                <div><strong>คำอธิบาย:</strong> <span th:text="${emergencyCase.description}"></span></div>
+                <div><strong>สถานที่:</strong> <span th:text="${emergencyCase.location}"></span></div>
+                <div><strong>สถานะ:</strong> <span th:text="${emergencyCase.status}"></span></div>
+                <div><strong>ทีมที่รับผิดชอบ:</strong>
+                    <span th:text="${emergencyCase.team != null ? emergencyCase.team.name : 'ยังไม่ระบุ'}"></span>
+                </div>
+                <div><strong>เวลาที่แจ้ง:</strong>
+                    <span th:text="${#dates.format(emergencyCase.reportedAt, 'dd/MM/yyyy HH:mm')}"></span>
+                </div>
+            </div>
+
+            <a href="/emergencies" class="inline-block mt-6 text-blue-600 hover:underline">← กลับไปหน้ารายการ</a>
+
+        </div>
+    </main>
+</div>
+
+<!-- ✅ Footer -->
+<footer class="bg-gray-200 text-center text-sm py-4 mt-12">
+    <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+</body>
+</html>

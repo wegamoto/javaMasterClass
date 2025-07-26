@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>รายการเวชภัณฑ์</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 hidden md:block bg-white border-r">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="bg-white rounded shadow p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">รายการเวชภัณฑ์</h1>
+        <a href="/medicalsupply/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">➕ เพิ่มเวชภัณฑ์</a>
+      </div>
+
+      <table class="w-full table-auto border">
+        <thead class="bg-gray-200 text-left">
+        <tr>
+          <th class="px-4 py-2">ชื่อเวชภัณฑ์</th>
+          <th class="px-4 py-2">ประเภท</th>
+          <th class="px-4 py-2">จำนวน</th>
+          <th class="px-4 py-2">ทีมที่รับผิดชอบ</th>
+          <th class="px-4 py-2">การจัดการ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="supply : ${medicalSupply}" class="border-t">
+          <td class="px-4 py-2" th:text="${supply.name}">ชื่อยา</td>
+          <td class="px-4 py-2" th:text="${supply.type}">ประเภท</td>
+          <td class="px-4 py-2" th:text="${supply.quantity} + ' ' + ${supply.unit}">จำนวน</td>
+          <td class="px-4 py-2" th:text="${supply.assignedTeam != null ? supply.assignedTeam.name : '-'}">ทีม</td>
+          <td class="px-4 py-2 space-x-2">
+            <a th:href="@{'/medicalsupply/edit/' + ${supply.id}}" class="text-blue-600 hover:underline">แก้ไข</a>
+            <a th:href="@{'/medicalsupply/delete/' + ${supply.id}}" class="text-red-600 hover:underline"
+               onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?');">ลบ</a>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(medicalSupply)}">
+          <td colspan="5" class="text-center py-4 text-gray-500">ไม่พบข้อมูลเวชภัณฑ์</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-200 text-center text-sm py-4 mt-12">
+  <div th:replace="fragments/footer :: footer"></div>
+</footer>
+
+</body>
+</html>
